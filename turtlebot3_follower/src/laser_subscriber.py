@@ -21,8 +21,8 @@ class laser_subscriber:
             rospy.loginfo('%s', self.msg.ranges)
             self.laser_scan_data.append(self.msg)
 
-            pickle.dump( self.comments, open( "comments_training_set3", "wb")) # store range_msgs into a file
-            pickle.dump( self.laser_scan_data, open( "laser_scan_data_training_set3", "wb")) #store the hole laser_scan_data into a file
+            pickle.dump( self.comments, open( "comments_training_set", "wb")) # store range_msgs into a file
+            pickle.dump( self.laser_scan_data, open( "laser_scan_data_training_set", "wb")) #store the hole laser_scan_data into a file
 
 if __name__ == '__main__':
 

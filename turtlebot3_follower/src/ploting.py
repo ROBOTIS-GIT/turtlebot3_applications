@@ -7,8 +7,8 @@ from sklearn.ensemble import RandomForestClassifier
 
 if __name__ == '__main__':
 
-    laser_data = pickle.load( open( "laser_scan_data_training_set2", "rb"))
-    comments = pickle.load( open( "comments_training_set2", "rb"))
+    laser_data = pickle.load( open( "laser_scan_data_training_set", "rb"))
+    comments = pickle.load( open( "comments_training_set", "rb"))
     print len(comments)
     labels = {'15cm_0' : 0, '15_0': 0, '30_0':1 , '30cm_0' : 1, '45cm_0' : 2,'45_0': 2, '15cm_45l' : 3, '15cm_l':3, '15_l':3 ,'30cm_45l' : 4, '30cm_l':4, '30_l':4, '45cm_45l':5, '45_l': 5, '45cm_l': 5, '15cm_45r':6, '15_r':6, '15cm_r':6, '30cm_45r':7, '30_r':7, '30cm_r':7,'45cm_45r':8, '45_r':8, 'empty':9, '45cm_r':8}
               
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     clf = RandomForestClassifier(n_estimators = 10)
     clf.fit(data_range_training_set,Y)
 
-    pickle.dump( clf, open( "clf21", "wb")) # store range_msgs into a file
+    pickle.dump( clf, open( "clf", "wb")) # store range_msgs into a file
 
 #
 ###########################Loading training data and testing ##############################
