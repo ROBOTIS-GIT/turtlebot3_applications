@@ -103,7 +103,7 @@ if __name__ == '__main__':
     clf = RandomForestClassifier(n_estimators = 10)
     clf.fit(data_range_training_set,Y)
 
-    pickle.dump( clf, open( "clf", "wb")) # store range_msgs into a file
+    pickle.dump( clf, open( "clf", "ab")) # store range_msgs into a file
 
 #
 ###########################Loading training data and testing ##############################

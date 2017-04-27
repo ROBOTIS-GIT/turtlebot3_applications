@@ -11,7 +11,7 @@ import numpy as np
 class follower:
     def __init__(self):
         rospy.loginfo('Follower node initialized')
-        self.pub = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
+        self.pub = rospy.Publisher('/turtlebotA/cmd_vel', Twist, queue_size = 1)
         self.clf = pickle.load( open( "clf", "rb")) ## Load classifier
         self.labels = {'15cm_0' : 0, '30cm_0' : 1, '45cm_0' : 2, '15cm_45l' : 3, '30cm_45l' : 4, '45cm_45l':5, '15cm_45r':6, '30cm_45r':7, '45cm_45r':8, 'empty':9}
         rospy.loginfo('Tree initialized')
@@ -20,7 +20,7 @@ class follower:
     def laser_scan(self):    ## estimate position
         data_test=[]
         data_test_set=[]
-        self.msg = rospy.wait_for_message("scan", LaserScan)
+        self.msg = rospy.wait_for_message("/turtlebotA/scan", LaserScan)
 
         ### manipulating the data for better scale on ranges
         for x in range(59,-1,-1) + range(359, 299,-1):
