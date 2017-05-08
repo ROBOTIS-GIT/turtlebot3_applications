@@ -27,7 +27,7 @@ class laser_subscriber:
 if __name__ == '__main__':
 
     rospy.init_node('laser_subscriber')
-    raw_input('test')
+#    raw_input('test')
     try:
         laser = laser_subscriber()
     except rospy.ROSInterruptException:
