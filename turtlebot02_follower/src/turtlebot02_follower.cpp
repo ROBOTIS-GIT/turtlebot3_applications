@@ -5,12 +5,12 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "my_tf_listener");
-
   ros::NodeHandle node;
-
   ros::Publisher turtle_vel = node.advertise<geometry_msgs::Twist>("/turtlebotB/cmd_vel", 10);
-
   tf::TransformListener listener;
+
+  float x;
+  float y;
 
   ros::Rate rate(10.0);
 
@@ -29,10 +29,25 @@ int main(int argc, char** argv)
 
     geometry_msgs::Twist vel_msg;
 
+     x = transform.getOrigin().x();
+     y = transform.getOrigin().y();
+
      ROS_INFO("x = %f y = %f", transform.getOrigin().x(), transform.getOrigin().y());
      ROS_INFO("angular.z = %f",5.0 * atan2(transform.getOrigin().y(), transform.getOrigin().x()));
+
+     if(x < 0.00001 && x > -0.00001)
+     {
+       x = 0;
+     }
+
+
+     if(y < 0.00001 && y > -0.00001)
+     {
+       y = 0;
+     }
+
     vel_msg.angular.z = 5.0 * atan2(transform.getOrigin().y(), transform.getOrigin().x());
-    vel_msg.linear.x = 0.5 * sqrt(pow(transform.getOrigin().x(), 2) + pow(transform.getOrigin().y(), 2));
+    vel_msg.linear.x = sqrt(pow(transform.getOrigin().x(), 2) + pow(transform.getOrigin().y(), 2));
     turtle_vel.publish(vel_msg);
 
     rate.sleep();

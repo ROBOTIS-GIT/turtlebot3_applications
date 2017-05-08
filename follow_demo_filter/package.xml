@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <name>follow_demo_filter</name>
+  <version>0.0.0</version>
+  <description>The follow_demo_filter package</description>
+
+  <maintainer email="ashe@todo.todo">ashe</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>laser_filters</build_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>laser_filters</run_depend>
+
+  <export>
+     </export>
+</package>

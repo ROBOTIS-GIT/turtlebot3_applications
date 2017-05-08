@@ -20,7 +20,7 @@ class follower:
     def laser_scan(self):    ## estimate position
         data_test=[]
         data_test_set=[]
-        self.msg = rospy.wait_for_message("/turtlebotA/scan", LaserScan)
+        self.msg = rospy.wait_for_message("/turtlebotA/scan_filtered", LaserScan)
 
         ### manipulating the data for better scale on ranges
         for x in range(59,-1,-1) + range(359, 299,-1):
