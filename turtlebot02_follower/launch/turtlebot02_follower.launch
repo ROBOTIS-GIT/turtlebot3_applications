@@ -1,4 +1,0 @@
-<launch>
-  <node pkg="turtlebot02_follower" type="turtlebot02_follower" name="turtlebot02_follower" output="screen">
-  </node>
-</launch>
