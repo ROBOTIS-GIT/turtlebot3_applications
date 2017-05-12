@@ -4,14 +4,15 @@ project(turtlebot02_follower)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
-  tf
+  tf2
+  tf2_ros
   geometry_msgs
 )
 
 catkin_package(
   #INCLUDE_DIRS include
   LIBRARIES turtlebot02_listener
-  CATKIN_DEPENDS roscpp std_msgs tf geometry_msgs
+  CATKIN_DEPENDS roscpp std_msgs tf2 tf2_ros geometry_msgs
   #DEPENDS system_lib
 )
 
