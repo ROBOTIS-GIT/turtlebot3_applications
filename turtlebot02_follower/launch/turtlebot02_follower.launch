@@ -1,17 +1,17 @@
 <launch>
   <node pkg="turtlebot02_follower" type="turtlebotA_subscriber" name="turtlebotA_subscriber" respawn="false" output="screen">
     <rosparam>
-      <!-- turtle_name : "turtlebotA" -->
+      turtle_name : "turtlebotA"
       btw_dist    : 0.0
     </rosparam>
   </node>
 
-  <!-- <node pkg="turtlebot02_follower" type="turtlebotA_subscriber" name="turtlebotB_subscriber" respawn="false" output="screen">
+  <node pkg="turtlebot02_follower" type="turtlebotA_subscriber" name="turtlebotB_subscriber" respawn="false" output="screen">
     <rosparam>
       turtle_name: "turtlebotB"
       btw_dist    : 0.0
     </rosparam>
-  </node> -->
+  </node>
 
   <node pkg="turtlebot02_follower" type="turtlebot02_follower" name="turtlebot02_follower" output="screen">
   </node>

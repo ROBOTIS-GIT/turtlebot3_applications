@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     {
       //ros::Time past = ros::Time::now() - ros::Duration(1.5);
       //listener.waitForTransform("/turtlebotB", "/turtlebotA", past, ros::Duration(1.0));
-      listener.lookupTransform("/turtlebotB/base_footprint", "/turtlebotA",  ros::Time(0), transform);
+      listener.lookupTransform("/turtlebotB", "/turtlebotA",  ros::Time(0), transform);
     }
     catch (tf::TransformException &ex)
     {
@@ -41,19 +41,17 @@ int main(int argc, char** argv)
     theta = atan2(y,x);
     dist =  sqrt(pow(x, 2) + pow(y, 2));
 
-    if(dist < 0.10)
+    if(dist < 0.10 && theta < 80 * M_PI/180)
     {
       vel_msg.angular.z = 0.0;
       vel_msg.linear.x = 0.0;
-      //turtle_vel.publish(vel_msg);
+      turtle_vel.publish(vel_msg);
     }
     else
     {
       vel_msg.angular.z =  0.1 * theta;
       vel_msg.linear.x  =  0.5 * dist;
       turtle_vel.publish(vel_msg);
-      theta = 0;
-      dist = 0;
     }
 
      ROS_INFO("x = %f y = %f", transform.getOrigin().x(), transform.getOrigin().y());
