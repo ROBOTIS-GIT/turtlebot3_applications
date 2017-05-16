@@ -1,63 +1,67 @@
 #include <ros/ros.h>
-#include <tf2_ros/transform_listener.h>
-#include <geometry_msgs/TransformStamped.h>
+#include <tf/transform_listener.h>
 #include <geometry_msgs/Twist.h>
-
+#include <math.h>
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "my_tf_listener");
   ros::NodeHandle node;
-  ros::Publisher turtlebotB_vel = node.advertise<geometry_msgs::Twist>("/turtlebotB/cmd_vel", 10);
+  ros::Publisher turtle_vel = node.advertise<geometry_msgs::Twist>("/turtlebotB/cmd_vel", 10);
+  tf::TransformListener listener;
 
-  tf2_ros::Buffer tfBuffer;
-  tf2_ros::TransformListener tfListener(tfBuffer);
+  ros::Rate rate(250);
 
-    ros::Rate rate(10.0);
-
-    while (node.ok())
+  while (node.ok())
+  {
+    tf::StampedTransform transform;
+    try
     {
-      geometry_msgs::TransformStamped transformStamped;
-      geometry_msgs::Twist vel_msg;
+      //ros::Time past = ros::Time::now() - ros::Duration(1.5);
+      //listener.waitForTransform("/turtlebotB", "/turtlebotA", past, ros::Duration(1.0));
+      listener.lookupTransform("/turtlebotB/base_footprint", "/turtlebotA",  ros::Time(0), transform);
+    }
+    catch (tf::TransformException &ex)
+    {
+      ROS_ERROR("%s",ex.what());
+      ros::Duration(1.0).sleep();
+      continue;
+    }
 
-      try
-      {
-        transformStamped = tfBuffer.lookupTransform("turtlebotB/base_footprint", "turtlebotA/base_footprint", ros::Time(0));
-      }
-      catch (tf2::TransformException &ex)
-      {
-        ROS_WARN("%s",ex.what());
-        ros::Duration(1.0).sleep();
-        continue;
-      }
+    geometry_msgs::Twist vel_msg;
 
-      // float x;
-      // float y;
+    double x;
+    double y;
+    double theta;
+    double dist;
 
-      vel_msg.angular.z = 5.0 * atan2(transformStamped.transform.translation.y, transformStamped.transform.translation.x);
-      vel_msg.linear.x = sqrt(pow(transformStamped.transform.translation.x, 2) + pow(transformStamped.transform.translation.y, 2));
-      turtlebotB_vel.publish(vel_msg);
-      // x = transform.getOrigin().x();
-      // y = transform.getOrigin().y();
-      //
-      // ROS_INFO("x = %f y = %f", transform.getOrigin().x(), transform.getOrigin().y());
-      // ROS_INFO("angular.z = %f",5.0 * atan2(transform.getOrigin().y(), transform.getOrigin().x()));
-      //
-      // if(x < 0.00001 && x > -0.00001)
-      // {
-      //   x = 0;
-      // }
-      //
-      // if(y < 0.00001 && y > -0.00001)
-      // {
-      //   y = 0;
-      // }
+    x = transform.getOrigin().x();
+    y = transform.getOrigin().y();
 
-    //  vel_msg.angular.z = 5.0 * atan2(transform.getOrigin().y(), transform.getOrigin().x());
-    //  vel_msg.linear.x = sqrt(pow(transform.getOrigin().x(), 2) + pow(transform.getOrigin().y(), 2));
-    //  turtle_vel.publish(vel_msg);
+    theta = atan2(y,x);
+    dist =  sqrt(pow(x, 2) + pow(y, 2));
 
-     rate.sleep();
-   }
-   return 0;
+    if(dist < 0.10)
+    {
+      vel_msg.angular.z = 0.0;
+      vel_msg.linear.x = 0.0;
+      //turtle_vel.publish(vel_msg);
+    }
+    else
+    {
+      vel_msg.angular.z =  0.1 * theta;
+      vel_msg.linear.x  =  0.5 * dist;
+      turtle_vel.publish(vel_msg);
+      theta = 0;
+      dist = 0;
+    }
+
+     ROS_INFO("x = %f y = %f", transform.getOrigin().x(), transform.getOrigin().y());
+     ROS_INFO("dist = %f theta = %f", dist, theta * 180/M_PI);
+     // ROS_INFO("angular.z = %f",theta);
+     // ROS_INFO("linear = %f angular = %f", vel_msg.linear.x, vel_msg.angular.z);
+
+    rate.sleep();
+  }
+  return 0;
 }
