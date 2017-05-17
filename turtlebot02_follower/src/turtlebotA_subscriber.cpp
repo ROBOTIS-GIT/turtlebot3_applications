@@ -26,7 +26,7 @@ void poseCallback(const nav_msgs::Odometry& odom)
   transform.setRotation(quaternion);
   broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtle_name));
   //ROS_INFO("origin.x = %f origin.y = %f", odom.pose.pose.position.x, odom.pose.pose.position.y);
-  // ROS_INFO("yaw = %f", yaw * 180/M_PI);
+  //ROS_INFO("yaw = %f", yaw * 180/M_PI);
 }
 
 int main(int argc, char** argv)
@@ -38,10 +38,10 @@ int main(int argc, char** argv)
   nh_priv.getParam("turtle_name", turtle_name);
   nh_priv.getParam("btw_dist", btw_dist);
 
-  ros::Subscriber sub = node.subscribe( turtle_name + "/odom", 10, &poseCallback);
+  ros::Subscriber sub = node.subscribe( turtle_name+"/odom", 10, &poseCallback);
 
   ROS_INFO("Startoda!!!");
-  // ROS_INFO("turtle_name = %s", turtle_name.c_str());
+  ROS_INFO("turtle_name = %s", turtle_name.c_str());
 
   ros::spin();
   return 0;
