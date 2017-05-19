@@ -1,5 +1,27 @@
 scan_filter_chain:
 
+- name: box
+  type: laser_filters/LaserScanBoxFilter
+  params:
+    box_frame: odom
+    min_x: -3.5
+    max_x: 3.5
+    min_y: -3.5
+    max_y: -0.4
+    min_z: -0.1
+    max_z: 0.1
+
+- name: box2
+  type: laser_filters/LaserScanBoxFilter
+  params:
+    box_frame: odom
+    min_x: -3.5
+    max_x: 3.5
+    min_y: 0.4
+    max_y: 3.5
+    min_z: -0.1
+    max_z: 0.1
+
 - name: angle
   type: laser_filters/LaserScanAngularBoundsFilterInPlace
   params:
@@ -10,18 +32,15 @@ scan_filter_chain:
   type: laser_filters/LaserScanRangeFilter
   params:
     lower_threshold: 0.12
-    upper_threshold: 0.5
+    upper_threshold: 0.7
 
 - name: intensity
   type: laser_filters/LaserScanIntensityFilter
   params:
     lower_threshold: 1000
-    upper_threshold: 8000
+    upper_threshold: 6000
     disp_histogram: 0
 
 - name: interpolation
   type: laser_filters/InterpolationFilter
-
-
-
 
