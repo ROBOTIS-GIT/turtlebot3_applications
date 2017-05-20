@@ -4,12 +4,10 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <math.h>
-#include <turtlesim/Spawn.h>
 
 std::string turtle_name;
 std::string turtle_name_2;
 float btw_dist;
-float btw_dist_A;
 
 void poseCallback(const nav_msgs::Odometry& odom)
 {
@@ -46,13 +44,8 @@ int main(int argc, char** argv)
   nh_priv.getParam("turtle_name", turtle_name);
   nh_priv.getParam("turtle_name_2", turtle_name_2);
   nh_priv.getParam("btw_dist", btw_dist);
-  nh_priv.getParam("btw_dist_A", btw_dist_A);
 
   ros::Subscriber sub = node.subscribe( turtle_name+"/odom", 10, &poseCallback);
-
-  ROS_INFO("Startoda!!!");
-  ROS_INFO("turtle_name = %s", turtle_name.c_str());
-  ROS_INFO("turtle_name = %s", turtle_name_2.c_str());
   ros::spin();
   return 0;
 }
