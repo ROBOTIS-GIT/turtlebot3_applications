@@ -75,5 +75,9 @@ if __name__ == '__main__':
     clf = RandomForestClassifier(n_estimators = 10)
     clf.fit(data_range_training_set,Y)
 
+    clf2 = RandomForestClassifier(n_estimators = 10)
+    clf2.fit(data_intensity_training_set,Y)
+
     pickle.dump( clf, open( "clf", "wb"))
+    pickle.dump( clf2, open( "clf2", "wb"))
 

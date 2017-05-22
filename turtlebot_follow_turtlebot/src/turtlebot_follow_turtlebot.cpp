@@ -13,16 +13,14 @@ double dist, dist_;
 double roll, pitch, yaw;
 int8_t robot_state = 0;
 
-bool get_theta(int32_t target_deg);
+bool get_theta(double target_deg);
 bool get_distance(double target_dist);
-bool get_position(int32_t target_deg_);
+bool get_distance_origin(double target_dist_origin);
+bool get_theta_origin(double target_deg_origin);
 
 std::string turtlebot;
 std::string target_turtlebot;
 std::string target_turtlebot_behind;
-float theta_weight;
-float position_weight;
-float dist_weight;
 
 geometry_msgs::Twist vel_msg;
 
@@ -35,9 +33,6 @@ int main(int argc, char** argv)
   nh_priv.getParam("turtlebot", turtlebot);
   nh_priv.getParam("target_turtlebot", target_turtlebot);
   nh_priv.getParam("target_turtlebot_behind", target_turtlebot_behind);
-  nh_priv.getParam("theta_weight", theta_weight);
-  nh_priv.getParam("position_weight", position_weight);
-  nh_priv.getParam("dist_weight", dist_weight);
 
   ros::Publisher turtle_vel = node.advertise<geometry_msgs::Twist>(turtlebot+"/cmd_vel", 10);
 
@@ -89,9 +84,9 @@ int main(int argc, char** argv)
     switch(robot_state)
     {
       case 0:
-      if(dist_>0.22)
+      if(dist_>=0.32)
       {
-        if( get_position(10) == true)
+        if( get_theta_origin(15) == true)
         robot_state = 1;
       }
       else
@@ -102,39 +97,34 @@ int main(int argc, char** argv)
 
       case 1:
 
-      if( get_distance(0.02) == true )
-       robot_state = 2;
+        if( get_distance(0.02) == true )
+        robot_state = 2;
 
       break;
 
       case 2:
 
-      if(get_theta(5) == true)
-       robot_state = 3;
+        if(get_theta(15) == true)
+        robot_state = 3;
 
-       break;
+      break;
 
-       case 3:
+      case 3:
 
-       if(dist_>0.2)
-       robot_state = 0;
+        if(dist_>0.3)
+        robot_state = 0;
 
-       break;
+      break;
 
     }
 
     turtle_vel.publish(vel_msg);
-     
-    //  ROS_INFO("robot_state = %d", robot_state );
-    //  ROS_INFO("yaw = %f", yaw * 180/M_PI);
-    //  ROS_INFO("dist = %f", dist);
-
     rate.sleep();
   }
   return 0;
 }
 
-bool get_theta(int32_t target_deg)
+bool get_theta(double target_deg)
 {
   bool ret = false;
 
@@ -160,8 +150,8 @@ bool get_distance(double target_dist)
 
   if(dist >target_dist)
   {
-    vel_msg.angular.z =  (2.5 + theta_weight) * theta;
-    vel_msg.linear.x  =  (0.5 + dist_weight) * dist;
+    vel_msg.angular.z =  3.0  * theta;
+    vel_msg.linear.x  =  0.5  * dist;
   }
 
   else
@@ -174,13 +164,33 @@ bool get_distance(double target_dist)
   return ret;
 }
 
-bool get_position(int32_t target_deg_)
+bool get_distance_origin(double target_dist_origin)
+{
+  bool ret = false;
+
+  if(dist_ >target_dist_origin)
+  {
+    vel_msg.angular.z =  4.0  * theta_;
+    vel_msg.linear.x  =  0.6  * dist_;
+  }
+
+  else
+  {
+    vel_msg.angular.z = 0.0;
+    vel_msg.linear.x =  0.0;
+
+    ret = true;
+  }
+  return ret;
+}
+
+bool get_theta_origin(double target_deg_)
 {
   bool ret = false;
 
   if(theta > DEG2RAD(target_deg_) || theta < DEG2RAD(-target_deg_) )
   {
-    vel_msg.angular.z = (1.0 + position_weight) * theta;
+    vel_msg.angular.z = 1.0 * theta;
     vel_msg.linear.x  = 0.0;
   }
 
