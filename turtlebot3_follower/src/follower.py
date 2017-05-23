@@ -77,23 +77,23 @@ class follower:
                 twist = Twist()
                 ## Do something according to each position##
                 if  x == ['30_0']:
-                    twist.linear.x  = 0.15; 	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.10;     	twist.angular.z = 0.0;
                 elif x== ['30_l']:
-                    twist.linear.x  = 0.1; 		twist.angular.z = 0.4;
+                    twist.linear.x  = 0.08; 		twist.angular.z = 0.4;
                 elif x== ['30_r']:
-                    twist.linear.x  = 0.1; 		twist.angular.z = -0.4;
+                    twist.linear.x  = 0.08; 		twist.angular.z = -0.4;
                 elif x== ['45_0']:
-                    twist.linear.x  = 0.15; 	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.10;     	twist.angular.z = 0.0;
                 elif x== ['45_l']:
-                    twist.linear.x  = 0.1; 		twist.angular.z = 0.3;
+                    twist.linear.x  = 0.08; 		twist.angular.z = 0.3;
                 elif x== ['45_r']:
-                    twist.linear.x  = 0.1; 		twist.angular.z = -0.3;
+                    twist.linear.x  = 0.08; 		twist.angular.z = -0.3;
                 elif x== ['15_0']:
-                    twist.linear.x = 0.0;		twist.angular.z = 0.0;
+                    twist.linear.x  = 0.0;	      	twist.angular.z = 0.0;
                 elif x== ['empty']:
-                    twist.linear.x  = 0.0;	 	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.0;	 	    twist.angular.z = 0.0;
                 else:
-                    twist.linear.x  = 0.0;		twist.angular.z = 0.0;
+                    twist.linear.x  = 0.0;		    twist.angular.z = 0.0;
 
                 self.pub.publish(twist)
 

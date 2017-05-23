@@ -15,8 +15,6 @@ int8_t robot_state = 0;
 
 bool get_theta(double target_deg);
 bool get_distance(double target_dist);
-bool get_distance_origin(double target_dist_origin);
-bool get_theta_origin(double target_deg_origin);
 
 std::string turtlebot;
 std::string target_turtlebot;
@@ -84,9 +82,9 @@ int main(int argc, char** argv)
     switch(robot_state)
     {
       case 0:
-      if(dist_>=0.32)
+      if(dist_>=0.33)
       {
-        if( get_theta_origin(15) == true)
+        if( get_theta(10) == true)
         robot_state = 1;
       }
       else
@@ -97,51 +95,23 @@ int main(int argc, char** argv)
 
       case 1:
 
-        if( get_distance(0.02) == true )
+        if( get_distance(0.03) == true )
         robot_state = 2;
 
       break;
 
       case 2:
 
-        if(get_theta(15) == true)
-        robot_state = 3;
+      if(dist_>0.3)
+      robot_state = 0;
 
       break;
-
-      case 3:
-
-        if(dist_>0.3)
-        robot_state = 0;
-
-      break;
-
     }
 
     turtle_vel.publish(vel_msg);
     rate.sleep();
   }
   return 0;
-}
-
-bool get_theta(double target_deg)
-{
-  bool ret = false;
-
-  if(yaw > DEG2RAD(target_deg) || yaw < DEG2RAD(-target_deg) )
-  {
-    vel_msg.angular.z = yaw;
-    vel_msg.linear.x  = 0.0;
-  }
-
-  else
-  {
-    vel_msg.angular.z = 0.0;
-    vel_msg.linear.x  = 0.0;
-
-    ret = true;
-  }
-  return ret;
 }
 
 bool get_distance(double target_dist)
@@ -164,31 +134,12 @@ bool get_distance(double target_dist)
   return ret;
 }
 
-bool get_distance_origin(double target_dist_origin)
+
+bool get_theta(double target_deg)
 {
   bool ret = false;
 
-  if(dist_ >target_dist_origin)
-  {
-    vel_msg.angular.z =  4.0  * theta_;
-    vel_msg.linear.x  =  0.6  * dist_;
-  }
-
-  else
-  {
-    vel_msg.angular.z = 0.0;
-    vel_msg.linear.x =  0.0;
-
-    ret = true;
-  }
-  return ret;
-}
-
-bool get_theta_origin(double target_deg_)
-{
-  bool ret = false;
-
-  if(theta > DEG2RAD(target_deg_) || theta < DEG2RAD(-target_deg_) )
+  if(theta > DEG2RAD(target_deg) || theta < DEG2RAD(-target_deg) )
   {
     vel_msg.angular.z = 1.0 * theta;
     vel_msg.linear.x  = 0.0;

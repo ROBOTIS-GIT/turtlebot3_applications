@@ -27,7 +27,7 @@ void poseCallback(const nav_msgs::Odometry& odom)
   transform.setRotation(quaternion);
   broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtle_name));
 
-  transform.setOrigin( tf::Vector3(odom.pose.pose.position.x + btw_dist - 0.2*sin(1.57-yaw) , odom.pose.pose.position.y - 0.2*cos(1.57-yaw) , 0.0) );
+  transform.setOrigin( tf::Vector3(odom.pose.pose.position.x + btw_dist - 0.3*sin(1.57-yaw) , odom.pose.pose.position.y - 0.3*cos(1.57-yaw) , 0.0) );
   quaternion.setRPY(0, 0, yaw);
   transform.setRotation(quaternion);
   broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtle_name_2));
