@@ -37,10 +37,9 @@ scan_filter_chain:
 - name: intensity
   type: laser_filters/LaserScanIntensityFilter
   params:
-    lower_threshold: 1000
-    upper_threshold: 6000
+    lower_threshold: 500
+    upper_threshold: 4000
     disp_histogram: 0
 
 - name: interpolation
   type: laser_filters/InterpolationFilter
-

@@ -59,7 +59,7 @@ if __name__ == '__main__':
 #        plt.ylabel('Range')
 #
 #        plt.subplot(212)
-#        plt.axis([0, 140, 0.0, 8000])
+#        plt.axis([0, 140, 0.0, 4000])
 #        plt.plot(data_intensity_training, 'r') 
 #        plt.ylabel('Intensitie')        
 
