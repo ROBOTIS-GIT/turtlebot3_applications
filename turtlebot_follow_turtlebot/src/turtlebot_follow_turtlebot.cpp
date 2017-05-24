@@ -40,6 +40,7 @@ int main(int argc, char** argv)
 
   ros::Rate rate(125);
 
+////////////////////////////////////////get positin target_turtlebot_behind////////////////////////////
   while (node.ok())
   {
     try
@@ -59,6 +60,7 @@ int main(int argc, char** argv)
     tf::Matrix3x3 m(q);
     m.getRPY(roll,pitch,yaw);
 
+////////////////////////////////////////get positin target_turtlebot////////////////////////////
     try
     {
       listener.lookupTransform(turtlebot, target_turtlebot, ros::Time(0), transform);
@@ -73,11 +75,13 @@ int main(int argc, char** argv)
     x_ = transform.getOrigin().x();
     y_ = transform.getOrigin().y();
 
-    theta =  atan2(y,x);
-    dist  =  sqrt(pow(x, 2) + pow(y, 2));
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
-    theta_ =  atan2(y_,x_);
-    dist_  =  sqrt(pow(x_, 2) + pow(y_, 2));
+    theta =  atan2(y,x);                      //target_turtlebot_behind
+    dist  =  sqrt(pow(x, 2) + pow(y, 2));     //target_turtlebot_behind
+
+    theta_ =  atan2(y_,x_);                   //target_turtlebot
+    dist_  =  sqrt(pow(x_, 2) + pow(y_, 2));  //target_turtlebot
 
     switch(robot_state)
     {

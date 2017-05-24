@@ -5,8 +5,8 @@
 #include <nav_msgs/Odometry.h>
 #include <math.h>
 
-std::string turtle_name;
-std::string turtle_name_2;
+std::string turtlebot;
+std::string turtlebot_behind;
 float btw_dist;
 
 void poseCallback(const nav_msgs::Odometry& odom)
@@ -25,14 +25,12 @@ void poseCallback(const nav_msgs::Odometry& odom)
   transform.setOrigin( tf::Vector3(odom.pose.pose.position.x + btw_dist , odom.pose.pose.position.y , 0.0) );
   quaternion.setRPY(0, 0, yaw);
   transform.setRotation(quaternion);
-  broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtle_name));
+  broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtlebot));
 
-  transform.setOrigin( tf::Vector3(odom.pose.pose.position.x + btw_dist - 0.3*sin(1.57-yaw) , odom.pose.pose.position.y - 0.3*cos(1.57-yaw) , 0.0) );
+  transform.setOrigin( tf::Vector3(odom.pose.pose.position.x + btw_dist - 0.3 * cos(yaw) , odom.pose.pose.position.y - 0.3 * sin(yaw) , 0.0) );
   quaternion.setRPY(0, 0, yaw);
   transform.setRotation(quaternion);
-  broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtle_name_2));
-  //ROS_INFO("origin.x = %f origin.y = %f", odom.pose.pose.position.x, odom.pose.pose.position.y);
-  //ROS_INFO("yaw = %f", yaw * 180/M_PI);
+  broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtlebot_behind));
 }
 
 int main(int argc, char** argv)
@@ -41,11 +39,11 @@ int main(int argc, char** argv)
 
   ros::NodeHandle nh_priv("~");
   ros::NodeHandle node;
-  nh_priv.getParam("turtle_name", turtle_name);
-  nh_priv.getParam("turtle_name_2", turtle_name_2);
+  nh_priv.getParam("turtlebot", turtlebot);
+  nh_priv.getParam("turtlebot_behind", turtlebot_behind);
   nh_priv.getParam("btw_dist", btw_dist);
 
-  ros::Subscriber sub = node.subscribe( turtle_name+"/odom", 10, &poseCallback);
+  ros::Subscriber sub = node.subscribe( turtlebot+"/odom", 10, &poseCallback);
   ros::spin();
   return 0;
 }
