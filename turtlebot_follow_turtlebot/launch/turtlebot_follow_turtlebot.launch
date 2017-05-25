@@ -10,7 +10,7 @@
     <rosparam>
         turtlebot        : "turtlebotB"
         turtlebot_behind : "turtleB_behind"
-        btw_dist         : -0.2
+        btw_dist         : -0.3
     </rosparam>
   </node>
 
@@ -18,7 +18,7 @@
     <rosparam>
         turtlebot        : "turtlebotC"
         turtlebot_behind : "turtleC_behind"
-        btw_dist         : -0.4
+        btw_dist         : -0.6
     </rosparam>
   </node>
 
@@ -26,7 +26,7 @@
     <rosparam>
         turtlebot        : "turtlebotD"
         turtlebot_behind : "turtleD_behind"
-        btw_dist         : -0.6
+        btw_dist         : -0.9
     </rosparam>
   </node>
 
@@ -34,7 +34,7 @@
     <rosparam>
         turtlebot        : "turtlebotE"
         turtlebot_behind : "turtleE_behind"
-        btw_dist         : -0.8
+        btw_dist         : -1.2
     </rosparam>
   </node> -->
 

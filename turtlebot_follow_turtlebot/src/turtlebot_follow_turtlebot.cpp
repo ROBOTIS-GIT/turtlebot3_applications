@@ -6,6 +6,10 @@
 #define DEG2RAD(x)                       (x * 0.01745329252)  // *PI/180
 #define RAD2DEG(x)                       (x * 57.2957795131)  // *180/PI
 
+#define WAIT         0
+#define MOVE_TURN    1
+#define MOVE_FORWARD 2
+
 double x, x_;
 double y, y_;
 double theta, theta_;
@@ -13,8 +17,8 @@ double dist, dist_;
 double roll, pitch, yaw;
 int8_t robot_state = 0;
 
-bool get_theta(double target_deg);
-bool get_distance(double target_dist);
+bool angle_of_btw_behind_and_tb3(double target_deg);
+bool dist_of_btw_behind_and_tb3(double target_dist);
 
 std::string turtlebot;
 std::string target_turtlebot;
@@ -40,7 +44,7 @@ int main(int argc, char** argv)
 
   ros::Rate rate(125);
 
-////////////////////////////////////////get positin target_turtlebot_behind////////////////////////////
+  ////////////////////////////////////////get positin target_turtlebot_behind////////////////////////////
   while (node.ok())
   {
     try
@@ -56,11 +60,11 @@ int main(int argc, char** argv)
 
     x = transform.getOrigin().x();
     y = transform.getOrigin().y();
-    q = transform.getRotation();
-    tf::Matrix3x3 m(q);
-    m.getRPY(roll,pitch,yaw);
+//    q = transform.getRotation();
+//    tf::Matrix3x3 m(q);
+//    m.getRPY(roll,pitch,yaw);
 
-////////////////////////////////////////get positin target_turtlebot////////////////////////////
+    ////////////////////////////////////////get positin target_turtlebot////////////////////////////
     try
     {
       listener.lookupTransform(turtlebot, target_turtlebot, ros::Time(0), transform);
@@ -75,7 +79,7 @@ int main(int argc, char** argv)
     x_ = transform.getOrigin().x();
     y_ = transform.getOrigin().y();
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     theta =  atan2(y,x);                      //target_turtlebot_behind
     dist  =  sqrt(pow(x, 2) + pow(y, 2));     //target_turtlebot_behind
@@ -85,33 +89,53 @@ int main(int argc, char** argv)
 
     switch(robot_state)
     {
-      case 0:
-      if(dist_>=0.33)
+    case MOVE_TURN:
+      if(angle_of_btw_behind_and_tb3(2) == false)
       {
-        if( get_theta(10) == true)
-        robot_state = 1;
+        robot_state = MOVE_TURN;
       }
       else
       {
-         robot_state = 2;
+        if (dist >= 0.10)
+        {
+          robot_state = MOVE_FORWARD;
+        }
       }
       break;
 
-      case 1:
-        if( get_theta(10) == true)
-        {
-          if( get_distance(0.05) == true )
-          robot_state = 2;
-        }
+    case MOVE_FORWARD:
+      if(dist_of_btw_behind_and_tb3(0.01) == false)
+      {
+        robot_state = MOVE_FORWARD;
+      }
+      else
+      {
+        robot_state = WAIT;
+      }
       break;
 
-      case 2:
+    case WAIT:
+      vel_msg.angular.z = 0.0;
+      vel_msg.linear.x  = 0.0;
 
-      if(dist_>0.3)
-      robot_state = 0;
+      if (dist >= 0.10)
+      {
+        robot_state = MOVE_TURN;
+      }
+      else
+      {
+        robot_state = WAIT;
+      }
+      break;
 
+    default:
+      robot_state = WAIT;
       break;
     }
+
+//    ROS_INFO("dist_ = %f, theta_ = %f", dist_, theta_);
+//    ROS_INFO("dist = %f, theta = %f", dist, DEG2RAD(theta));
+    ROS_INFO("robot_state: %d", robot_state);
 
     turtle_vel.publish(vel_msg);
     rate.sleep();
@@ -119,19 +143,17 @@ int main(int argc, char** argv)
   return 0;
 }
 
-bool get_distance(double target_dist)
+bool dist_of_btw_behind_and_tb3(double target_dist)
 {
   bool ret = false;
 
-  if(dist >target_dist)
+  if(dist >= target_dist)
   {
-    vel_msg.angular.z =  3.0  * theta;
+    vel_msg.angular.z =  2.0 * theta;
     vel_msg.linear.x  =  0.7  * dist;
   }
-
   else
   {
-    vel_msg.angular.z = 0.0;
     vel_msg.linear.x =  0.0;
 
     ret = true;
@@ -140,20 +162,18 @@ bool get_distance(double target_dist)
 }
 
 
-bool get_theta(double target_deg)
+bool angle_of_btw_behind_and_tb3(double target_deg)
 {
   bool ret = false;
 
   if(theta > DEG2RAD(target_deg) || theta < DEG2RAD(-target_deg) )
   {
     vel_msg.angular.z = 3.0 * theta;
-    vel_msg.linear.x  = 0.0;
+    vel_msg.linear.x  = vel_msg.linear.x;
   }
-
   else
   {
     vel_msg.angular.z = 0.0;
-    vel_msg.linear.x  = 0.0;
 
     ret = true;
   }
