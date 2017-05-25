@@ -9,8 +9,6 @@ std::string turtlebot;
 std::string turtlebot_behind;
 float btw_dist;
 
-ros::Subscriber sub;
-
 void poseCallback(const nav_msgs::Odometry& odom)
 {
   static tf::TransformBroadcaster broadcaster;
@@ -29,7 +27,7 @@ void poseCallback(const nav_msgs::Odometry& odom)
   transform.setRotation(quaternion);
   broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtlebot));
 
-  transform.setOrigin( tf::Vector3(odom.pose.pose.position.x + btw_dist - 0.2 * cos(yaw) , odom.pose.pose.position.y - 0.2 * sin(yaw) , 0.0) );
+  transform.setOrigin( tf::Vector3(odom.pose.pose.position.x + btw_dist - 0.3 * cos(yaw) , odom.pose.pose.position.y - 0.3 * sin(yaw) , 0.0) );
   quaternion.setRPY(0, 0, yaw);
   transform.setRotation(quaternion);
   broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtlebot_behind));
@@ -45,8 +43,7 @@ int main(int argc, char** argv)
   nh_priv.getParam("turtlebot_behind", turtlebot_behind);
   nh_priv.getParam("btw_dist", btw_dist);
 
-  sub = node.subscribe( turtlebot+"/odom", 10, &poseCallback);
-
+  ros::Subscriber sub = node.subscribe( turtlebot+"/odom", 10, &poseCallback);
   ros::spin();
   return 0;
 }
