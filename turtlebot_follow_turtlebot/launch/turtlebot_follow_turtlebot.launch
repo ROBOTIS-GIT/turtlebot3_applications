@@ -46,23 +46,23 @@
     </rosparam>
   </node>
 
-  <!-- <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotC_follow_turtlebotB" output="screen">
+  <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotC_follow_turtlebotB" output="screen">
     <rosparam>
         turtlebot               : "turtlebotC"
         target_turtlebot        : "turtlebotB"
         target_turtlebot_behind : "turtleB_behind"
     </rosparam>
-  </node> -->
+  </node>
 
-  <!-- <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotD_follow_turtlebotC" output="screen">
+  <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotD_follow_turtlebotC" output="screen">
     <rosparam>
         turtlebot               : "turtlebotD"
         target_turtlebot        : "turtlebotC"
         target_turtlebot_behind : "turtleC_behind"
     </rosparam>
-  </node> -->
+  </node>
 
-  <!-- <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotD_follow_turtlebotC" output="screen">
+   <!-- <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotD_follow_turtlebotC" output="screen">
     <rosparam>
         turtlebot               : "turtlebotE"
         target_turtlebot        : "turtlebotD"
