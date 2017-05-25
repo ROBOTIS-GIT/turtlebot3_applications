@@ -20,29 +20,17 @@ std::string turtlebot;
 std::string target_turtlebot;
 std::string target_turtlebot_behind;
 
+ros::Publisher turtle_vel;
+ros::Timer timer1;
+
 geometry_msgs::Twist vel_msg;
 
-int main(int argc, char** argv)
+void callback1(const ros::TimerEvent& )
 {
-  ros::init(argc, argv, "my_tf_listener");
-  ros::NodeHandle nh_priv("~");
-  ros::NodeHandle node;
-
-  nh_priv.getParam("turtlebot", turtlebot);
-  nh_priv.getParam("target_turtlebot", target_turtlebot);
-  nh_priv.getParam("target_turtlebot_behind", target_turtlebot_behind);
-
-  ros::Publisher turtle_vel = node.advertise<geometry_msgs::Twist>(turtlebot+"/cmd_vel", 10);
-
   tf::TransformListener listener;
   tf::StampedTransform transform;
   tf::Quaternion q;
 
-  ros::Rate rate(125);
-
-////////////////////////////////////////get positin target_turtlebot_behind////////////////////////////
-  while (node.ok())
-  {
     try
     {
       listener.lookupTransform(turtlebot, target_turtlebot_behind, ros::Time(0), transform);
@@ -51,7 +39,6 @@ int main(int argc, char** argv)
     {
       ROS_ERROR("%s",ex.what());
       ros::Duration(1.0).sleep();
-      continue;
     }
 
     x = transform.getOrigin().x();
@@ -69,7 +56,6 @@ int main(int argc, char** argv)
     {
       ROS_ERROR("%s",ex.what());
       ros::Duration(1.0).sleep();
-      continue;
     }
 
     x_ = transform.getOrigin().x();
@@ -99,7 +85,7 @@ int main(int argc, char** argv)
 
       case 1:
 
-        if( get_distance(0.03) == true )
+        if( get_distance(0.05) == true )
         robot_state = 2;
 
       break;
@@ -113,9 +99,6 @@ int main(int argc, char** argv)
     }
 
     turtle_vel.publish(vel_msg);
-    rate.sleep();
-  }
-  return 0;
 }
 
 bool get_distance(double target_dist)
@@ -157,4 +140,26 @@ bool get_theta(double target_deg)
     ret = true;
   }
   return ret;
+}
+
+int main(int argc, char** argv)
+{
+  ros::init(argc, argv, "my_tf_listener");
+  ros::NodeHandle node;
+  ros::NodeHandle nh_priv("~");
+
+  nh_priv.getParam("turtlebot", turtlebot);
+  nh_priv.getParam("target_turtlebot", target_turtlebot);
+  nh_priv.getParam("target_turtlebot_behind", target_turtlebot_behind);
+
+  ROS_INFO("turtlebot = %s", turtlebot.c_str());
+  ROS_INFO("target_turtlebot = %s", target_turtlebot.c_str());
+  ROS_INFO("target_turtlebot_behind = %s", target_turtlebot_behind.c_str());
+
+  turtle_vel = node.advertise<geometry_msgs::Twist>(turtlebot+"/cmd_vel", 10);
+  timer1 = node.createTimer(ros::Duration(0.05), callback1);
+
+  ros::spin();
+
+  return 0;
 }
