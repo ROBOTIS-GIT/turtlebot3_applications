@@ -43,6 +43,8 @@
         turtlebot               : "turtlebotB"
         target_turtlebot        : "turtlebotA"
         target_turtlebot_behind : "turtleA_behind"
+        lin_vel_weight          : 0.0
+        ang_vel_weight          : 0.0
     </rosparam>
   </node>
 
@@ -51,6 +53,8 @@
         turtlebot               : "turtlebotC"
         target_turtlebot        : "turtlebotB"
         target_turtlebot_behind : "turtleB_behind"
+        lin_vel_weight          : 0.3
+        ang_vel_weight          : 0.3
     </rosparam>
   </node>
 
@@ -59,6 +63,8 @@
         turtlebot               : "turtlebotD"
         target_turtlebot        : "turtlebotC"
         target_turtlebot_behind : "turtleC_behind"
+        lin_vel_weight          : 0.5
+        ang_vel_weight          : 0.5
     </rosparam>
   </node>
 

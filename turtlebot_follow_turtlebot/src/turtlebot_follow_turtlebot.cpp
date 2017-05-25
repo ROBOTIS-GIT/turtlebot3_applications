@@ -23,6 +23,8 @@ bool dist_of_btw_behind_and_tb3(double target_dist);
 std::string turtlebot;
 std::string target_turtlebot;
 std::string target_turtlebot_behind;
+double ang_vel_weight;
+double lin_vel_weight;
 
 geometry_msgs::Twist vel_msg;
 
@@ -35,6 +37,8 @@ int main(int argc, char** argv)
   nh_priv.getParam("turtlebot", turtlebot);
   nh_priv.getParam("target_turtlebot", target_turtlebot);
   nh_priv.getParam("target_turtlebot_behind", target_turtlebot_behind);
+  nh_priv.getParam("lin_vel_weight", lin_vel_weight);
+  nh_priv.getParam("ang_vel_weight", ang_vel_weight);
 
   ros::Publisher turtle_vel = node.advertise<geometry_msgs::Twist>(turtlebot+"/cmd_vel", 10);
 
@@ -149,8 +153,8 @@ bool dist_of_btw_behind_and_tb3(double target_dist)
 
   if(dist >= target_dist)
   {
-    vel_msg.angular.z =  2.0 * theta;
-    vel_msg.linear.x  =  0.7  * dist;
+    vel_msg.angular.z =  2.0 * theta + ang_vel_weight;
+    vel_msg.linear.x  =  0.7  * dist + lin_vel_weight;
   }
   else
   {
