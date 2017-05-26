@@ -27,14 +27,14 @@ class follower:
 
         for i in range(70,-2,-1) + range(359, 289,-1):
 
-            if   np.nan_to_num( self.msg.intensities[i] ) != 0 :
-                 laser_data.append(np.nan_to_num(self.msg.intensities[i]))
+            if   np.nan_to_num( np.log(self.msg.intensities[i]) ) != 0 :
+                 laser_data.append(np.log(np.nan_to_num(self.msg.intensities[i])))
 
-            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.msg.intensities[i]) == 0:
-                 laser_data.append((np.nan_to_num(self.msg.intensities[i+1])+np.nan_to_num(self.msg.intensities[i-1]))/2)
+            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.log(np.nan_to_num(self.msg.intensities[i])) == 0:
+                 laser_data.append((np.log((np.nan_to_num(self.msg.intensities[i+1])))+np.log(np.nan_to_num(self.msg.intensities[i-1])))/2)
 
             else :
-                 laser_data.append(np.nan_to_num(self.msg.intensities[i]))
+                 laser_data.append(np.log(np.nan_to_num(self.msg.intensities[i])))
 
         laser_data_set.append(laser_data)
 
@@ -57,13 +57,13 @@ class follower:
         for i in range(70,-2,-1) + range(359, 289,-1):
 
             if   np.nan_to_num( self.msg.ranges[i] ) != 0 :
-                 data_test.append(np.nan_to_num(self.msg.ranges[i]))
+                 data_test.append(np.log(np.nan_to_num(self.msg.ranges[i])))
 
-            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.msg.ranges[i]) == 0:
-                 data_test.append((np.nan_to_num(self.msg.ranges[i+1])+np.nan_to_num(self.msg.ranges[i-1]))/2)
+            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.log(np.nan_to_num(self.msg.ranges[i])) == 0:
+                 data_test.append((np.log(np.nan_to_num(self.msg.ranges[i+1]))+np.log(np.nan_to_num(self.msg.ranges[i-1])))/2)
 
             else :
-                 data_test.append(np.nan_to_num(self.msg.ranges[i]))
+                 data_test.append(np.log(np.nan_to_num(self.msg.ranges[i])))
 
         data_test_set.append(data_test)
 
@@ -77,17 +77,17 @@ class follower:
                 twist = Twist()
                 ## Do something according to each position##
                 if  x == ['30_0']:
-                    twist.linear.x  = 0.2;      	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.15;      	twist.angular.z = 0.0;
                 elif x== ['30_l']:
-                    twist.linear.x  = 0.16; 		twist.angular.z = 0.4;
+                    twist.linear.x  = 0.12; 		twist.angular.z = 0.4;
                 elif x== ['30_r']:
-                    twist.linear.x  = 0.16; 		twist.angular.z = -0.4;
+                    twist.linear.x  = 0.12; 		twist.angular.z = -0.4;
                 elif x== ['45_0']:
-                    twist.linear.x  = 0.2;      	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.15;      	twist.angular.z = 0.0;
                 elif x== ['45_l']:
-                    twist.linear.x  = 0.16; 		twist.angular.z = 0.3;
+                    twist.linear.x  = 0.12; 		twist.angular.z = 0.3;
                 elif x== ['45_r']:
-                    twist.linear.x  = 0.16; 		twist.angular.z = -0.3;
+                    twist.linear.x  = 0.12; 		twist.angular.z = -0.3;
                 elif x== ['15_0']:
                     twist.linear.x  = 0.0;	      	twist.angular.z = 0.0;
                 elif x== ['empty']:
