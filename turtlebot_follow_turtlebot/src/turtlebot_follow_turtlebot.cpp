@@ -139,7 +139,7 @@ int main(int argc, char** argv)
 
 //    ROS_INFO("dist_ = %f, theta_ = %f", dist_, theta_);
 //    ROS_INFO("dist = %f, theta = %f", dist, DEG2RAD(theta));
-    ROS_INFO("robot_state: %d", robot_state);
+//    ROS_INFO("robot_state: %d", robot_state);
 
     turtle_vel.publish(vel_msg);
     rate.sleep();
@@ -154,7 +154,7 @@ bool dist_of_btw_behind_and_tb3(double target_dist)
   if(dist >= target_dist)
   {
     vel_msg.angular.z =  2.0 * theta + ang_vel_weight;
-    vel_msg.linear.x  =  0.7  * dist + lin_vel_weight;
+    vel_msg.linear.x  =  1.0  * dist + lin_vel_weight;
   }
   else
   {
