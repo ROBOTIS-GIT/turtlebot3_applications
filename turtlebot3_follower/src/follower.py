@@ -28,15 +28,20 @@ class follower:
         for i in range(70,-2,-1) + range(359, 289,-1):
 
             if   np.nan_to_num( np.log(self.msg.intensities[i]) ) != 0 :
-                 laser_data.append(np.log(np.nan_to_num(self.msg.intensities[i])))
+                 laser_data.append(np.nan_to_num(self.msg.intensities[i]))
 
-            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.log(np.nan_to_num(self.msg.intensities[i])) == 0:
-                 laser_data.append((np.log((np.nan_to_num(self.msg.intensities[i+1])))+np.log(np.nan_to_num(self.msg.intensities[i-1])))/2)
+            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.msg.intensities[i]) == 0:
+                 laser_data.append(((np.nan_to_num(self.msg.intensities[i+1]))+np.nan_to_num(self.msg.intensities[i-1]))/2)
 
             else :
-                 laser_data.append(np.log(np.nan_to_num(self.msg.intensities[i])))
-
-        laser_data_set.append(laser_data)
+                 laser_data.append(np.nan_to_num(self.msg.intensities[i]))
+                 
+            aa = np.array(laser_data)
+            aa[aa == 0] = 1
+              
+            aa = np.log(aa)
+            
+        laser_data_set.append(aa)
 
         [x for (x , y) in self.labels.iteritems() if y == self.clf2.predict(laser_data_set) ] ## Predict the position
 
@@ -57,15 +62,20 @@ class follower:
         for i in range(70,-2,-1) + range(359, 289,-1):
 
             if   np.nan_to_num( self.msg.ranges[i] ) != 0 :
-                 data_test.append(np.log(np.nan_to_num(self.msg.ranges[i])))
+                 data_test.append(np.nan_to_num(self.msg.ranges[i]))
 
-            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.log(np.nan_to_num(self.msg.ranges[i])) == 0:
-                 data_test.append((np.log(np.nan_to_num(self.msg.ranges[i+1]))+np.log(np.nan_to_num(self.msg.ranges[i-1])))/2)
+            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.msg.ranges[i]) == 0:
+                 data_test.append((np.nan_to_num(self.msg.ranges[i+1])+np.nan_to_num(self.msg.ranges[i-1]))/2)
 
             else :
-                 data_test.append(np.log(np.nan_to_num(self.msg.ranges[i])))
+                 data_test.append(np.nan_to_num(self.msg.ranges[i]))
+                 
+            bb = np.array(data_test)
+            bb[bb == 0] = 1
+              
+            bb = np.log(bb)
 
-        data_test_set.append(data_test)
+        data_test_set.append(bb)
 
         return [x for (x , y) in self.labels.iteritems() if y == self.clf.predict(data_test_set) ] ## Predict the position
 

@@ -60,34 +60,34 @@ if __name__ == '__main__':
         data_intensity_training_set.append(cc) 
 
 #################################################### PLOTTING FROM 0-70 290-360 ################################################
-        plt.figure(i)
-        
-        plt.subplot(211)
-        plt.axis([0, 140, -2.0, 0.0])
-        plt.plot(dd, 'b')
-        plt.title(comments[i])
-        plt.ylabel('Range')
-
-        plt.subplot(212)
-        plt.axis([0, 140, 0.0, 10])
-        plt.plot(cc, 'r') 
-        plt.ylabel('Intensitie')        
+#        plt.figure(i)
+#        
+#        plt.subplot(211)
+#        plt.axis([0, 140, -2.0, 0.0])
+#        plt.plot(dd, 'b')
+#        plt.title(comments[i])
+#        plt.ylabel('Range')
+#
+#        plt.subplot(212)
+#        plt.axis([0, 140, 0.0, 10])
+#        plt.plot(cc, 'r') 
+#        plt.ylabel('Intensitie')        
 
         data_range_training = []
         data_intensity_training = []
                
 #################################################### Random Forest Fitting ####################################################
 
-#    Y=[]
-#    for i in range(len(comments)):
-#        Y.append(labels[comments[i]])
-#
-#    clf = RandomForestClassifier(n_estimators = 10)
-#    clf.fit(data_range_training_set,Y)
-#
-#    clf2 = RandomForestClassifier(n_estimators = 10)
-#    clf2.fit(data_intensity_training_set,Y)
-#
-#    pickle.dump( clf, open( "clf", "wb"))
-#    pickle.dump( clf2, open( "clf2", "wb"))
+    Y=[]
+    for i in range(len(comments)):
+        Y.append(labels[comments[i]])
+
+    clf = RandomForestClassifier(n_estimators = 10)
+    clf.fit(data_range_training_set,Y)
+
+    clf2 = RandomForestClassifier(n_estimators = 10)
+    clf2.fit(data_intensity_training_set,Y)
+
+    pickle.dump( clf, open( "clf", "wb"))
+    pickle.dump( clf2, open( "clf2", "wb"))
 
