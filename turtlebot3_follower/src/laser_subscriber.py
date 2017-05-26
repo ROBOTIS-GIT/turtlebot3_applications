@@ -27,6 +27,7 @@ class laser_subscriber:
             pickle.dump( self.comments, open( "add_comment", "wb"))
             pickle.dump( self.laser_scan_data, open( "add_data", "wb"))
             
+
 if __name__ == '__main__':
 
     rospy.init_node('laser_subscriber')

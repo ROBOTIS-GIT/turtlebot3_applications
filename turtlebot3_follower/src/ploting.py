@@ -47,7 +47,21 @@ if __name__ == '__main__':
                  data_intensity_training.append(np.nan_to_num(laser_data[i].intensities[x]))
                  
         data_range_training_set.append(data_range_training)    
-        data_intensity_training_set.append(data_intensity_training)        
+        data_intensity_training_set.append(data_intensity_training) 
+
+#################################################### PLOTTING FROM 0-70 290-360 ################################################
+#        plt.figure(i)
+#        
+#        plt.subplot(211)
+#        plt.axis([0, 140, 0.0, 0.5])
+#        plt.plot(data_range_training, 'b')
+#        plt.title(comments[i])
+#        plt.ylabel('Range')
+#
+#        plt.subplot(212)
+#        plt.axis([0, 140, 0.0, 4000])
+#        plt.plot(data_intensity_training, 'r') 
+#        plt.ylabel('Intensitie')        
 
         data_range_training = []
         data_intensity_training = []
@@ -61,5 +75,9 @@ if __name__ == '__main__':
     clf = RandomForestClassifier(n_estimators = 10)
     clf.fit(data_range_training_set,Y)
 
+    clf2 = RandomForestClassifier(n_estimators = 10)
+    clf2.fit(data_intensity_training_set,Y)
+
     pickle.dump( clf, open( "clf", "wb"))
+    pickle.dump( clf2, open( "clf2", "wb"))
 
