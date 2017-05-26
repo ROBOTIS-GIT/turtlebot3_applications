@@ -27,21 +27,16 @@ class follower:
 
         for i in range(70,-2,-1) + range(359, 289,-1):
 
-            if   np.nan_to_num( np.log(self.msg.intensities[i]) ) != 0 :
+            if   np.nan_to_num( self.msg.intensities[i] ) != 0 :
                  laser_data.append(np.nan_to_num(self.msg.intensities[i]))
 
             elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.msg.intensities[i]) == 0:
-                 laser_data.append(((np.nan_to_num(self.msg.intensities[i+1]))+np.nan_to_num(self.msg.intensities[i-1]))/2)
+                 laser_data.append((np.nan_to_num(self.msg.intensities[i+1])+np.nan_to_num(self.msg.intensities[i-1]))/2)
 
             else :
                  laser_data.append(np.nan_to_num(self.msg.intensities[i]))
-                 
-            aa = np.array(laser_data)
-            aa[aa == 0] = 1
-              
-            aa = np.log(aa)
-            
-        laser_data_set.append(aa)
+
+        laser_data_set.append(laser_data)
 
         [x for (x , y) in self.labels.iteritems() if y == self.clf2.predict(laser_data_set) ] ## Predict the position
 
@@ -69,13 +64,8 @@ class follower:
 
             else :
                  data_test.append(np.nan_to_num(self.msg.ranges[i]))
-                 
-            bb = np.array(data_test)
-            bb[bb == 0] = 1
-              
-            bb = np.log(bb)
 
-        data_test_set.append(bb)
+        data_test_set.append(data_test)
 
         return [x for (x , y) in self.labels.iteritems() if y == self.clf.predict(data_test_set) ] ## Predict the position
 
@@ -87,17 +77,17 @@ class follower:
                 twist = Twist()
                 ## Do something according to each position##
                 if  x == ['30_0']:
-                    twist.linear.x  = 0.15;      	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.13;      	twist.angular.z = 0.0;
                 elif x== ['30_l']:
-                    twist.linear.x  = 0.12; 		twist.angular.z = 0.4;
+                    twist.linear.x  = 0.10; 		twist.angular.z = 0.4;
                 elif x== ['30_r']:
-                    twist.linear.x  = 0.12; 		twist.angular.z = -0.4;
+                    twist.linear.x  = 0.10; 		twist.angular.z = -0.4;
                 elif x== ['45_0']:
-                    twist.linear.x  = 0.15;      	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.13;      	twist.angular.z = 0.0;
                 elif x== ['45_l']:
-                    twist.linear.x  = 0.12; 		twist.angular.z = 0.3;
+                    twist.linear.x  = 0.10; 		twist.angular.z = 0.3;
                 elif x== ['45_r']:
-                    twist.linear.x  = 0.12; 		twist.angular.z = -0.3;
+                    twist.linear.x  = 0.10; 		twist.angular.z = -0.3;
                 elif x== ['15_0']:
                     twist.linear.x  = 0.0;	      	twist.angular.z = 0.0;
                 elif x== ['empty']:
