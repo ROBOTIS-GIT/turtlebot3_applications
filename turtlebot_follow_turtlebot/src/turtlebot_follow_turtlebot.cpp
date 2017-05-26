@@ -100,7 +100,7 @@ int main(int argc, char** argv)
       }
       else
       {
-        if (dist >= 0.10)
+        if (dist >= 0.15)
         {
           robot_state = MOVE_FORWARD;
         }
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
       vel_msg.angular.z = 0.0;
       vel_msg.linear.x  = 0.0;
 
-      if (dist >= 0.10)
+      if (dist >= 0.15)
       {
         robot_state = MOVE_TURN;
       }
@@ -153,8 +153,16 @@ bool dist_of_btw_behind_and_tb3(double target_dist)
 
   if(dist >= target_dist)
   {
-    vel_msg.angular.z =  2.0 * theta + ang_vel_weight;
-    vel_msg.linear.x  =  1.0  * dist + lin_vel_weight;
+    vel_msg.angular.z =  3.0  * theta;
+    vel_msg.linear.x  =  0.7  * dist;
+
+    if (dist_ <= 0.40)
+    {
+      vel_msg.angular.z =  0.0;
+      vel_msg.linear.x  =  0.0;
+
+      ret = true;
+    }
   }
   else
   {
@@ -162,6 +170,7 @@ bool dist_of_btw_behind_and_tb3(double target_dist)
 
     ret = true;
   }
+
   return ret;
 }
 
@@ -174,6 +183,14 @@ bool angle_of_btw_behind_and_tb3(double target_deg)
   {
     vel_msg.angular.z = 3.0 * theta;
     vel_msg.linear.x  = vel_msg.linear.x;
+
+    if (dist_ <= 0.40)
+    {
+      vel_msg.angular.z =  0.0;
+      vel_msg.linear.x  =  0.0;
+
+      ret = true;
+    }
   }
   else
   {
