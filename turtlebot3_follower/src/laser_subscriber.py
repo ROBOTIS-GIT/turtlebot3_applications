@@ -19,7 +19,7 @@ class laser_subscriber:
             comment = raw_input('Right a comment and pres Enter to continue..\n')
             self.comments.append(comment)
 
-            self.msg = rospy.wait_for_message("/turtlebotA/scan_filtered", LaserScan)
+            self.msg = rospy.wait_for_message("/scan_filtered", LaserScan)
             rospy.loginfo('%s', self.msg.ranges)
             self.laser_scan_data.append(self.msg)
             
