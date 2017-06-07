@@ -10,7 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
 #  INCLUDE_DIRS include
-  LIBRARIES follow3_demo_filter
+  LIBRARIES turtlebot3_follow_filter
   CATKIN_DEPENDS roscpp std_msgs laser_filters
 )
 
