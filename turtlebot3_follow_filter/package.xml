@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>turtlebot_follow_filter</name>
+  <name>turtlebot3_follow_filter</name>
   <version>0.1.0</version>
-  <description>turtlebot_follow_filter package</description>
+  <description>turtlebot3_follow_filter package</description>
 
   <maintainer email="rlaqhrud852@gmail.com">ashe</maintainer>
   <license>BSD</license>
