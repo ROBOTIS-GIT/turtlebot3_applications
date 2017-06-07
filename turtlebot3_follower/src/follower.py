@@ -35,7 +35,6 @@ import rospy
 import pickle
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
-import pickle
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 
