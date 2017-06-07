@@ -1,6 +1,6 @@
 scan_filter_chain:
 
-- name: box
+- name: Remove over 0.35 meters on the right
   type: laser_filters/LaserScanBoxFilter
   params:
     box_frame: odom
@@ -11,7 +11,7 @@ scan_filter_chain:
     min_z: -0.1
     max_z: 0.1
 
-- name: box2
+- name: Remove over 0.35 meters on the left
   type: laser_filters/LaserScanBoxFilter
   params:
     box_frame: odom
@@ -22,19 +22,19 @@ scan_filter_chain:
     min_z: -0.1
     max_z: 0.1
 
-- name: angle
+- name: Remove 90 to 270 degree
   type: laser_filters/LaserScanAngularBoundsFilterInPlace
   params:
     lower_angle: 1.57
     upper_angle: 4.71
 
-- name: range
+- name: exist range 0.12 to 0.7 meter
   type: laser_filters/LaserScanRangeFilter
   params:
     lower_threshold: 0.12
     upper_threshold: 0.7
 
-- name: intensity
+- name: exist intensity 500 to 4000
   type: laser_filters/LaserScanIntensityFilter
   params:
     lower_threshold: 500

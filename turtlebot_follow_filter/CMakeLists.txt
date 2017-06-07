@@ -12,7 +12,6 @@ catkin_package(
 #  INCLUDE_DIRS include
   LIBRARIES follow_demo_filter
   CATKIN_DEPENDS roscpp std_msgs laser_filters
-#  DEPENDS system_lib
 )
 
 include_directories(
