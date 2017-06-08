@@ -1,12 +1,12 @@
 <launch>
-  <node pkg="turtlebot_follow_turtlebot" type="turtlebot_tf_broadcaster" name="turtlebotA_tf_broadcaster" output="screen">
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotA_tf_broadcaster" output="screen">
     <rosparam>
       turtlebot        : "turtlebotA"
       turtlebot_behind : "turtleA_behind"
     </rosparam>
   </node>
 
-  <node pkg="turtlebot_follow_turtlebot" type="turtlebot_tf_broadcaster" name="turtlebotB_tf_broadcaster" output="screen">
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotB_tf_broadcaster" output="screen">
     <rosparam>
         turtlebot        : "turtlebotB"
         turtlebot_behind : "turtleB_behind"
@@ -14,7 +14,7 @@
     </rosparam>
   </node>
 
-  <node pkg="turtlebot_follow_turtlebot" type="turtlebot_tf_broadcaster" name="turtlebotC_tf_broadcaster" output="screen">
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotC_tf_broadcaster" output="screen">
     <rosparam>
         turtlebot        : "turtlebotC"
         turtlebot_behind : "turtleC_behind"
@@ -22,7 +22,7 @@
     </rosparam>
   </node>
 
-  <node pkg="turtlebot_follow_turtlebot" type="turtlebot_tf_broadcaster" name="turtlebotD_tf_broadcaster" output="screen">
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotD_tf_broadcaster" output="screen">
     <rosparam>
         turtlebot        : "turtlebotD"
         turtlebot_behind : "turtleD_behind"
@@ -30,7 +30,7 @@
     </rosparam>
   </node>
 
-  <!-- <node pkg="turtlebot_follow_turtlebot" type="turtlebot_tf_broadcaster" name="turtlebotD_tf_broadcaster" output="screen">
+  <!-- <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotD_tf_broadcaster" output="screen">
     <rosparam>
         turtlebot        : "turtlebotE"
         turtlebot_behind : "turtleE_behind"
@@ -38,7 +38,7 @@
     </rosparam>
   </node> -->
 
-  <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotB_follow_turtlebotA" output="screen">
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_follow_turtlebot3" name="turtlebotB_follow_turtlebotA" output="screen">
     <rosparam>
         turtlebot               : "turtlebotB"
         target_turtlebot        : "turtlebotA"
@@ -48,7 +48,7 @@
     </rosparam>
   </node>
 
-  <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotC_follow_turtlebotB" output="screen">
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_follow_turtlebot3" name="turtlebotC_follow_turtlebotB" output="screen">
     <rosparam>
         turtlebot               : "turtlebotC"
         target_turtlebot        : "turtlebotB"
@@ -58,7 +58,7 @@
     </rosparam>
   </node>
 
-  <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotD_follow_turtlebotC" output="screen">
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_follow_turtlebot3" name="turtlebotD_follow_turtlebotC" output="screen">
     <rosparam>
         turtlebot               : "turtlebotD"
         target_turtlebot        : "turtlebotC"
@@ -68,7 +68,7 @@
     </rosparam>
   </node>
 
-   <!-- <node pkg="turtlebot_follow_turtlebot" type="turtlebot_follow_turtlebot" name="turtlebotD_follow_turtlebotC" output="screen">
+   <!-- <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_follow_turtlebot3" name="turtlebotD_follow_turtlebotC" output="screen">
     <rosparam>
         turtlebot               : "turtlebotE"
         target_turtlebot        : "turtlebotD"

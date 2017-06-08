@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(turtlebot_follow_filter)
+project(turtlebot3_follow_filter)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -10,7 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
 #  INCLUDE_DIRS include
-  LIBRARIES follow_demo_filter
+  LIBRARIES turtlebot3_follow_filter
   CATKIN_DEPENDS roscpp std_msgs laser_filters
 #  DEPENDS system_lib
 )

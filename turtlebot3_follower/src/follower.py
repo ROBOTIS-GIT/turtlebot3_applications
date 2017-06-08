@@ -3,7 +3,6 @@ import rospy
 import pickle
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
-import pickle
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 
@@ -11,7 +10,7 @@ import numpy as np
 class follower:
     def __init__(self):
         rospy.loginfo('Follower node initialized')
-        self.pub = rospy.Publisher('/turtlebotA/cmd_vel', Twist, queue_size = 1)
+        self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size = 1)
         self.clf = pickle.load( open( "clf", "rb"))
         self.clf2 = pickle.load( open( "clf2", "rb"))
         self.labels = {'30_0':0, '30_l':1, '30_r':2, '45_0':3, '45_l':4, '45_r':5,'15_0':6, 'empty':7}
@@ -23,7 +22,7 @@ class follower:
         laser_data_set=[]
         result=[]
         ret = 0
-        self.msg = rospy.wait_for_message("/turtlebotA/scan_filtered", LaserScan)
+        self.msg = rospy.wait_for_message("/scan_filtered", LaserScan)
 
         for i in range(70,-2,-1) + range(359, 289,-1):
 
@@ -49,10 +48,10 @@ class follower:
         return ret
 
 
-    def laser_scan(self):    ## estimate position
+    def laser_scan(self):
         data_test=[]
         data_test_set=[]
-        self.msg = rospy.wait_for_message("/turtlebotA/scan_filtered", LaserScan)
+        self.msg = rospy.wait_for_message("/scan_filtered", LaserScan)
 
         for i in range(70,-2,-1) + range(359, 289,-1):
 
@@ -67,7 +66,7 @@ class follower:
 
         data_test_set.append(data_test)
 
-        return [x for (x , y) in self.labels.iteritems() if y == self.clf.predict(data_test_set) ] ## Predict the position
+        return [x for (x , y) in self.labels.iteritems() if y == self.clf.predict(data_test_set) ] 
 
     def follow(self):
         while not rospy.is_shutdown():
