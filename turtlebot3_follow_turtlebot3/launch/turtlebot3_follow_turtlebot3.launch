@@ -1,0 +1,79 @@
+<launch>
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotA_tf_broadcaster" output="screen">
+    <rosparam>
+      turtlebot        : "turtlebotA"
+      turtlebot_behind : "turtleA_behind"
+    </rosparam>
+  </node>
+
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotB_tf_broadcaster" output="screen">
+    <rosparam>
+        turtlebot        : "turtlebotB"
+        turtlebot_behind : "turtleB_behind"
+        btw_dist         : -0.25
+    </rosparam>
+  </node>
+
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotC_tf_broadcaster" output="screen">
+    <rosparam>
+        turtlebot        : "turtlebotC"
+        turtlebot_behind : "turtleC_behind"
+        btw_dist         : -0.50
+    </rosparam>
+  </node>
+
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotD_tf_broadcaster" output="screen">
+    <rosparam>
+        turtlebot        : "turtlebotD"
+        turtlebot_behind : "turtleD_behind"
+        btw_dist         : -0.75
+    </rosparam>
+  </node>
+
+  <!-- <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_tf_broadcaster" name="turtlebotD_tf_broadcaster" output="screen">
+    <rosparam>
+        turtlebot        : "turtlebotE"
+        turtlebot_behind : "turtleE_behind"
+        btw_dist         : -1.0
+    </rosparam>
+  </node> -->
+
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_follow_turtlebot3" name="turtlebotB_follow_turtlebotA" output="screen">
+    <rosparam>
+        turtlebot               : "turtlebotB"
+        target_turtlebot        : "turtlebotA"
+        target_turtlebot_behind : "turtleA_behind"
+        lin_vel_weight          : 0.0
+        ang_vel_weight          : 0.0
+    </rosparam>
+  </node>
+
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_follow_turtlebot3" name="turtlebotC_follow_turtlebotB" output="screen">
+    <rosparam>
+        turtlebot               : "turtlebotC"
+        target_turtlebot        : "turtlebotB"
+        target_turtlebot_behind : "turtleB_behind"
+        lin_vel_weight          : 0.0
+        ang_vel_weight          : 0.0
+    </rosparam>
+  </node>
+
+  <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_follow_turtlebot3" name="turtlebotD_follow_turtlebotC" output="screen">
+    <rosparam>
+        turtlebot               : "turtlebotD"
+        target_turtlebot        : "turtlebotC"
+        target_turtlebot_behind : "turtleC_behind"
+        lin_vel_weight          : 0.0
+        ang_vel_weight          : 0.0
+    </rosparam>
+  </node>
+
+   <!-- <node pkg="turtlebot3_follow_turtlebot3" type="turtlebot3_follow_turtlebot3" name="turtlebotD_follow_turtlebotC" output="screen">
+    <rosparam>
+        turtlebot               : "turtlebotE"
+        target_turtlebot        : "turtlebotD"
+        target_turtlebot_behind : "turtleD_behind"
+    </rosparam>
+  </node> -->
+
+</launch>

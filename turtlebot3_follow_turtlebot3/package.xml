@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <name>turtlebot3_follow_turtlebot3</name>
+  <version>0.1.0</version>
+  <description>turtlebot3_follow_turtlebot3 package</description>
+  <maintainer email="rlaqhrud852@gmail.com">ashe</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>nav_msgs</run_depend>
+
+
+  <export>
+  </export>
+</package>
