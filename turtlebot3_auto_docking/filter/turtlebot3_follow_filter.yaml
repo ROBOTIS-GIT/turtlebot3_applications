@@ -1,0 +1,11 @@
+scan_filter_chain:
+
+- name: exist intensity 500 to 4000
+  type: laser_filters/LaserScanIntensityFilter
+  params:
+    lower_threshold: 10000
+    upper_threshold: .inf
+    disp_histogram: 0
+
+- name: interpolation
+  type: laser_filters/InterpolationFilter
