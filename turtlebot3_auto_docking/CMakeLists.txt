@@ -37,3 +37,7 @@ include_directories(
  add_executable(goal_position_broadcaster src/goal_position_broadcaster.cpp)
  add_dependencies(goal_position_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
  target_link_libraries(goal_position_broadcaster   ${catkin_LIBRARIES} )
+
+ add_executable(turtlebot3_auto_docking src/turtlebot3_auto_docking.cpp)
+ add_dependencies(turtlebot3_auto_docking ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ target_link_libraries(turtlebot3_auto_docking   ${catkin_LIBRARIES} )
