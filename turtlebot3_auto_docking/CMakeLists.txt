@@ -15,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
 ###################################
 
 catkin_package(
-  INCLUDE_DIRS include
+ # INCLUDE_DIRS include
   LIBRARIES turtlebot3_auto_docking
   CATKIN_DEPENDS roscpp std_msgs geometry_msgs sensor_msgs laser_filters laser_geometry
 #  DEPENDS system_lib

@@ -1,9 +1,9 @@
 <launch>
-<!-- <node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
+<node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
       <remap from="scan" to="/scan" />
       <rosparam command="load" file="$(find turtlebot3_auto_docking)/filter/turtlebot3_follow_filter.yaml" />
       <remap from="scan_filtered" to="/scan_filtered" />
-</node> -->
+</node>
 
 <node pkg="turtlebot3_auto_docking" type="get_goal_position" output="screen" name="get_goal_position">
 </node>

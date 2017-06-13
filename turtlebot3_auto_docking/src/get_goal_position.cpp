@@ -6,17 +6,19 @@
 
 ros::Publisher left_point_pub;
 ros::Publisher right_point_pub;
-//ros::Publisher check_cloud;
+ros::Publisher final_goal_point_pub;
+ros::Publisher check_cloud;
 ros::Subscriber laserscan_sub;
 
-void poseCallback(const sensor_msgs::LaserScan& scan)
+void poseCallback(const sensor_msgs::LaserScan& scan_filtered)
 {
    sensor_msgs::PointCloud cloud;
    geometry_msgs::Point32 left_point;
    geometry_msgs::Point32 right_point;
+   geometry_msgs::Point32 final_goal_point;
    laser_geometry::LaserProjection projector;
 
-   projector.projectLaser(scan, cloud);
+   projector.projectLaser(scan_filtered, cloud);
 
    // index = cloud.channels[1].values
    // indensity = cloud.channels[0].values
@@ -40,10 +42,15 @@ void poseCallback(const sensor_msgs::LaserScan& scan)
            }
        }
      }
+     
+   final_goal_point.x = (left_point.x + right_point.x)/2;
+   final_goal_point.y = (left_point.y + right_point.y)/2;
+   final_goal_point.z = 0.0;
 
-  // check_cloud.publish(cloud);
+   check_cloud.publish(cloud);
    left_point_pub.publish(left_point);
    right_point_pub.publish(right_point);
+   final_goal_point_pub.publish(final_goal_point);
 }
 
 int main(int argc, char** argv)
@@ -53,8 +60,9 @@ int main(int argc, char** argv)
 
   left_point_pub = node.advertise<geometry_msgs::Point32>("/left_point", 10);
   right_point_pub = node.advertise<geometry_msgs::Point32>("/right_point", 10);
-  //check_cloud =  node.advertise<sensor_msgs::PointCloud>("/check_cloud", 10);
-  laserscan_sub = node.subscribe( "/scan", 10, &poseCallback);
+  final_goal_point_pub = node.advertise<geometry_msgs::Point32>("/final_goal_point", 10);
+  check_cloud =  node.advertise<sensor_msgs::PointCloud>("/check_cloud", 10);
+  laserscan_sub = node.subscribe( "/scan_filtered", 10, &poseCallback);
 
   ros::spin();
   return 0;
