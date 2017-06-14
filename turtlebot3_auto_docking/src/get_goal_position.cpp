@@ -10,14 +10,19 @@ ros::Publisher final_goal_point_pub;
 ros::Publisher check_cloud;
 ros::Subscriber laserscan_sub;
 
+sensor_msgs::PointCloud cloud;
+geometry_msgs::Point32 left_point;
+geometry_msgs::Point32 right_point;
+geometry_msgs::Point32 final_goal_point;
+laser_geometry::LaserProjection projector;
+int count = 0;
+float left_array[3] = {0, 0, 0};
+float right_array[3] = {0, 0, 0};
+
 void poseCallback(const sensor_msgs::LaserScan& scan_filtered)
 {
-   sensor_msgs::PointCloud cloud;
-   geometry_msgs::Point32 left_point;
-   geometry_msgs::Point32 right_point;
-   geometry_msgs::Point32 final_goal_point;
-   laser_geometry::LaserProjection projector;
-
+  if(count == 0)
+  {
    projector.projectLaser(scan_filtered, cloud);
 
    // index = cloud.channels[1].values
@@ -35,14 +40,23 @@ void poseCallback(const sensor_msgs::LaserScan& scan_filtered)
          if((cloud.channels[0].values[index] - cloud.channels[0].values[next_index]) < -7000 && cloud.channels[0].values[index] > 10000 )
            {
              left_point = cloud.points[index];
+             left_array[0] = left_point.x;
+             left_array[1] = left_point.y;
+             left_array[2] = left_point.z;
            }
          else if((cloud.channels[0].values[next_index] - cloud.channels[0].values[index]) < -7000 && cloud.channels[0].values[index] > 10000 )
            {
              right_point = cloud.points[index];
+             right_array[0] = right_point.x;
+             right_array[1] = right_point.y;
+             right_array[2] = right_point.z;
            }
        }
      }
-     
+      count = 1;
+   }
+   ROS_INFO("left_array %f, right_array %f ", left_array[0], right_array[0]);
+
    final_goal_point.x = (left_point.x + right_point.x)/2;
    final_goal_point.y = (left_point.y + right_point.y)/2;
    final_goal_point.z = 0.0;
@@ -51,6 +65,8 @@ void poseCallback(const sensor_msgs::LaserScan& scan_filtered)
    left_point_pub.publish(left_point);
    right_point_pub.publish(right_point);
    final_goal_point_pub.publish(final_goal_point);
+   ROS_INFO("goal_x %f, goal_y %f ", final_goal_point.x, final_goal_point.y);
+
 }
 
 int main(int argc, char** argv)
