@@ -20,13 +20,13 @@ int main(int argc, char** argv)
   tf::StampedTransform transform;
   tf::Quaternion q;
 
-  ros::Rate rate(125);
+  ros::Rate rate(1000);
 
   while (node.ok())
   {
     try
     {
-      listener.lookupTransform("base_footprint", "goal_point", ros::Time(0), transform);
+      listener.lookupTransform("odom", "test", ros::Time(0), transform);
     }
     catch (tf::TransformException &ex)
     {

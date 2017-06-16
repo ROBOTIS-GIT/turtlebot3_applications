@@ -20,6 +20,12 @@ void final_goal_point_Callback(const geometry_msgs::Point32::ConstPtr& final_goa
   quaternion.setRPY(0, 0, goal_theta);
   transform.setRotation(quaternion);
   broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time(0), "odom", "final_goal_point"));
+
+  transform.setOrigin( tf::Vector3(0.2 , 0.2 , 0.0) );
+  quaternion.setRPY(0, 0, 1);
+  transform.setRotation(quaternion);
+  broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time(0), "odom", "test2"));
+
   ROS_INFO("goal_x %f, goal_y %f ", goal_x, goal_y);
 }
 
@@ -29,8 +35,6 @@ int main(int argc, char** argv)
   ros::NodeHandle node;
 
   final_goal_point_sub = node.subscribe<geometry_msgs::Point32>( "/final_goal_point", 10, &final_goal_point_Callback);
-  //ROS_INFO("goal_x %f, goal_y %f ", goal_x, goal_y);
-
   ros::spin();
   return 0;
 }
