@@ -26,7 +26,7 @@ int main(int argc, char** argv)
   {
     try
     {
-      listener.lookupTransform("odom", "test", ros::Time(0), transform);
+      listener.lookupTransform("odom", "final_goal_point", ros::Time(0), transform);
     }
     catch (tf::TransformException &ex)
     {

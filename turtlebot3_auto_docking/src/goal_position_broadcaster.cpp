@@ -27,17 +27,12 @@ int main(int argc, char** argv)
   final_goal_point_sub = node.subscribe<geometry_msgs::Point32>( "/final_goal_point", 10, &final_goal_point_Callback);
 
   ros::Rate rate(125.0);
-  while (node.ok()){
-
+  while (node.ok())
+  {
     transform.setOrigin( tf::Vector3(goal_x , goal_y , 0.0) );
     quaternion.setRPY(0, 0, goal_theta);
     transform.setRotation(quaternion);
-    broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link", "final_goal_point"));
-
-    transform.setOrigin( tf::Vector3(0.2 , 0.2 , 0.0) );
-    quaternion.setRPY(0, 0, 1);
-    transform.setRotation(quaternion);
-    broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link", "test2"));
+    broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "final_goal_point"));
 
     ros::spinOnce();
     rate.sleep();
@@ -45,23 +40,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-
-//#include <ros/ros.h>
-//#include <tf/transform_broadcaster.h>
-
-//int main(int argc, char** argv){
-//  ros::init(argc, argv, "my_tf_broadcaster");
-//  ros::NodeHandle node;
-
-//  tf::TransformBroadcaster br;
-//  tf::Transform transform;
-
-//  ros::Rate rate(10.0);
-//  while (node.ok()){
-//    transform.setOrigin( tf::Vector3(0.0, 2.0, 0.0) );
-//    transform.setRotation( tf::Quaternion(0, 0, 0, 1) );
-//    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "turtle1", "carrot1"));
-//    rate.sleep();
-//  }
-//  return 0;
-//}
