@@ -40,3 +40,4 @@ int main(int argc, char** argv)
 
   return 0;
 }
+//goal_x - 0.25 * cos(goal_theta), goal_y - 0.25 * sin(goal_theta), 0.0

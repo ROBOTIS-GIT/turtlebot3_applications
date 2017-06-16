@@ -21,12 +21,14 @@ laser_geometry::LaserProjection projector;
 int count = 0;
 void poseCallback(const sensor_msgs::LaserScan &scan_filtered)
 {
- if(count == 0)
+ if(count<10)
  {
    projector.projectLaser(scan_filtered, cloud);
+   ROS_INFO("%d", count);
 
-   // index = cloud.channels[1].values
-   // indensity = cloud.channels[0].values
+
+  //  index = cloud.channels[1].values
+  //  indensity = cloud.channels[0].values
    for(int i=0; i<300; i++)
      {
        float index = 0;
@@ -37,18 +39,18 @@ void poseCallback(const sensor_msgs::LaserScan &scan_filtered)
          index = cloud.channels[1].values[i];
          next_index = cloud.channels[1].values[i+1];
 
-         if((cloud.channels[0].values[index] - cloud.channels[0].values[next_index]) < -7000 && cloud.channels[0].values[index] > 10000 )
+         if(cloud.channels[0].values[index] > 10000 )
            {
              left_point = cloud.points[index];
            }
-         else if((cloud.channels[0].values[next_index] - cloud.channels[0].values[index]) < -7000 && cloud.channels[0].values[index] > 10000 )
+         else if( cloud.channels[0].values[index] > 10000 )
            {
              right_point = cloud.points[index];
            }
        }
      }
-      count = 1;
-  }
+     count ++;
+   }
    final_goal_point.x = (left_point.x + right_point.x)/2;
    final_goal_point.y = (left_point.y + right_point.y)/2;
    final_goal_point.z = 0.0;

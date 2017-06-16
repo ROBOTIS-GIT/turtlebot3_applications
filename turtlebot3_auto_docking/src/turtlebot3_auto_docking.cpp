@@ -3,6 +3,9 @@
 #include <geometry_msgs/Twist.h>
 #include <math.h>
 
+#define DEG2RAD(x)                       (x * 0.01745329252)  // *PI/180
+#define RAD2DEG(x)                       (x * 57.2957795131)  // *180/PI
+
 double x, y;
 double dist, theta;
 
@@ -40,6 +43,14 @@ int main(int argc, char** argv)
 
     theta =  atan2(y,x);
     dist  =  sqrt(pow(x, 2) + pow(y, 2));
+
+    if(dist < 0.05)
+    {
+      vel_msg.angular.z = theta;
+      vel_msg.linear.x  = 0.0;
+    }
+
+    else if(theta < DEG2RAD(2) && theta > DEG2RAD(-2))
 
     vel_msg.angular.z = theta;
     vel_msg.linear.x  = dist;
