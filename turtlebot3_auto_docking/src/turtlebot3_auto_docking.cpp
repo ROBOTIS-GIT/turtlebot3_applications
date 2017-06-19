@@ -8,6 +8,7 @@
 
 double x, y;
 double dist, theta;
+int robot_state = 1;
 
 ros::Publisher cmd_vel_pub;
 
@@ -29,7 +30,7 @@ int main(int argc, char** argv)
   {
     try
     {
-      listener.lookupTransform("odom", "final_goal_point", ros::Time(0), transform);
+      listener.lookupTransform("base_footprint", "final_goal_point", ros::Time(0), transform);
     }
     catch (tf::TransformException &ex)
     {
@@ -44,17 +45,55 @@ int main(int argc, char** argv)
     theta =  atan2(y,x);
     dist  =  sqrt(pow(x, 2) + pow(y, 2));
 
-    if(dist < 0.05)
-    {
-      vel_msg.angular.z = theta;
-      vel_msg.linear.x  = 0.0;
-    }
-
-    else if(theta < DEG2RAD(2) && theta > DEG2RAD(-2))
+    // switch(robot_state)
+    // {
+    // case 1:
+    //   if(dist > 0.05)
+    //   {
+    //     vel_msg.angular.z = theta;
+    //     vel_msg.linear.x  = dist;
+    //     robot_state = 2;
+    //   }
+    //   else
+    //   {
+    //     if (dist <=0.05)
+    //     {
+    //       robot_state = 2;
+    //     }
+    //   }
+    //   break;
+    //
+    // case 2:
+    //   if (theta > DEG2RAD(3) && theta < DEG2RAD(-3))
+    //   {
+    //     vel_msg.angular.z = theta;
+    //     vel_msg.linear.x  = 0.0;
+    //     robot_state = 3;
+    //   }
+    //   else
+    //     robot_state = 3;
+    //
+    // case 3:
+    //   vel_msg.angular.z = 0.0;
+    //   vel_msg.linear.x  = 0.0;
+    //
+    //   robot_state = 0;
+    //   break;
+    //
+    // default:
+    //   robot_state = 0;
+    //   break;
+    // }
 
     vel_msg.angular.z = theta;
     vel_msg.linear.x  = dist;
 
+    if(dist < 0.05)
+    {
+      vel_msg.angular.z = 0.0;
+      vel_msg.linear.x  = 0.0;
+    }
+    ROS_INFO("vel = %f, ang = %f", vel_msg.linear.x ,vel_msg.angular.z);
     cmd_vel_pub.publish(vel_msg);
     rate.sleep();
   }

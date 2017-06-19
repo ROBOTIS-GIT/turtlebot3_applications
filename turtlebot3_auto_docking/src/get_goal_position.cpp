@@ -5,28 +5,30 @@
 #include <sensor_msgs/PointCloud.h>
 #include <geometry_msgs/Point32.h>
 #include <geometry_msgs/TransformStamped.h>
+#include <geometry_msgs/Twist.h>
 
 ros::Publisher left_point_pub;
 ros::Publisher right_point_pub;
 ros::Publisher final_goal_point_pub;
 ros::Publisher check_cloud;
+ros::Publisher cmd_vel_pub;
 ros::Subscriber laserscan_sub;
 
 sensor_msgs::PointCloud cloud;
 geometry_msgs::Point32 left_point;
 geometry_msgs::Point32 right_point;
 geometry_msgs::Point32 final_goal_point;
+geometry_msgs::Twist vel_msg;
 laser_geometry::LaserProjection projector;
 
+
 int count = 0;
+
 void poseCallback(const sensor_msgs::LaserScan &scan_filtered)
 {
- if(count<10)
+ if(count == 0)
  {
    projector.projectLaser(scan_filtered, cloud);
-   ROS_INFO("%d", count);
-
-
   //  index = cloud.channels[1].values
   //  indensity = cloud.channels[0].values
    for(int i=0; i<300; i++)
@@ -39,17 +41,17 @@ void poseCallback(const sensor_msgs::LaserScan &scan_filtered)
          index = cloud.channels[1].values[i];
          next_index = cloud.channels[1].values[i+1];
 
-         if(cloud.channels[0].values[index] > 10000 )
+         if(cloud.channels[0].values[index] - cloud.channels[0].values[next_index] < -3000 )
            {
              left_point = cloud.points[index];
            }
-         else if( cloud.channels[0].values[index] > 10000 )
+         else if( cloud.channels[0].values[index] - cloud.channels[0].values[next_index] > 3000 )
            {
              right_point = cloud.points[index];
            }
        }
      }
-     count ++;
+     count = 1;
    }
    final_goal_point.x = (left_point.x + right_point.x)/2;
    final_goal_point.y = (left_point.y + right_point.y)/2;
@@ -72,6 +74,7 @@ int main(int argc, char** argv)
   right_point_pub = node.advertise<geometry_msgs::Point32>("/right_point", 10);
   final_goal_point_pub = node.advertise<geometry_msgs::Point32>("/final_goal_point", 10);
   check_cloud =  node.advertise<sensor_msgs::PointCloud>("/check_cloud", 10);
+  cmd_vel_pub = node.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
 
   laserscan_sub = node.subscribe("/scan_filtered", 10, &poseCallback);
 

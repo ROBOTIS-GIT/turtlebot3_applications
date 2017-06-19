@@ -42,3 +42,7 @@ include_directories(
  add_executable(turtlebot3_auto_docking src/turtlebot3_auto_docking.cpp)
  add_dependencies(turtlebot3_auto_docking ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
  target_link_libraries(turtlebot3_auto_docking   ${catkin_LIBRARIES} )
+
+ add_executable(searching_docking_station src/searching_docking_station.cpp)
+ add_dependencies(searching_docking_station ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ target_link_libraries(searching_docking_station   ${catkin_LIBRARIES} )
