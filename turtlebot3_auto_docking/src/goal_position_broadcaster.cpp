@@ -32,12 +32,12 @@ int main(int argc, char** argv)
     transform.setOrigin( tf::Vector3(goal_x - 0.05 * cos(goal_theta), goal_y - 0.05 * sin(goal_theta), 0.0) );
     quaternion.setRPY(0, 0, goal_theta);
     transform.setRotation(quaternion);
-    broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_scan", "final_goal_point"));
+    broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "final_goal_point"));
 
     transform.setOrigin( tf::Vector3(goal_x, goal_y, 0.0) );
     quaternion.setRPY(0, 0, goal_theta);
     transform.setRotation(quaternion);
-    broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_scan", "original_goal_point"));
+    broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "original_goal_point"));
 
     ros::spinOnce();
     rate.sleep();
