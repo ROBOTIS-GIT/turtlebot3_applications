@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   geometry_msgs
   sensor_msgs
+  nav_msgs
   laser_filters
   laser_geometry
 )
@@ -18,7 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
  # INCLUDE_DIRS include
   LIBRARIES turtlebot3_auto_docking
-  CATKIN_DEPENDS roscpp std_msgs geometry_msgs sensor_msgs laser_filters laser_geometry tf
+  CATKIN_DEPENDS roscpp std_msgs geometry_msgs sensor_msgs nav_msgs laser_filters laser_geometry tf
 #  DEPENDS system_lib
 )
 

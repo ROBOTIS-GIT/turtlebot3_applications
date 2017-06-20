@@ -8,7 +8,7 @@
 
 double x, y;
 double dist, theta;
-int robot_state = 1;
+//int robot_state = 1;
 
 ros::Publisher cmd_vel_pub;
 
@@ -24,13 +24,13 @@ int main(int argc, char** argv)
   tf::StampedTransform transform;
   tf::Quaternion q;
 
-  ros::Rate rate(1000);
+  ros::Rate rate(125);
 
   while (node.ok())
   {
     try
     {
-      listener.lookupTransform("base_footprint", "final_goal_point", ros::Time(0), transform);
+      listener.lookupTransform("base_scan", "final_goal_point", ros::Time(0), transform);
     }
     catch (tf::TransformException &ex)
     {
