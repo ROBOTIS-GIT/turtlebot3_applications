@@ -3,8 +3,9 @@
 #include <geometry_msgs/Point32.h>
 #include <math.h>
 
-ros::Subscriber final_goal_point_sub;
 float goal_x = 0.0, goal_y = 0.0, goal_theta = 0.0;
+
+ros::Subscriber final_goal_point_sub;
 
 void final_goal_point_Callback(const geometry_msgs::Point32::ConstPtr& final_goal_point)
 {
@@ -34,14 +35,13 @@ int main(int argc, char** argv)
     transform.setRotation(quaternion);
     broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "final_goal_point"));
 
-    transform.setOrigin( tf::Vector3(goal_x, goal_y, 0.0) );
-    quaternion.setRPY(0, 0, goal_theta);
-    transform.setRotation(quaternion);
-    broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "original_goal_point"));
+    // transform.setOrigin( tf::Vector3(goal_x, goal_y, 0.0) );
+    // quaternion.setRPY(0, 0, goal_theta);
+    // transform.setRotation(quaternion);
+    // broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "original_goal_point"));
 
     ros::spinOnce();
     rate.sleep();
   }
-
   return 0;
 }

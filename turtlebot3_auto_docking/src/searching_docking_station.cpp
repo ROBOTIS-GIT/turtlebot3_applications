@@ -1,15 +1,17 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
-#include <sensor_msgs/LaserScan.h>
 #include <std_msgs/Int8.h>
+#include <sensor_msgs/LaserScan.h>
 
-ros::Publisher cmd_vel_pub;
+#define SEARCH 0
+#define STOP   1
+
+ros::Publisher searching_dock_vel_pub;
 ros::Publisher robot_state_pub;
 ros::Subscriber scan_filtered_sub;
 
-geometry_msgs::Twist vel_msg;
-sensor_msgs::LaserScan second_filtered;
-std_msgs::Int8 robot_state;
+geometry_msgs::Twist searching_dock_vel_msg;
+std_msgs::Int8 state;
 
 float intensities_array[360] = {0};
 float ranges_array[360] = {0};
@@ -18,32 +20,26 @@ bool catch_docking_station(void);
 
 bool catch_docking_station()
 {
-  vel_msg.angular.z = 0.1;
-  vel_msg.linear.x  = 0.02;
-
-  if(robot_state.data == 1)
+  if(state.data = SEARCH)
   {
-    vel_msg.angular.z = 0.0;
-    vel_msg.linear.x = 0.0;
+    searching_dock_vel_msg.angular.z = 0.1;
+    searching_dock_vel_msg.linear.x  = 0.02;
+  }
+  else if(state.data == STOP)
+  {
+    searching_dock_vel_msg.angular.z = 0.0;
+    searching_dock_vel_msg.linear.x = 0.0;
   }
 }
 
 void scan_filter_callback(const sensor_msgs::LaserScan::ConstPtr &scan_filtered)
 {
-  float first = 0;
-  float second = 0;
-  float third = 0;
-
   for (int i = 0; i<360; i++)
   {
     intensities_array[i] = scan_filtered->intensities[i];
     ranges_array[i] = scan_filtered->ranges[i];
 
-    first = scan_filtered->intensities[i];
-    second = scan_filtered->intensities[i+1];
-    third = scan_filtered->intensities[i+2];
-
-    if(first == 0 && third == 0)
+    if(intensities_array[i] == 0 && intensities_array[i+2] == 0)
     {
       intensities_array[i+1] = 0;
       i++;
@@ -51,27 +47,29 @@ void scan_filter_callback(const sensor_msgs::LaserScan::ConstPtr &scan_filtered)
 
     if(intensities_array[i] * ranges_array[i] !=0 && intensities_array[i+1] * ranges_array[i+1] !=0)
     {
-      robot_state.data = 1;
+      state.data = STOP;
     }
+    else
+      state.data = SEARCH;
+      
     ROS_INFO("intensities = %f, ranges = %f", intensities_array[i], ranges_array[i]);
   }
 }
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "get_goal_position");
+  ros::init(argc, argv, "searching_docking_station");
   ros::NodeHandle node;
 
-  cmd_vel_pub = node.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
+  searching_dock_vel_pub = node.advertise<geometry_msgs::Twist>("/searching_docking_station", 10);
   robot_state_pub = node.advertise<std_msgs::Int8>("/robot_state", 10);
   scan_filtered_sub = node.subscribe<sensor_msgs::LaserScan>("/scan_filtered", 10, &scan_filter_callback);
 
   ros::Rate rate(125);
   while (node.ok())
   {
-    catch_docking_station();
-    cmd_vel_pub.publish(vel_msg);
-    robot_state_pub.publish(robot_state);
+    searching_dock_vel_pub.publish(searching_dock_vel_msg);
+    robot_state_pub.publish(state);
 
     ros::spinOnce();
     rate.sleep();

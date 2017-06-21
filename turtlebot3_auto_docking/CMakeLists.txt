@@ -1,6 +1,12 @@
+###########
+## CMake ##
+###########
 cmake_minimum_required(VERSION 2.8.3)
 project(turtlebot3_auto_docking)
 
+##############
+## Packages ##
+##############
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
@@ -15,7 +21,6 @@ find_package(catkin REQUIRED COMPONENTS
 ###################################
 ## catkin specific configuration ##
 ###################################
-
 catkin_package(
  # INCLUDE_DIRS include
   LIBRARIES turtlebot3_auto_docking
@@ -26,7 +31,6 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
