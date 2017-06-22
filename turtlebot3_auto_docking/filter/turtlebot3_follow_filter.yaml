@@ -1,9 +1,9 @@
 scan_filter_chain:
 
-- name: exist intensity 500 to 4000
+- name: exist intensity 3000 to infinite
   type: laser_filters/LaserScanIntensityFilter
   params:
-    lower_threshold: 2000
+    lower_threshold: 3000
     upper_threshold: .inf
     disp_histogram: 0
 
