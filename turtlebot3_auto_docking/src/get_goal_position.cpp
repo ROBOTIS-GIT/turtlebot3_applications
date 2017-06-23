@@ -10,7 +10,7 @@
 #include <nav_msgs/Odometry.h>
 
 #define SEARCH      0
-#define MOVE_GOAL   1
+#define GET_GOAL    1
 #define FIND        1
 
 ros::Publisher  goal_poisition_pub;
@@ -20,11 +20,11 @@ ros::Subscriber searching_dock_state_sub;
 ros::Subscriber turtlebot_position_sub;
 
 sensor_msgs::PointCloud cloud;
+nav_msgs::Odometry odom;
 geometry_msgs::Point32 turtlebot_point;
 geometry_msgs::Point32 final_goal_point;
 std_msgs::Int8 searching_dock_state_msg;
 std_msgs::Int8 get_goal_state_msg;
-nav_msgs::Odometry odom;
 laser_geometry::LaserProjection projector;
 
 float point_x_sum       = 0.0;
@@ -61,8 +61,8 @@ void get_goal_position()
 {
   if(searching_dock_state_msg.data == FIND)
   {
-    // if(count == 0)
-    //  {
+    if(count == 0)
+     {
       for(int i=0; i<360; i++)
       {
          if(cloud.channels[1].values[i] != 0.0)
@@ -92,14 +92,14 @@ void get_goal_position()
 
     ROS_INFO("goal_x %f, goal_y %f ", final_goal_point.x, final_goal_point.y);
     ROS_INFO("average_intensity %f", average_intensity);
+  }
+    count = 1;
+    get_goal_state_msg.data = GET_GOAL;
+  }
+  // else if(searching_dock_state_msg.data == SEARCH)
+  // {
+  //   get_goal_state_msg.data = SEARCH;
   // }
-  //   count = 1;
-    get_goal_state_msg.data = MOVE_GOAL;
-  }
-  else if(searching_dock_state_msg.data == SEARCH)
-  {
-    get_goal_state_msg.data = SEARCH;
-  }
   goal_poisition_pub.publish(final_goal_point);
   get_goal_state_pub.publish(get_goal_state_msg);
 }

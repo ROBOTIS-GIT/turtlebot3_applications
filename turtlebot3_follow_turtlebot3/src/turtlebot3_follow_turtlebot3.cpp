@@ -136,11 +136,6 @@ int main(int argc, char** argv)
       robot_state = WAIT;
       break;
     }
-
-//    ROS_INFO("dist_ = %f, theta_ = %f", dist_, theta_);
-//    ROS_INFO("dist = %f, theta = %f", dist, DEG2RAD(theta));
-//    ROS_INFO("robot_state: %d", robot_state);
-
     turtle_vel.publish(vel_msg);
     rate.sleep();
   }
@@ -170,7 +165,6 @@ bool dist_of_btw_behind_and_tb3(double target_dist)
 
     ret = true;
   }
-
   return ret;
 }
 
