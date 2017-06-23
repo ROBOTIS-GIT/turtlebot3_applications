@@ -62,7 +62,7 @@ void go_goal_position()
       vel_msg.angular.z = theta;
       vel_msg.linear.x  = dist;
 
-      if(dist > 0.05)
+      if(dist < 0.05)
       {
         vel_msg.angular.z = 0.0;
         vel_msg.linear.x  = 0.0;

@@ -45,12 +45,14 @@ void scan_filter_Callback(const sensor_msgs::LaserScan::ConstPtr &scan_filtered)
       intensities_array[i+1] = 0;
       i++;
     }
-    if(intensities_array[i] * isnan(ranges_array[i]) != 0.0 && intensities_array[i+1] * isnan(ranges_array[i+1]) != 0.0)
+    if( (intensities_array[i] * isnan(ranges_array[i])) > 0.0 && (intensities_array[i+1] * isnan(ranges_array[i+1])) > 0.0 && (intensities_array[i+2] * isnan(ranges_array[i+2])) > 0.0 )
     {
       searching_dock_state_msg.data = FIND;
+      ROS_INFO("a");
     }
     else
       searching_dock_state_msg.data = SEARCH;
+      ROS_INFO("b");
   }
   catch_docking_station(searching_dock_state_msg.data);
 
