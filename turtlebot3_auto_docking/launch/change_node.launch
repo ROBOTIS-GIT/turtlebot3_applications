@@ -1,0 +1,4 @@
+<launch>
+<node pkg="turtlebot3_auto_docking" type="change_node" output="screen" name="change_node_turtlebot3_auto_docking">
+</node>
+</launch>

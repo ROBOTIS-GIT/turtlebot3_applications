@@ -16,7 +16,16 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   laser_filters
   laser_geometry
+  message_generation
 )
+
+################################################
+## Declare ROS messages, services and actions ##
+################################################
+
+add_service_files(FILES ChangeNode.srv)
+
+generate_messages( DEPENDENCIES std_msgs)
 
 ###################################
 ## catkin specific configuration ##
@@ -24,8 +33,8 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
  # INCLUDE_DIRS include
   LIBRARIES turtlebot3_auto_docking
-  CATKIN_DEPENDS roscpp std_msgs geometry_msgs sensor_msgs nav_msgs laser_filters laser_geometry tf
-#  DEPENDS system_lib
+  CATKIN_DEPENDS roscpp std_msgs geometry_msgs sensor_msgs nav_msgs laser_filters laser_geometry tf message_runtime
+ # DEPENDS system_lib
 )
 
 ###########
@@ -51,3 +60,7 @@ include_directories(
  add_executable(searching_docking_station src/searching_docking_station.cpp)
  add_dependencies(searching_docking_station ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
  target_link_libraries(searching_docking_station   ${catkin_LIBRARIES} )
+
+ add_executable(change_node src/change_node.cpp)
+ add_dependencies(change_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ target_link_libraries(change_node   ${catkin_LIBRARIES} )

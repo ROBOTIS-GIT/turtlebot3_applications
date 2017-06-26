@@ -1,4 +1,5 @@
 #include <ros/ros.h>
+#include "turtlebot3_auto_docking/ChangeNode.h"
 #include <tf/transform_broadcaster.h>
 #include <geometry_msgs/Point32.h>
 #include <std_msgs/Int8.h>
@@ -6,11 +7,13 @@
 
 #define GET_GOAL        1
 
-ros::Subscriber goal_position_sub;
-ros::Subscriber get_goal_state_sub;
-ros::Publisher  move_goal_state_pub;
+ros::Subscriber    goal_position_sub;
+ros::Subscriber    get_goal_state_sub;
+ros::Publisher     move_goal_state_pub;
+ros::ServiceClient change_node_srv;
 
-std_msgs::Int8 move_goal_state_msg;
+turtlebot3_auto_docking::ChangeNode change_node;
+std_msgs::Int8                      move_goal_state_msg;
 
 float goal_position_x = 0.0, goal_position_y = 0.0, goal_position_theta = 0.0;
 
@@ -31,11 +34,22 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "goal_position_broadcaster");
   ros::NodeHandle node;
 
-  goal_position_sub   = node.subscribe<geometry_msgs::Point32>( "/goal_poisition", 10, &goal_position_Callback);
-  get_goal_state_sub  = node.subscribe<std_msgs::Int8>("/get_goal_state", 10, &get_goal_state_Callback);
   move_goal_state_pub = node.advertise<std_msgs::Int8>("/move_goal_state", 10);
+  change_node_srv     = node.serviceClient<turtlebot3_auto_docking::ChangeNode>("change_node");
+  goal_position_sub   = node.subscribe( "/goal_poisition", 10, &goal_position_Callback);
+  get_goal_state_sub  = node.subscribe("/get_goal_state", 10, &get_goal_state_Callback);
 
-  ros::Rate rate(125);
+  if (change_node_srv.call(change_node))
+  {
+    ROS_INFO("Sum: %ld", (long int)change_node.response.change_node);
+  }
+  else
+  {
+    ROS_ERROR("Failed to call service add_two_ints");
+    return 1;
+  }
+
+  ros::Rate rate(100);
   while (node.ok())
   {
     tf::TransformBroadcaster broadcaster;
@@ -44,7 +58,7 @@ int main(int argc, char** argv)
 
     if(move_goal_state_msg.data == GET_GOAL)
     {
-      transform.setOrigin( tf::Vector3(goal_position_x - 0.05 * cos(goal_position_theta), goal_position_y - 0.05 * sin(goal_position_theta), 0.0) );
+      transform.setOrigin( tf::Vector3(goal_position_x - 0.1 * cos(goal_position_theta), goal_position_y - 0.1 * sin(goal_position_theta), 0.0) );
       quaternion.setRPY(0, 0, goal_position_theta);
       transform.setRotation(quaternion);
       broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "goal_poisition"));
