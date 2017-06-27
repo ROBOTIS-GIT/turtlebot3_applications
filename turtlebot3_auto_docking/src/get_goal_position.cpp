@@ -81,8 +81,8 @@ void scan_point_Callback(const sensor_msgs::LaserScan &scan_filtered)
           point_y_sum += cloud.points[i].y;
         }
       }
-      final_goal_point.x = turtlebot_point.x + (point_x_sum / (4 * k));
-      final_goal_point.y = turtlebot_point.y + (point_y_sum / (4 * k));
+      final_goal_point.x = turtlebot_point.x + (point_x_sum / (2 * k));
+      final_goal_point.y = turtlebot_point.y + (point_y_sum / (2 * k));
 
       ROS_INFO("goal_x %f, goal_y %f ", final_goal_point.x, final_goal_point.y);
       ROS_INFO("average_intensity %f", average_intensity);
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
   goal_poisition_pub       = node.advertise<geometry_msgs::Point32>("/goal_poisition", 10);
   get_goal_state_pub       = node.advertise<std_msgs::Int8>("/get_goal_state", 10);
   searching_dock_state_sub = node.subscribe("/searching_dock_state", 10, &searching_dock_state_Callback);
-  turtlebot_position_sub = node.subscribe("/odom", 10, &odom_Callback);
+  turtlebot_position_sub   = node.subscribe("/odom", 10, &odom_Callback);
   scan_filtered_sub        = node.subscribe("/scan_filtered", 10, &scan_point_Callback);
 
   ros::spin();
