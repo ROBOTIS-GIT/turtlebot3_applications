@@ -1,5 +1,4 @@
 #include <ros/ros.h>
-#include "turtlebot3_auto_docking/ChangeNode.h"
 #include <tf/transform_listener.h>
 #include <geometry_msgs/Twist.h>
 #include <std_msgs/Int8.h>
@@ -16,9 +15,7 @@ ros::Publisher     finish_goal_state_pub;
 ros::Publisher     searching_dock_vel_pub;
 ros::Subscriber    searching_dock_vel_sub;
 ros::Subscriber    move_goal_state_sub;
-ros::ServiceClient change_node_srv;
 
-turtlebot3_auto_docking::ChangeNode change_node;
 geometry_msgs::Twist                vel_msg;
 geometry_msgs::Twist                searching_dock_vel_msg;
 std_msgs::Int8                      move_goal_state_msg;
@@ -71,9 +68,9 @@ void go_goal_position()
     switch (robot_state)
     {
       case 1:
-        if(theta > DEG2RAD(5) || theta < DEG2RAD(-5))
+        if(theta > DEG2RAD(3) || theta < DEG2RAD(-3))
         {
-          vel_msg.angular.z = 0.1;
+          vel_msg.angular.z = 0.2;
           vel_msg.linear.x  = 0.0;
         }
         else
@@ -83,7 +80,7 @@ void go_goal_position()
       break;
 
       case 2:
-        if(dist > 0.03)
+        if(dist > 0.05)
         {
           vel_msg.angular.z = 0.0;
           vel_msg.linear.x  = 0.05;
@@ -98,12 +95,12 @@ void go_goal_position()
     }
     cmd_vel_pub.publish(vel_msg);
     finish_goal_state_pub.publish(finish_goal_state_msg);
-  //  ROS_INFO("vel_msg = %f, ang_msg = %f", vel_msg.linear.x ,vel_msg.angular.z);
+    ROS_INFO("vel_msg = %f, ang_msg = %f", vel_msg.linear.x ,vel_msg.angular.z);
   }
   else
   {
     searching_dock_vel_pub.publish(searching_dock_vel_msg);
-  //  ROS_INFO("searching_dock_vel = %f, searching_dock_ang = %f", searching_dock_vel_msg.linear.x ,searching_dock_vel_msg.angular.z);
+    ROS_INFO("searching_dock_vel = %f, searching_dock_ang = %f", searching_dock_vel_msg.linear.x ,searching_dock_vel_msg.angular.z);
   }
 }
 
@@ -115,21 +112,10 @@ int main(int argc, char** argv)
   cmd_vel_pub            = node.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
   finish_goal_state_pub  = node.advertise<std_msgs::Int8>("finish_goal_state", 10);
   searching_dock_vel_pub = node.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
-  change_node_srv        = node.serviceClient<turtlebot3_auto_docking::ChangeNode>("change_node");
   searching_dock_vel_sub = node.subscribe("/searching_dock_vel", 10, &cmd_vel_Callback);
   move_goal_state_sub    = node.subscribe("/move_goal_state", 10, &move_goal_state_Callback);
 
-  if (change_node_srv.call(change_node))
-  {
-    ROS_INFO("Sum: %ld", (long int)change_node.response.change_node);
-  }
-  else
-  {
-    ROS_ERROR("Failed to call service add_two_ints");
-    return 1;
-  }
-
-  ros::Rate rate(100);
+  ros::Rate rate(125);
   while(node.ok())
   {
     go_goal_position();

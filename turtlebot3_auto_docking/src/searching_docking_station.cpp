@@ -1,5 +1,4 @@
 #include <ros/ros.h>
-#include "turtlebot3_auto_docking/ChangeNode.h"
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Twist.h>
 #include <std_msgs/Int8.h>
@@ -11,10 +10,7 @@
 ros::Publisher     searching_dock_vel_pub;
 ros::Publisher     searching_dock_state_pub;
 ros::Subscriber    scan_filtered_sub;
-ros::ServiceClient change_node_srv;
-ros::ServiceClient *change_node_srv_Ptr;
 
-turtlebot3_auto_docking::ChangeNode change_node;
 geometry_msgs::Twist                searching_dock_vel_msg;
 std_msgs::Int8                      searching_dock_state_msg;
 
@@ -28,7 +24,7 @@ void catch_docking_station(int x)
   if(x == SEARCH)
   {
     searching_dock_vel_msg.angular.z = 0.1;
-    searching_dock_vel_msg.linear.x  = 0.03;
+    searching_dock_vel_msg.linear.x  = 0.04;
   }
   else if(x == FIND)
   {
@@ -39,32 +35,12 @@ void catch_docking_station(int x)
 
 void scan_filter_Callback(const sensor_msgs::LaserScan::ConstPtr &scan_filtered)
 {
-  if(searching_dock_state_msg.data == SEARCH)
-  {
-    change_node.request.next_node = 2;
-
-    change_node_srv = (ros::ServiceClient)*change_node_srv_Ptr;
-  }
-    if (change_node_srv.call(change_node))
-    {
-      ROS_INFO("Sum: %ld", (long int)change_node.response.change_node);
-    }
-    else
-    {
-      ROS_ERROR("Failed to call service add_two_ints");
-    }
-
   for (int i = 0; i<360; i++)
   {
     intensities_array[i] = scan_filtered->intensities[i];
     ranges_array[i] = scan_filtered->ranges[i];
 
-    if(intensities_array[i] == 0 && intensities_array[i+2] == 0)
-    {
-      intensities_array[i+1] = 0;
-      i++;
-    }
-    if((intensities_array[i] * ranges_array[i]) > 0.0 && (intensities_array[i+1] * ranges_array[i+1]) > 0.0 && (intensities_array[i+2] * ranges_array[i+2]) > 0.0)
+    if((intensities_array[i] * ranges_array[i]) > 3000 && (intensities_array[i+1] * ranges_array[i+1]) > 3000 && (intensities_array[i+2] * ranges_array[i+2]) > 3000)
     {
       searching_dock_state_msg.data = FIND;
     }
@@ -85,12 +61,9 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "searching_docking_station");
   ros::NodeHandle node;
 
-  searching_dock_vel_pub   = node.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
+  searching_dock_vel_pub   = node.advertise<geometry_msgs::Twist>("/searching_dock_vel", 10);
   searching_dock_state_pub = node.advertise<std_msgs::Int8>("/searching_dock_state", 10);
-  change_node_srv          = node.serviceClient<turtlebot3_auto_docking::ChangeNode>("change_node");
   scan_filtered_sub        = node.subscribe("/scan_filtered", 10, &scan_filter_Callback);
-
-  change_node_srv_Ptr      = &change_node_srv;
 
   ros::spin();
   return 0;
