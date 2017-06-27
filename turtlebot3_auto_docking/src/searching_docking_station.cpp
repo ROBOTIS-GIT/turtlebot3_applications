@@ -12,6 +12,7 @@ ros::Publisher     searching_dock_vel_pub;
 ros::Publisher     searching_dock_state_pub;
 ros::Subscriber    scan_filtered_sub;
 ros::ServiceClient change_node_srv;
+ros::ServiceClient *change_node_srv_Ptr;
 
 turtlebot3_auto_docking::ChangeNode change_node;
 geometry_msgs::Twist                searching_dock_vel_msg;
@@ -38,6 +39,21 @@ void catch_docking_station(int x)
 
 void scan_filter_Callback(const sensor_msgs::LaserScan::ConstPtr &scan_filtered)
 {
+  if(searching_dock_state_msg.data == SEARCH)
+  {
+    change_node.request.next_node = 2;
+
+    change_node_srv = (ros::ServiceClient)*change_node_srv_Ptr;
+  }
+    if (change_node_srv.call(change_node))
+    {
+      ROS_INFO("Sum: %ld", (long int)change_node.response.change_node);
+    }
+    else
+    {
+      ROS_ERROR("Failed to call service add_two_ints");
+    }
+
   for (int i = 0; i<360; i++)
   {
     intensities_array[i] = scan_filtered->intensities[i];
@@ -74,15 +90,8 @@ int main(int argc, char** argv)
   change_node_srv          = node.serviceClient<turtlebot3_auto_docking::ChangeNode>("change_node");
   scan_filtered_sub        = node.subscribe("/scan_filtered", 10, &scan_filter_Callback);
 
-  if (change_node_srv.call(change_node))
-  {
-    ROS_INFO("Sum: %ld", (long int)change_node.response.change_node);
-  }
-  else
-  {
-    ROS_ERROR("Failed to call service add_two_ints");
-    return 1;
-  }
+  change_node_srv_Ptr      = &change_node_srv;
+
   ros::spin();
   return 0;
 }

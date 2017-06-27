@@ -20,6 +20,7 @@ ros::Subscriber    scan_filtered_sub;
 ros::Subscriber    searching_dock_state_sub;
 ros::Subscriber    turtlebot_position_sub;
 ros::ServiceClient change_node_srv;
+ros::ServiceClient *change_node_srv_Ptr;
 
 turtlebot3_auto_docking::ChangeNode change_node;
 sensor_msgs::PointCloud             cloud;
@@ -55,6 +56,17 @@ void odom_Callback(const nav_msgs::Odometry &odom)
 
 void scan_point_Callback(const sensor_msgs::LaserScan &scan_filtered)
 {
+  change_node_srv = (ros::ServiceClient)*change_node_srv_Ptr;
+
+  if (change_node_srv.call(change_node))
+  {
+    ROS_INFO("Sum: %ld", (long int)change_node.request.next_node);
+  }
+  else
+  {
+    ROS_ERROR("Failed to call service add_two_ints");
+  }
+
   projector.projectLaser(scan_filtered, cloud);
   //  index = cloud.channels[1].values
   //  indensity = cloud.channels[0].values
@@ -115,15 +127,7 @@ int main(int argc, char** argv)
   turtlebot_position_sub   = node.subscribe("/odom", 10, &odom_Callback);
   scan_filtered_sub        = node.subscribe("/scan_filtered", 10, &scan_point_Callback);
 
-  if (change_node_srv.call(change_node))
-  {
-    ROS_INFO("Sum: %ld", (long int)change_node.response.change_node);
-  }
-  else
-  {
-    ROS_ERROR("Failed to call service add_two_ints");
-    return 1;
-  }
+  change_node_srv_Ptr      = &change_node_srv;
 
   ros::Rate rate(100);
   while(node.ok())
