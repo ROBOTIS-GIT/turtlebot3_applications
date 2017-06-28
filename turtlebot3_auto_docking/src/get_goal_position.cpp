@@ -55,9 +55,7 @@ void scan_point_Callback(const sensor_msgs::LaserScan &scan_filtered)
   {
     if(count == 0)
     {
-      projector.projectLaser(scan_filtered, cloud);
-      //  index = cloud.channels[1].values
-      //  indensity = cloud.channels[0].values
+      projector.projectLaser(scan_filtered, cloud); //index = cloud.channels[1].values  //indensity = cloud.channels[0].values
       for(int i=0; i<360; i++)
       {
         if(isnan(scan_filtered.ranges[i]) == 0.0 && isnan(scan_filtered.intensities[i]) == 0.0)
@@ -77,6 +75,7 @@ void scan_point_Callback(const sensor_msgs::LaserScan &scan_filtered)
           k += 1;
           point_x_sum += cloud.points[i].x;
           point_y_sum += cloud.points[i].y;
+          //ROS_INFO("%d goal_x %f, goal_y %f ",i, cloud.points[i].x, cloud.points[i].y);
         }
       }
       final_goal_point.x = turtlebot_point.x + (point_x_sum / (2 * k));

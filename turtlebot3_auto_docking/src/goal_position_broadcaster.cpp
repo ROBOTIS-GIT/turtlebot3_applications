@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     if(move_goal_state_msg.data == GET_GOAL)
     {
       transform.setOrigin( tf::Vector3(goal_position_x, goal_position_y, 0.0) );
-      quaternion.setRPY(0, 0, 1);
+      quaternion.setRPY(0, 0, goal_position_theta);
       transform.setRotation(quaternion);
       broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "goal_poisition"));
       move_goal_state_pub.publish(move_goal_state_msg);
