@@ -6,9 +6,13 @@
 
 #define DEG2RAD(x)                       (x * 0.01745329252)  // *PI/180
 #define RAD2DEG(x)                       (x * 57.2957795131)  // *180/PI
-#define SEARCH      0
-#define MOVE_GOAL   1
-#define FINISH_GOAL 1
+#define SEARCH       0
+#define MOVE_GOAL    1
+#define FINISH_GOAL  1
+
+#define WAIT         0
+#define MOVE_TURN    1
+#define MOVE_FORWARD 2
 
 ros::Publisher     cmd_vel_pub;
 ros::Publisher     finish_goal_state_pub;
@@ -23,6 +27,7 @@ std_msgs::Int8                      finish_goal_state_msg;
 
 double x_position, y_position;
 double dist, theta;
+double roll, pitch, yaw;
 int robot_state = 1;
 
 void get_dist_theta(void);
@@ -42,7 +47,8 @@ void move_goal_state_Callback(const std_msgs::Int8::ConstPtr &move_goal_state_su
 void get_dist_theta()
 {
   tf::TransformListener listener;
-  tf::StampedTransform transform;
+  tf::StampedTransform  transform;
+  tf::Quaternion        quaternion;
   try
    {
      listener.waitForTransform("base_footprint", "goal_poisition", ros::Time(0), ros::Duration(3.0));
@@ -55,6 +61,9 @@ void get_dist_theta()
    }
    x_position = transform.getOrigin().x();
    y_position = transform.getOrigin().y();
+   quaternion = transform.getRotation();
+   tf::Matrix3x3 m(quaternion);
+   m.getRPY(roll,pitch,yaw);
 
    theta =  atan2(y_position, x_position);
    dist  =  sqrt(pow(x_position, 2) + pow(y_position, 2));
@@ -67,20 +76,27 @@ void go_goal_position()
     get_dist_theta();
     switch (robot_state)
     {
-      case 1:
-        if(theta > DEG2RAD(3) || theta < DEG2RAD(-3))
+      case MOVE_TURN:
+        if(theta > DEG2RAD(3))
         {
           vel_msg.angular.z = 0.2;
           vel_msg.linear.x  = 0.0;
         }
+        else if(theta < DEG2RAD(-3))
+        {
+          vel_msg.angular.z = -0.2;
+          vel_msg.linear.x  = 0.0;
+        }
         else
         {
-          robot_state = 2;
+          vel_msg.angular.z = 0.0;
+          vel_msg.linear.x  = 0.0;
+          robot_state = MOVE_FORWARD;
         }
       break;
 
-      case 2:
-        if(dist > 0.05)
+      case MOVE_FORWARD:
+        if(dist > 0.03)
         {
           vel_msg.angular.z = 0.0;
           vel_msg.linear.x  = 0.05;
@@ -89,18 +105,32 @@ void go_goal_position()
         {
           vel_msg.angular.z = 0.0;
           vel_msg.linear.x  = 0.0;
-          finish_goal_state_msg.data = FINISH_GOAL;
+          robot_state       = WAIT;
         }
+      break;
+
+      case WAIT:
+        if(dist > 0.1)
+        {
+          robot_state = MOVE_TURN;
+        }
+        else
+          robot_state = WAIT;
+      break;
+
+      default :
+        robot_state = WAIT;
       break;
     }
     cmd_vel_pub.publish(vel_msg);
     finish_goal_state_pub.publish(finish_goal_state_msg);
-    ROS_INFO("vel_msg = %f, ang_msg = %f", vel_msg.linear.x ,vel_msg.angular.z);
+    //ROS_INFO("vel_msg = %f, ang_msg = %f", vel_msg.linear.x ,vel_msg.angular.z);
+    ROS_INFO("%d", robot_state);
   }
   else
   {
     searching_dock_vel_pub.publish(searching_dock_vel_msg);
-    ROS_INFO("searching_dock_vel = %f, searching_dock_ang = %f", searching_dock_vel_msg.linear.x ,searching_dock_vel_msg.angular.z);
+    //ROS_INFO("searching_dock_vel = %f, searching_dock_ang = %f", searching_dock_vel_msg.linear.x ,searching_dock_vel_msg.angular.z);
   }
 }
 

@@ -18,25 +18,23 @@ ros::Subscriber    turtlebot_position_sub;
 ros::Subscriber    scan_filtered_sub;
 ros::Subscriber    searching_dock_state_sub;
 
-sensor_msgs::PointCloud             cloud;
-geometry_msgs::Point32              final_goal_point;
-geometry_msgs::Point32              turtlebot_point;
-std_msgs::Int8                      searching_dock_state_msg;
-std_msgs::Int8                      get_goal_state_msg;
-laser_geometry::LaserProjection     projector;
+sensor_msgs::PointCloud         cloud;
+geometry_msgs::Point32          final_goal_point;
+geometry_msgs::Point32          turtlebot_point;
+std_msgs::Int8                  searching_dock_state_msg;
+std_msgs::Int8                  get_goal_state_msg;
+laser_geometry::LaserProjection projector;
 
-float intensities_array[360]          = {0};
-float ranges_array[360]               = {0};
 float material_intensities_array[360] = {0};
-float point_x_sum       = 0.0;
-float point_y_sum       = 0.0;
-float point_z_sum       = 0.0;
-float average_intensity = 0.0;
-float intensity_sum     = 0.0;
-float theta             = 0.0;
-int j = 0;
-int k = 0;
-int count = 0;
+float point_x_sum            = 0.0;
+float point_y_sum            = 0.0;
+float point_z_sum            = 0.0;
+float average_intensity      = 0.0;
+float material_intensity_sum = 0.0;
+float theta                  = 0.0;
+int j                        = 0;
+int k                        = 0;
+int count                    = 0;
 
 void get_goal_position(void);
 
@@ -64,13 +62,13 @@ void scan_point_Callback(const sensor_msgs::LaserScan &scan_filtered)
       {
         if(isnan(scan_filtered.ranges[i]) == 0.0 && isnan(scan_filtered.intensities[i]) == 0.0)
         {
-        //  theta = atan2( abs(cloud.points[j].y), abs(cloud.points[j].x));
+          //theta = atan2( abs(cloud.points[j].y), abs(cloud.points[j].x));
           material_intensities_array[j] = scan_filtered.intensities[i] * scan_filtered.ranges[i];
-          intensity_sum  += material_intensities_array[j];
+          material_intensity_sum  += material_intensities_array[j];
           j += 1;
         }
       }
-      average_intensity = intensity_sum / j;
+      average_intensity = material_intensity_sum / j;
 
       for(int i=0; i<j; i++)
       {

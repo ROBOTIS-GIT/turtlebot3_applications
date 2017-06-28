@@ -4,27 +4,44 @@
 #include <std_msgs/Int8.h>
 #include <float.h>
 
+#define FALSE  0
+#define TRUE   1
 #define SEARCH 0
 #define FIND   1
 
-ros::Publisher     searching_dock_vel_pub;
-ros::Publisher     searching_dock_state_pub;
-ros::Subscriber    scan_filtered_sub;
+ros::Publisher       searching_dock_vel_pub;
+ros::Publisher       searching_dock_state_pub;
+ros::Subscriber      scan_filtered_sub;
 
-geometry_msgs::Twist                searching_dock_vel_msg;
-std_msgs::Int8                      searching_dock_state_msg;
+geometry_msgs::Twist searching_dock_vel_msg;
+std_msgs::Int8       searching_dock_state_msg;
 
-float intensities_array[360] = {0};
-float ranges_array[360]      = {0};
+float intensities_array[360]   = {0};
+float ranges_array[360]        = {0};
+float check_docking_array[360] = {0};
+float nan_check                = 0.0;
+int robot_state                = 1;
+int ret                        = FALSE;
 
 void catch_docking_station(int x);
+bool check_docking_station(void);
 
 void catch_docking_station(int x)
 {
   if(x == SEARCH)
   {
-    searching_dock_vel_msg.angular.z = 0.1;
-    searching_dock_vel_msg.linear.x  = 0.04;
+    switch(robot_state)
+    {
+      case 1:
+        searching_dock_vel_msg.angular.z = 0.2;
+        searching_dock_vel_msg.linear.x  = 0.04;
+      break;
+
+      case 2:
+        searching_dock_vel_msg.angular.z = 0.2;
+        searching_dock_vel_msg.linear.x  = -0.04;
+      break;
+    }
   }
   else if(x == FIND)
   {
@@ -33,20 +50,45 @@ void catch_docking_station(int x)
   }
 }
 
+bool check_docking_station(void)
+{
+  for(int i=0; i<360; i++)
+  {
+    check_docking_array[i] = intensities_array[i] * ranges_array[i];
+    nan_check = isnan(check_docking_array[i]);
+    if(nan_check == 1.0)
+    {
+       check_docking_array[i] = 0;
+    }
+  }
+  for(int i=0; i<358; i++)
+  {
+    if(check_docking_array[i] > 3000 && check_docking_array[i+1] > 3000 && check_docking_array[i+2] > 3000 && check_docking_array[i+3] > 3000)
+    {
+      ret = TRUE;
+    }
+    if(ret != TRUE)
+    {
+      ret = FALSE;
+    }
+  }
+  return ret;
+}
+
 void scan_filter_Callback(const sensor_msgs::LaserScan::ConstPtr &scan_filtered)
 {
   for (int i = 0; i<360; i++)
   {
     intensities_array[i] = scan_filtered->intensities[i];
     ranges_array[i] = scan_filtered->ranges[i];
-
-    if((intensities_array[i] * ranges_array[i]) > 3000 && (intensities_array[i+1] * ranges_array[i+1]) > 3000 && (intensities_array[i+2] * ranges_array[i+2]) > 3000)
-    {
-      searching_dock_state_msg.data = FIND;
-    }
   }
 
-  if(searching_dock_state_msg.data != FIND)
+  check_docking_station();
+  if(ret == TRUE)
+  {
+    searching_dock_state_msg.data = FIND;
+  }
+  else if(ret == FALSE)
   {
     searching_dock_state_msg.data = SEARCH;
   }
