@@ -31,7 +31,6 @@ float point_y_sum            = 0.0;
 float point_z_sum            = 0.0;
 float average_intensity      = 0.0;
 float material_intensity_sum = 0.0;
-float theta                  = 0.0;
 int j                        = 0;
 int k                        = 0;
 int count                    = 0;
@@ -53,31 +52,39 @@ void scan_point_Callback(const sensor_msgs::LaserScan &scan_filtered)
 {
   if(searching_dock_state_msg.data  == FIND)
   {
+    // put a condition statement with count == 0 for do it once.
     if(count == 0)
     {
+      // Replace LaserScan values ​​with x, y, z coordinates.
       projector.projectLaser(scan_filtered, cloud); //index = cloud.channels[1].values  //indensity = cloud.channels[0].values
       for(int i=0; i<360; i++)
       {
+        // Scan_filtered.ranges [i] and scan_filtered.intensities [i] may have nan. It makes conditional statements when not nan.
         if(isnan(scan_filtered.ranges[i]) == 0.0 && isnan(scan_filtered.intensities[i]) == 0.0)
         {
-          //theta = atan2( abs(cloud.points[j].y), abs(cloud.points[j].x));
+          // Gets the average of material_intensities. Distinguishes the intensities of the safety reflector
           material_intensities_array[j] = scan_filtered.intensities[i] * scan_filtered.ranges[i];
           material_intensity_sum  += material_intensities_array[j];
           j += 1;
         }
       }
+      //Gets the average of material_intensity
       average_intensity = material_intensity_sum / j;
 
       for(int i=0; i<j; i++)
       {
         if(material_intensities_array[i] > average_intensity)
         {
+          // Count the number of coordinates.
           k += 1;
+          // Add x and y ​​of scanned laser values.
+          // Get the average of x and y coordinates to get the goal coordinates
           point_x_sum += cloud.points[i].x;
           point_y_sum += cloud.points[i].y;
           //ROS_INFO("%d goal_x %f, goal_y %f ",i, cloud.points[i].x, cloud.points[i].y);
         }
       }
+      // Add the turtlebot's current position and 1/2 the size of the goal coordinates to get the final coordinates.
       final_goal_point.x = turtlebot_point.x + (point_x_sum / (2 * k));
       final_goal_point.y = turtlebot_point.y + (point_y_sum / (2 * k));
 

@@ -54,13 +54,16 @@ bool check_docking_station(void)
 {
   for(int i=0; i<360; i++)
   {
+    // Save the intensities and ranges of the received LaserScan ​​to check_docking_array.
     check_docking_array[i] = intensities_array[i] * ranges_array[i];
+    // check_docking_array has a value of nan, we change nan to 0.
     nan_check = isnan(check_docking_array[i]);
     if(nan_check == 1.0)
     {
        check_docking_array[i] = 0;
     }
   }
+  //  This is find the dockint station. If the condition is satisfied, ret is returned as 1.
   for(int i=0; i<358; i++)
   {
     if(check_docking_array[i] > 3000 && check_docking_array[i+1] > 3000 && check_docking_array[i+2] > 3000 && check_docking_array[i+3] > 3000)
@@ -79,6 +82,7 @@ void scan_filter_Callback(const sensor_msgs::LaserScan::ConstPtr &scan_filtered)
 {
   for (int i = 0; i<360; i++)
   {
+    // Receive a scan_filtered value..
     intensities_array[i] = scan_filtered->intensities[i];
     ranges_array[i] = scan_filtered->ranges[i];
   }
