@@ -1,3 +1,22 @@
+/*******************************************************************************
+* Copyright 2016 ROBOTIS CO., LTD.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************/
+
+/* Authors: Gilbert */
+
+
 #!/usr/bin/env python
 import rospy
 import sys
@@ -96,7 +115,7 @@ def finding_spot_position():
     end_angle_distance = get_angle_distance(spot_angle.data_3)
 
     if start_angle_distance[1] != 0 and center_angle_distance[1] != 0 and end_angle_distance[1] != 0:
-        print("calibration.....")
+        print("calibration......")
         start_point = get_point(start_angle_distance)
         center_point = get_point(center_angle_distance)
         end_point = get_point(end_angle_distance)
