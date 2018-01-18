@@ -240,19 +240,19 @@ bool PanoApp::takePanoServiceCb(turtlebot3_msgs::TakePanorama::Request& request,
   if (is_active && (request.mode == request.CONTINUOUS || request.mode == request.SNAPANDROTATE))
   {
     log("Panorama creation already in progress.");
-    response.status = response.IN_PROGRESS;
+    response.status = request.IN_PROGRESS;
   }
   else if (is_active && (request.mode == request.STOP))
   {
     is_active = false;
     log("Panorama creation stopped.");
-    response.status = response.STOPPED;
+    response.status = request.STOPPED;
     return true;
   }
   else if (!is_active && (request.mode == request.STOP))
   {
     log("No panorama creation in progress.");
-    response.status = response.STOPPED;
+    response.status = request.STOPPED;
     return true;
   }
   else
@@ -289,7 +289,7 @@ bool PanoApp::takePanoServiceCb(turtlebot3_msgs::TakePanorama::Request& request,
     log("Starting panorama creation.");
     // startPanoAction();
     is_active = true;
-    response.status = response.STARTED;
+    response.status = request.STARTED;
   }
   return true;
 }

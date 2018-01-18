@@ -1,0 +1,4 @@
+<launch>
+<node pkg="turtlebot3_auto_docking" type="goal_position_broadcaster" output="screen" name="goal_position_broadcaster">
+</node>
+</launch>
