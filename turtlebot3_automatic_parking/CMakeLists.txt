@@ -1,12 +1,12 @@
+################################################################################
+# CMake
+################################################################################
 cmake_minimum_required(VERSION 2.8.3)
 project(turtlebot3_automatic_parking)
 
-## Add support for C++11, supported in ROS Kinetic and newer
-# add_definitions(-std=c++11)
-
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
+################################################################################
+# Packages
+################################################################################
 find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
@@ -15,24 +15,35 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+################################################################################
+# Declare ROS messages, services and actions
+################################################################################
 
+################################################################################
+# Declare ROS dynamic reconfigure parameters
+################################################################################
+
+################################################################################
+# Catkin specific configuration
+################################################################################
 catkin_package(
-# INCLUDE_DIRS include
-#  LIBRARIES people_detect
-  CATKIN_DEPENDS 
+  #INCLUDE_DIRS include
+  CATKIN_DEPENDS rospy sensor_msgs std_msgs nav_msgs geometry_msgs
 )
 
-catkin_install_python(PROGRAMS src/automatic_parking.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-###########
-## Build ##
-###########
-
+################################################################################
+# Build
+################################################################################
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
+)
+
+################################################################################
+# Install
+################################################################################
+catkin_install_python(PROGRAMS src/automatic_parking.py
+ 		      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 
