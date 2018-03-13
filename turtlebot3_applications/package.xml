@@ -1,20 +1,24 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>turtlebot3_automatic_parking</name>
+  <name>turtlebot3_applications</name>
   <version>0.1.0</version>
   <description>
-	  Package for turtlebot3 automatic_parking. You need a reflective tape and real robots. You can see parking spot using this pacakge on rviz.
+    ROS packages for the turtlebot3 applications (meta package)
   </description>
   <license>Apache 2.0</license>
+  <author email="pyo@robotis.com">Pyo</author>
+  <author email="thlim@robotis.com">Darby Lim</author>
   <author email="kkjong@robotis.com">Gilbert</author>
+  <author>Christopher Tatsch</author>
+  <author>Ashe Kim</author>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="website">http://turtlebot3.robotis.com</url>
   <buildtool_depend>catkin</buildtool_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>turtlebot3_automatic_parking</exec_depend>
+  <exec_depend>turtlebot3_follow_filter</exec_depend>
+  <exec_depend>turtlebot3_follower</exec_depend>
+  <exec_depend>turtlebot3_panorama</exec_depend>
+  <export><metapackage/></export>
 </package>
