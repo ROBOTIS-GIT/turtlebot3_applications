@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import roslib; roslib.load_manifest('turtlebot_panorama')
+import roslib; roslib.load_manifest('turtlebot3_panorama')
 import rospy
 from turtlebot_panorama.srv import *
 from sensor_msgs.msg import Image

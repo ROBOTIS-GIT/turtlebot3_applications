@@ -41,9 +41,9 @@
 #include <iostream>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Geometry>
-#include <turtlebot_panorama/panorama.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
+#include <turtlebot3_panorama/panorama.h>
 
 namespace turtlebot_panorama
 {
@@ -333,7 +333,7 @@ void PanoApp::log(std::string log)
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "turtlebot_panorama");
+  ros::init(argc, argv, "turtlebot3_panorama");
 
   turtlebot_panorama::PanoApp pano;
   pano.log("Panorama app starting...");

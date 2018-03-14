@@ -44,14 +44,14 @@
 #define PANORAMA_H_
 
 #include <ros/ros.h>
-#include <image_transport/image_transport.h>	
-#include <sensor_msgs/Image.h>		
 #include <std_msgs/Empty.h> 		
 #include <std_msgs/String.h>
-#include <nav_msgs/Odometry.h>		
-#include <geometry_msgs/Twist.h>
-#include <turtlebot3_msgs/TakePanorama.h>
 #include <std_srvs/Empty.h>
+#include <sensor_msgs/Image.h>		
+#include <geometry_msgs/Twist.h>
+#include <nav_msgs/Odometry.h>		
+#include <image_transport/image_transport.h>	
+#include <turtlebot3_msgs/TakePanorama.h>
 
 #include "geometry.h"
 

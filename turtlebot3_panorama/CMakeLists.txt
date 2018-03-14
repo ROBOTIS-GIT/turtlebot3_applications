@@ -20,6 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   cmake_modules
 )
+
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 find_package(OpenCV REQUIRED)
@@ -48,7 +49,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
-  ${EIGEN_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 add_executable(turtlebot3_panorama src/panorama.cpp)
