@@ -6,11 +6,13 @@
     ROS packages for the turtlebot3 applications (meta package)
   </description>
   <license>Apache 2.0</license>
-  <author email="pyo@robotis.com">Pyo</author>
-  <author email="thlim@robotis.com">Darby Lim</author>
-  <author email="kkjong@robotis.com">Gilbert</author>
+  <license>BSD</license>
   <author>Christopher Tatsch</author>
   <author>Ashe Kim</author>
+  <author email="rwjung@robotis.com">Leon Jung</author>
+  <author email="thlim@robotis.com">Darby Lim</author>
+  <author email="kkjong@robotis.com">Gilbert</author>
+  <author email="pyo@robotis.com">Pyo</author>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
