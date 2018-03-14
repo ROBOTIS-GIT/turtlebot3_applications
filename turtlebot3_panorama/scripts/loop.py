@@ -1,12 +1,8 @@
 #!/usr/bin/env python
-#
-#
-
 import roslib; roslib.load_manifest('turtlebot_panorama')
 import rospy
 from turtlebot_panorama.srv import *
 from sensor_msgs.msg import Image
-
 
 in_progress = False
 
@@ -15,11 +11,9 @@ def imageCallback(msg):
   rospy.loginfo("Final Image")
   in_progress = False
 
-
 if __name__ == '__main__':
   global in_progress
   rospy.init_node('loop_panorama')
-
 
   # Setting service
   srv_takepano = rospy.ServiceProxy('/turtlebot_panorama/take_pano',TakePano)
@@ -55,5 +49,3 @@ if __name__ == '__main__':
   rospy.loginfo("Bye Bye")
 #  takepanoReq.angle = -1
 #  srv_takepano(takepanoReq)
-  
-

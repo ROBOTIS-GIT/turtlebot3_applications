@@ -12,9 +12,9 @@
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="website">http://turtlebot3.robotis.com</url>
   <buildtool_depend>catkin</buildtool_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>nav_msgs</exec_depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
 </package>

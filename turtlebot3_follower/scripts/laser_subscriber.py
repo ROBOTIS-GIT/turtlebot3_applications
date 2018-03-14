@@ -21,10 +21,8 @@ class laser_subscriber:
             rospy.loginfo('%s', self.msg.ranges)
             self.laser_scan_data.append(self.msg)
 
-
             pickle.dump( self.comments, open( "add_comment", "wb"))
             pickle.dump( self.laser_scan_data, open( "add_data", "wb"))
-
 
 if __name__ == '__main__':
 

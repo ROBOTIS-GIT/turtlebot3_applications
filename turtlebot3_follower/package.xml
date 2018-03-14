@@ -14,8 +14,8 @@
   <url type="website">http://turtlebot3.robotis.com</url>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
-  <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
-  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
 </package>

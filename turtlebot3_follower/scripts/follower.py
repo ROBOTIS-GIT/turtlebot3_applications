@@ -6,7 +6,6 @@ from geometry_msgs.msg import Twist
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 
-
 class follower:
     def __init__(self):
         rospy.loginfo('Follower node initialized')
@@ -46,7 +45,6 @@ class follower:
             ret = 1
 
         return ret
-
 
     def laser_scan(self):
         data_test=[]
@@ -116,7 +114,6 @@ def main():
         follow = follower()
     except rospy.ROSInterruptException:
         pass    #print("Shutting down")
-
 
 if __name__ == '__main__':
     main()

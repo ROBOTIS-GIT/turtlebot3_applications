@@ -125,22 +125,22 @@ void PanoApp::spin()
         log("Publishing Completed Panorama");
         ROS_INFO("Angle: %f", angle); 
         ROS_INFO("Last Angle: %f", last_angle); 
-	angle=0.0;
+       	angle=0.0;
         last_angle=0.0;
-	images_.clear();
- //       imwrite("pano.jpg", pano);
+	      images_.clear();
+        // imwrite("pano.jpg", pano);
         is_active = false;
       }
       else
       {
         if (continuous) // then snap_interval is a duration
         {
-	    log("Continuous Mode panorama");
-            rotate();
-            ros::Duration(snap_interval).sleep();
-            snap();
-            ROS_INFO("Angle Continuous: %f", angle); 
-            ROS_INFO("Angle Given: %f", given_angle); 
+    	    log("Continuous Mode panorama");
+          rotate();
+          ros::Duration(snap_interval).sleep();
+          snap();
+          ROS_INFO("Angle Continuous: %f", angle); 
+          ROS_INFO("Angle Given: %f", given_angle); 
         }
         else
         {
@@ -148,7 +148,6 @@ void PanoApp::spin()
           {
             pub_cmd_vel.publish(zero_cmd_vel); // stop before taking a snapshot
             take_snapshot = true;
-
           }
           if (take_snapshot)
           {
@@ -177,7 +176,6 @@ void PanoApp::spin()
     loop_rate.sleep();
   }
 }
-
 
 void PanoApp::snap()
 {
@@ -294,15 +292,12 @@ bool PanoApp::takePanoServiceCb(turtlebot3_msgs::TakePanorama::Request& request,
   return true;
 }
 
-
 void PanoApp::cameraImageCb(const sensor_msgs::ImageConstPtr& msg)
 {
-
   if (store_image)
   {
     std::cout << "encoding: " << msg->encoding << std::endl;
     std::cout << "is_bigendian: " << msg->is_bigendian << std::endl;
-
 
     cv_bridge::CvImagePtr cv_ptr;
 
@@ -319,10 +314,10 @@ void PanoApp::cameraImageCb(const sensor_msgs::ImageConstPtr& msg)
     images_.push_back(cv_ptr->image);
     store_image = false;
   }
-  else {
+  else 
+  {
     //pub_stitched.publish(msg);
   }
-
 }
 
 //*************
@@ -334,7 +329,6 @@ void PanoApp::log(std::string log)
   msg.data = log;
   ROS_INFO_STREAM(log);
 }
-
 } //namespace turtlebot_panorama
 
 int main(int argc, char **argv)
