@@ -6,7 +6,6 @@ import numpy as np
 from sensor_msgs.msg import LaserScan
 from sklearn.ensemble import RandomForestClassifier
 
-
 if __name__ == '__main__':
 
     laser_data = pickle.load( open( "add_data", "rb"))

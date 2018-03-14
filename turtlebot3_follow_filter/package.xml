@@ -1,21 +1,17 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>turtlebot3_follow_filter</name>
   <version>0.1.0</version>
-  <description>turtlebot3_follow_filter package</description>
-
-  <maintainer email="rlaqhrud852@gmail.com">ashe</maintainer>
-  <license>BSD</license>
-
+  <description>
+    turtlebot3_follow_filter package using laser_filters for turtlebot3_follower package
+  </description>
+  <license>Apache 2.0</license>
+  <author>Christopher Tatsch</author>
+  <author>Ashe Kim</author>
+  <maintainer email="pyo@robotis.com">Pyo</maintainer>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
+  <url type="website">http://turtlebot3.robotis.com</url>
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>laser_filters</build_depend>
-
-  <run_depend>roscpp</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>laser_filters</run_depend>
-
-  <export>
-     </export>
+  <exec_depend>laser_filters</exec_depend>
 </package>

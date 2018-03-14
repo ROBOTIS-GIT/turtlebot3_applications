@@ -1,26 +1,20 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>turtlebot3_automatic_parking</name>
-  <version>0.0.0</version>
+  <version>0.1.0</version>
   <description>
-	Package for turtlebot3 automatic_parking. You need a reflective tape and real robots.
-        You can see parking spot using this pacakge on rviz.
+	  Package for turtlebot3 automatic_parking. You need a reflective tape and real robots. You can see parking spot using this pacakge on rviz.
   </description>
-  <license>Apache License 2.0</license>
-  <author email="kkjong89@naver.com">Gilbert</author>
+  <license>Apache 2.0</license>
+  <author email="kkjong@robotis.com">Gilbert</author>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="website">http://turtlebot3.robotis.com</url>
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>nav_msgs</build_depend>
-  <build_depend>geometry_msgs</build_depend>
-  <run_depend>nav_msgs</run_depend>
-  <run_depend>geometry_msgs</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>std_msgs</run_depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
 </package>

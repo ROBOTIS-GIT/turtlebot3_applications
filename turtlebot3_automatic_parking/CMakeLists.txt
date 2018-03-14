@@ -9,10 +9,10 @@ project(turtlebot3_automatic_parking)
 ################################################################################
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  sensor_msgs
   std_msgs
-  nav_msgs
+  sensor_msgs
   geometry_msgs
+  nav_msgs
 )
 
 ################################################################################
@@ -27,24 +27,28 @@ find_package(catkin REQUIRED COMPONENTS
 # Catkin specific configuration
 ################################################################################
 catkin_package(
-  #INCLUDE_DIRS include
-  CATKIN_DEPENDS rospy sensor_msgs std_msgs nav_msgs geometry_msgs
+  CATKIN_DEPENDS rospy std_msgs sensor_msgs geometry_msgs nav_msgs
 )
 
 ################################################################################
 # Build
 ################################################################################
 include_directories(
-  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ################################################################################
 # Install
 ################################################################################
-catkin_install_python(PROGRAMS src/automatic_parking.py
- 		      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+catkin_install_python(PROGRAMS 
+  scripts/automatic_parking.py
+ 	DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+install(DIRECTORY rviz
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
-
+################################################################################
+# Test
+################################################################################
