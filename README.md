@@ -8,6 +8,7 @@
 - [turtlebot3_msgs](https://github.com/ROBOTIS-GIT/turtlebot3_msgs)
 - [turtlebot3_simulations](https://github.com/ROBOTIS-GIT/turtlebot3_simulations)
 - [turtlebot3_applications](https://github.com/ROBOTIS-GIT/turtlebot3_applications)
+- [turtlebot3_autorace](https://github.com/ROBOTIS-GIT/turtlebot3_autorace)
 
 # TurtleBot3 Documents
 - http://turtlebot3.robotis.com/
