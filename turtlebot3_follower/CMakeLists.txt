@@ -1,39 +1,52 @@
+################################################################################
+# CMake
+################################################################################
 cmake_minimum_required(VERSION 2.8.3)
 project(turtlebot3_follower)
 
-## Add support for C++11, supported in ROS Kinetic and newer
-# add_definitions(-std=c++11)
-
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
+################################################################################
+# Packages
+################################################################################
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  sensor_msgs
   std_msgs
-  nav_msgs
+  sensor_msgs
   geometry_msgs
+  nav_msgs
 )
 
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
-
+################################################################################
+# Catkin specific configuration
+################################################################################
 catkin_package(
-# INCLUDE_DIRS include
-#  LIBRARIES people_detect
-  CATKIN_DEPENDS 
+  CATKIN_DEPENDS rospy std_msgs sensor_msgs geometry_msgs nav_msgs
 )
 
-catkin_install_python(PROGRAMS src/follower.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-###########
-## Build ##
-###########
-
+################################################################################
+# Build
+################################################################################
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+################################################################################
+# Install
+################################################################################
+install(PROGRAMS
+  scripts/add_comment
+  scripts/add_data
+  scripts/clf
+  scripts/clf2
+  scripts/follower.py
+  scripts/laser_subscriber.py
+  scripts/ploting.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
+install(DIRECTORY rviz
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
+################################################################################
+# Test
+################################################################################
