@@ -28,25 +28,17 @@ from math import sin, cos, pi, atan2
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 import time
 
-class ReturnValue(object):
-    def __init__(self, name):
-        self.name = name
-
-    def retun_val(self, stats, data_1, data_2, data_3):
-        self.stats = stats
-        self.data_1 = data_1
-        self.data_2 = data_2
-        self.data_3 = data_3
-
 def scan_parking_spot():
-    stats = False
+    scan_done = False
     intensity_index = []
     index_count = []
     spot_angle_index = []
     minimun_scan_angle = 30
     maximun_scan_angle = 330
     intensity_threshold = 100
-
+    center_angle = 0
+    start_angle = 0
+    end_angle = 0
     for i in range(360):
         if i >= minimun_scan_angle and i < maximun_scan_angle:
             spot_intensity = msg.intensities[i] ** 2 * msg.ranges[i] / 100000
@@ -62,13 +54,14 @@ def scan_parking_spot():
         if abs(i - index_count[int(len(index_count) / 2)]) < 20:
             spot_angle_index.append(i)
             if len(spot_angle_index) > 10:
-                stats = True
+                scan_done = True
+                center_angle = spot_angle_index[int(len(spot_angle_index) / 2)]
+                start_angle = spot_angle_index[2]
+                end_angle = spot_angle_index[-3]
+
             else:
-                stats = False
-    center_angle = spot_angle_index[int(len(spot_angle_index) / 2)]
-    start_angle = spot_angle_index[2]
-    end_angle = spot_angle_index[-3]
-    spot_angle.retun_val(stats, center_angle, start_angle, end_angle)
+                scan_done = False
+    return scan_done, center_angle, start_angle, end_angle
 
 def quaternion():
     quaternion = (
@@ -104,41 +97,42 @@ def get_point(start_angle_distance):
     else:
         x = distance * cos(angle) * -1
         y = distance * sin(angle) * -1
-    return x, y
 
-def finding_spot_position():
+    return [x, y]
+
+def finding_spot_position(center_angle, start_angle, end_angle):
     print("scan parking spot done!")
-    stats = False
-    start_angle_distance = get_angle_distance(spot_angle.data_1)
-    center_angle_distance = get_angle_distance(spot_angle.data_2)
-    end_angle_distance = get_angle_distance(spot_angle.data_3)
+    fining_spot = False
+    start_angle_distance = get_angle_distance(start_angle)
+    center_angle_distance = get_angle_distance(center_angle)
+    end_angle_distance = get_angle_distance(end_angle)
 
     if start_angle_distance[1] != 0 and center_angle_distance[1] != 0 and end_angle_distance[1] != 0:
         print("calibration......")
         start_point = get_point(start_angle_distance)
         center_point = get_point(center_angle_distance)
         end_point = get_point(end_angle_distance)
-        stats = True
+        fining_spot = True
     else:
-        stats = False
+        fining_spot = False
         print("wrong scan!!")
 
-    return spot_point.retun_val(stats, start_point, center_point, end_point)
+    return fining_spot, start_point, center_point, end_point
 
 def rotate_origin_only(x, y, radians):
     xx = x * cos(radians) + y * sin(radians)
     yy = -x * sin(radians) + y * cos(radians)
     return xx, yy
 
-def scan_spot_filter(msg):
+def scan_spot_filter(msg, center_angle, start_angle, end_angle):
     scan_spot_pub = rospy.Publisher("/scan_spot", LaserScan, queue_size=1)
     scan_spot = msg
     scan_spot_list = list(scan_spot.intensities)
     for i in range(360):
         scan_spot_list[i] = 0
-    scan_spot_list[spot_angle.data_1] = msg.ranges[spot_angle.data_1] + 10000
-    scan_spot_list[spot_angle.data_2] = msg.ranges[spot_angle.data_2] + 10000
-    scan_spot_list[spot_angle.data_3] = msg.ranges[spot_angle.data_3] + 10000
+    scan_spot_list[start_angle] = msg.ranges[start_angle] + 10000
+    scan_spot_list[center_angle] = msg.ranges[center_angle] + 10000
+    scan_spot_list[end_angle] = msg.ranges[end_angle] + 10000
     scan_spot.intensities = tuple(scan_spot_list)
     scan_spot_pub.publish(scan_spot)
 
@@ -148,26 +142,26 @@ if __name__=="__main__":
     reset_pub = rospy.Publisher('/reset', Empty, queue_size=1)
     msg = LaserScan()
     r = rospy.Rate(10)
-    spot_angle = ReturnValue('spot_angle')
-    spot_point = ReturnValue('spot_point')
     step = 0
     twist = Twist()
     reset = Empty()
+
     while not rospy.is_shutdown():
         msg = rospy.wait_for_message("/scan", LaserScan)
         odom = rospy.wait_for_message("/odom", Odometry)
         yaw = quaternion()
-        scan_parking_spot()
+        scan_done, center_angle, start_angle, end_angle = scan_parking_spot()
+
         if step == 0:
-            if spot_angle.stats == True:
-                finding_spot_position()
-                if spot_point.stats == True:
-                    theta = np.arctan2(spot_point.data_1[1] - spot_point.data_3[1], spot_point.data_1[0] - spot_point.data_3[0])
+            if scan_done == True:
+                fining_spot, start_point, center_point, end_point = finding_spot_position(center_angle, start_angle, end_angle)
+                if fining_spot == True:
+                    theta = np.arctan2(start_point[1] - end_point[1], start_point[0] - end_point[0])
                     print("=================================")
                     print("|        |     x     |     y     |")
-                    print('| start  | {0:>10.3f}| {1:>10.3f}|'.format(spot_point.data_1[0], spot_point.data_1[1]))
-                    print('| center | {0:>10.3f}| {1:>10.3f}|'.format(spot_point.data_2[0], spot_point.data_2[1]))
-                    print('| end    | {0:>10.3f}| {1:>10.3f}|'.format(spot_point.data_3[0], spot_point.data_3[1]))
+                    print('| start  | {0:>10.3f}| {1:>10.3f}|'.format(start_point[0], start_point[1]))
+                    print('| center | {0:>10.3f}| {1:>10.3f}|'.format(center_point[0], center_point[1]))
+                    print('| end    | {0:>10.3f}| {1:>10.3f}|'.format(end_point[0], end_point[1]))
                     print("=================================")
                     print('| theta  | {0:.2f} deg'.format(np.rad2deg(theta)))
                     print('| yaw    | {0:.2f} deg'.format(np.rad2deg(yaw)))
@@ -176,6 +170,7 @@ if __name__=="__main__":
                     step = 1
             else:
                 print("Fail finding parking spot.")
+
         elif step == 1:
             init_yaw = yaw
             yaw = theta + yaw
@@ -190,7 +185,7 @@ if __name__=="__main__":
                     time.sleep(1)
                     reset_pub.publish(reset)
                     time.sleep(3)
-                    rotation_point = rotate_origin_only(spot_point.data_2[0], spot_point.data_2[1], -(pi / 2 - init_yaw))
+                    rotation_point = rotate_origin_only(center_point[0], center_point[1], -(pi / 2 - init_yaw))
                     step = 2
             else:
                 if theta - init_yaw < -0.1:
@@ -203,8 +198,9 @@ if __name__=="__main__":
                     time.sleep(1)
                     reset_pub.publish(reset)
                     time.sleep(3)
-                    rotation_point = rotate_origin_only(spot_point.data_2[0], spot_point.data_2[1], -(pi / 2 - init_yaw))
+                    rotation_point = rotate_origin_only(center_point[0], center_point[1], -(pi / 2 - init_yaw))
                     step = 2
+
         elif step == 2:
             if abs(odom.pose.pose.position.x - (rotation_point[1])) > 0.02:
                 if odom.pose.pose.position.x > (rotation_point[1]):
@@ -217,6 +213,7 @@ if __name__=="__main__":
                 twist.linear.x = 0.0
                 twist.angular.z = 0.0
                 step = 3
+
         elif step == 3:
             if yaw > -pi / 2:
                 twist.linear.x = 0.0
@@ -225,6 +222,7 @@ if __name__=="__main__":
                 twist.linear.x = 0.0
                 twist.angular.z = 0.0
                 step = 4
+
         elif step == 4:
             ranges = []
             for i in range(150, 210):
@@ -240,4 +238,4 @@ if __name__=="__main__":
                 cmd_pub.publish(twist)
                 sys.exit()
         cmd_pub.publish(twist)
-        scan_spot_filter(msg)
+        scan_spot_filter(msg, center_angle, start_angle, end_angle)
