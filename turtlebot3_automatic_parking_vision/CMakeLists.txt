@@ -13,7 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   geometry_msgs
   nav_msgs
-  ar_pose
+  ar_track_alvar_msgs
+  ar_track_alvar
 )
 
 ################################################################################
@@ -28,7 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
 # Catkin specific configuration
 ################################################################################
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs sensor_msgs geometry_msgs nav_msgs ar_pose
+  CATKIN_DEPENDS rospy std_msgs sensor_msgs geometry_msgs nav_msgs ar_track_alvar ar_track_alvar_msgs
 )
 
 ################################################################################

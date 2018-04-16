@@ -19,18 +19,16 @@
     args="-d $(find turtlebot3_automatic_parking_vision)/rviz/turtlebot3_automatic_parking_vision.rviz"/>
   <node pkg="tf" type="static_transform_publisher" name="camera_rgb_optical_frame_to_cam" 
     args="0 0 0 0 0 0 camera_rgb_optical_frame camera 10" />
-  <node name="ar_pose" pkg="ar_pose" type="ar_single" respawn="false"
-    output="screen">
-    <remap from="/camera/image_raw" to="/raspicam_node/image" />
-    <remap from="/camera/camera_info" to="/raspicam_node/camera_info"/>
-    <param name="marker_pattern" type="string"
-      value="$(find ar_pose)/data/4x4/4x4_55.patt"/>
-    <param name="marker_width" type="double" value="60.0"/>
-    <param name="marker_center_x" type="double" value="0.0"/>
-    <param name="marker_center_y" type="double" value="0.0"/>
-    <param name="threshold" type="int" value="100"/>
-    <param name="use_history" type="bool" value="true"/>
-  </node>
+
+	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
+		<param name="marker_size"           type="double" value="8.0" />
+		<param name="max_new_marker_error"  type="double" value="0.08" />
+		<param name="max_track_error"       type="double" value="0.2" />
+		<param name="output_frame"          type="string" value="/base_footprint" />
+
+		<remap from="camera_image"  to="/raspicam_node/image" />
+		<remap from="camera_info"   to="/raspicam_node/camera_info" />
+	</node>
 
   <node pkg="turtlebot3_automatic_parking_vision" type="automatic_parking_vision" name="automatic_parking_vision" />
 </launch>

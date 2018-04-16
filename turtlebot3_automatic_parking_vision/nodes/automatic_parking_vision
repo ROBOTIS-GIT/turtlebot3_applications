@@ -24,16 +24,19 @@ import numpy as np
 import tf
 from enum import Enum
 from nav_msgs.msg import Odometry
-from ar_pose.msg import ARMarker
+from ar_track_alvar_msgs.msg import AlvarMarkers
+# from ar_pose.msg import ARMarker
 from geometry_msgs.msg import Twist
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 import math
 import time
 
+MARKER_ID_DETECTION = 17
+
 class AutomaticParkingVision():
     def __init__(self):
         self.sub_odom_robot = rospy.Subscriber('/odom', Odometry, self.cbGetRobotOdom, queue_size = 1)
-        self.sub_info_marker = rospy.Subscriber('/ar_pose_marker', ARMarker, self.cbGetMarkerOdom, queue_size = 1)
+        self.sub_info_marker = rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.cbGetMarkerOdom, queue_size = 1)
 
         self.pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 
@@ -90,15 +93,17 @@ class AutomaticParkingVision():
 
         self.robot_2d_theta = self.total_robot_2d_theta
 
-    def cbGetMarkerOdom(self, marker_odom_msg):
-        if self.is_marker_pose_received == False:
-            self.is_marker_pose_received = True 
+    def cbGetMarkerOdom(self, markers_odom_msg):
+        for marker_odom_msg in markers_odom_msg.markers:
+            if marker_odom_msg.id == MARKER_ID_DETECTION:
+                if self.is_marker_pose_received == False:
+                    self.is_marker_pose_received = True
 
-        pos_x, pos_y, theta = self.fnGet2DMarkerPose(marker_odom_msg)
+                pos_x, pos_y, theta = self.fnGet2DMarkerPose(marker_odom_msg)
 
-        self.marker_2d_pose_x = pos_x
-        self.marker_2d_pose_y = pos_y
-        self.marker_2d_theta = theta - math.pi
+                self.marker_2d_pose_x = pos_x
+                self.marker_2d_pose_y = pos_y
+                self.marker_2d_theta = theta - math.pi
 
     def fnParking(self):
         if self.current_parking_sequence == self.ParkingSequence.searching_parking_lot.value:
@@ -150,7 +155,11 @@ class AutomaticParkingVision():
             return True
 
     def fnSeqChangingDirection(self):
-        desired_angle_turn = math.atan2(self.marker_2d_pose_y - 0, self.marker_2d_pose_x - 0)
+        desired_angle_turn = -1. *  math.atan2(self.marker_2d_pose_y - 0, self.marker_2d_pose_x - 0)
+
+        # rospy.loginfo("desired_angle_turn %f self.marker_2d_pose_x %f self.marker_2d_pose_y %f"
+        # , desired_angle_turn, self.marker_2d_pose_x, self.marker_2d_pose_y)
+
         self.fnTurn(desired_angle_turn)
         
         if abs(desired_angle_turn) < 0.01:
@@ -170,12 +179,14 @@ class AutomaticParkingVision():
                 self.initial_marker_pose_x = self.marker_2d_pose_x
 
             if self.initial_marker_pose_theta < 0.0:
-                desired_angle_turn = (math.pi / 2.0) + self.initial_marker_pose_theta + (self.robot_2d_theta - self.initial_robot_pose_theta)
+                desired_angle_turn = (math.pi / 2.0) + self.initial_marker_pose_theta - (self.robot_2d_theta - self.initial_robot_pose_theta)
             elif self.initial_marker_pose_theta > 0.0:
-                desired_angle_turn = -(math.pi / 2.0) + self.initial_marker_pose_theta + (self.robot_2d_theta - self.initial_robot_pose_theta)
+                desired_angle_turn = -(math.pi / 2.0) + self.initial_marker_pose_theta - (self.robot_2d_theta - self.initial_robot_pose_theta)
 
             # rospy.loginfo("desired_angle_turn %f self.initial_marker_pose_theta %f self.robot_2d_theta %f self.initial_robot_pose_theta %f"
             # , desired_angle_turn, self.initial_marker_pose_theta, self.robot_2d_theta, self.initial_robot_pose_theta)
+
+            desired_angle_turn = -1. * desired_angle_turn
 
             self.fnTurn(desired_angle_turn)
 
@@ -221,10 +232,10 @@ class AutomaticParkingVision():
 
     def fnSeqParking(self):
         desired_angle_turn = math.atan2(self.marker_2d_pose_y - 0, self.marker_2d_pose_x - 0)
-        self.fnTrackMarker(desired_angle_turn)
+        self.fnTrackMarker(-desired_angle_turn)
         
         print self.marker_2d_pose_x
-        if abs(self.marker_2d_pose_x) < 0.13:
+        if abs(self.marker_2d_pose_x) < 0.22:
             self.fnStop()
             return True
         else:
@@ -293,16 +304,20 @@ class AutomaticParkingVision():
         return pos_x, pos_y, theta
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
-        quaternion = (marker_odom_msg.pose.pose.orientation.z, marker_odom_msg.pose.pose.orientation.x, marker_odom_msg.pose.pose.orientation.y, marker_odom_msg.pose.pose.orientation.w)
+        quaternion = (marker_odom_msg.pose.pose.orientation.x, marker_odom_msg.pose.pose.orientation.y, marker_odom_msg.pose.pose.orientation.z, marker_odom_msg.pose.pose.orientation.w)
         theta = tf.transformations.euler_from_quaternion(quaternion)[2]
+
+        theta = theta + np.pi / 2.
+        # rospy.loginfo("theta : %f", theta)
+
 
         if theta < 0:
             theta = theta + np.pi * 2
         if theta > np.pi * 2:
             theta = theta - np.pi * 2
 
-        pos_x = marker_odom_msg.pose.pose.position.z
-        pos_y = marker_odom_msg.pose.pose.position.x
+        pos_x = marker_odom_msg.pose.pose.position.x
+        pos_y = marker_odom_msg.pose.pose.position.y
 
         return pos_x, pos_y, theta
 

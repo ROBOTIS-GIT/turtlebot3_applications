@@ -13,6 +13,7 @@ Panels:
         - /TF1
         - /TF1/Frames1
         - /Camera1
+        - /Marker1
       Splitter Ratio: 0.602941155
     Tree Height: 567
   - Class: rviz/Selection
@@ -74,7 +75,7 @@ Visualization Manager:
       Color: 255; 0; 0
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 5932
@@ -91,7 +92,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
@@ -163,7 +164,27 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        ar_marker:
+        ar_marker_0:
+          Value: true
+        ar_marker_1:
+          Value: true
+        ar_marker_11:
+          Value: true
+        ar_marker_14:
+          Value: true
+        ar_marker_16:
+          Value: true
+        ar_marker_17:
+          Value: true
+        ar_marker_243:
+          Value: true
+        ar_marker_255:
+          Value: true
+        ar_marker_3:
+          Value: true
+        ar_marker_32:
+          Value: true
+        ar_marker_4:
           Value: true
         base_footprint:
           Value: true
@@ -206,7 +227,27 @@ Visualization Manager:
                 camera_rgb_frame:
                   camera_rgb_optical_frame:
                     camera:
-                      ar_marker:
+                      ar_marker_0:
+                        {}
+                      ar_marker_1:
+                        {}
+                      ar_marker_11:
+                        {}
+                      ar_marker_14:
+                        {}
+                      ar_marker_16:
+                        {}
+                      ar_marker_17:
+                        {}
+                      ar_marker_243:
+                        {}
+                      ar_marker_255:
+                        {}
+                      ar_marker_3:
+                        {}
+                      ar_marker_32:
+                        {}
+                      ar_marker_4:
                         {}
               caster_back_left_link:
                 {}
@@ -234,10 +275,19 @@ Visualization Manager:
         Axes: true
         Grid: true
         LaserScan: true
+        Marker: true
         RobotModel: true
         TF: true
         Value: true
       Zoom Factor: 1
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /visualization_marker
+      Name: Marker
+      Namespaces:
+        basic_shapes: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 108; 108; 108
@@ -261,21 +311,26 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
-      Class: rviz/TopDownOrtho
+      Class: rviz/ThirdPersonFollower
+      Distance: 1.62624097
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
+      Focal Point:
+        X: 0.472872198
+        Y: -0.0560777262
+        Z: -5.96046448e-08
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Scale: 1124.44324
+      Pitch: 1.34539759
       Target Frame: <Fixed Frame>
-      Value: TopDownOrtho (rviz)
-      X: 0.0795647353
-      Y: 0.0197073855
+      Value: ThirdPersonFollower (rviz)
+      Yaw: 5.08540154
     Saved: ~
 Window Geometry:
   Camera:
