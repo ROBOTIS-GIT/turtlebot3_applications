@@ -18,4 +18,5 @@
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>ar_track_alvar_msgs</depend>
+  <depend>ar_track_alvar</depend>
 </package>
