@@ -18,6 +18,11 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ################################################################################
+# Setup for python modules and scripts
+################################################################################
+catkin_install_python()
+
+################################################################################
 # Declare ROS messages, services and actions
 ################################################################################
 
@@ -43,7 +48,7 @@ include_directories(
 # Install
 ################################################################################
 catkin_install_python(PROGRAMS 
-#  scripts/automatic_parking_vision.py
+  scripts/automatic_parking_vision.py
  	DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
