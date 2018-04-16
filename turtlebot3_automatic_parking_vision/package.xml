@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>turtlebot3_automatic_parking_vision</name>
-  <version>0.0.1</version>
+  <version>0.1.0</version>
   <description>
-	  Package for turtlebot3 automatic_parking which uses ar code. This example needs a printed ar code and a TurtleBot3.
+    Package for turtlebot3 automatic_parking which uses ar code. This example needs a printed ar code and a TurtleBot3.
   </description>
   <license>Apache 2.0</license>
   <author email="rwjung@robotis.com">Leon Jung</author>
@@ -18,4 +18,5 @@
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>ar_track_alvar_msgs</depend>
+  <depend>ar_track_alvar</depend>
 </package>
