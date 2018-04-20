@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>turtlebot3_automatic_parking_vision</name>
+  <version>0.1.0</version>
+  <description>
+    Package for turtlebot3 automatic_parking which uses ar code. This example needs a printed ar code and a TurtleBot3.
+  </description>
+  <license>Apache 2.0</license>
+  <author email="rwjung@robotis.com">Leon Jung</author>
+  <maintainer email="pyo@robotis.com">Pyo</maintainer>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
+  <url type="website">http://turtlebot3.robotis.com</url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>ar_track_alvar_msgs</depend>
+  <depend>ar_track_alvar</depend>
+</package>
