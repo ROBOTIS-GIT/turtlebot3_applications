@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>turtlebot3_panorama</name>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <description>
       This app utilises pano_ros for taking snapshots and stitching them together to create panorama pictures.
   </description>
@@ -11,9 +11,10 @@
   <author>Marcus Liebhardt</author>
   <author>Christopher Tatsch</author>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
-  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
+  <url type="website">http://wiki.ros.org/turtlebot3</url>
+  <url type="emanual">http://turtlebot3.robotis.com</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
-  <url type="website">http://turtlebot3.robotis.com</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
   <depend>rospy</depend>
@@ -22,7 +23,7 @@
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
-  <depend>turtlebot3_msgs</depend>cv_bridge
+  <depend>turtlebot3_msgs</depend>
   <depend>cv_bridge</depend>
   <depend>image_transport</depend>
   <depend>cmake_modules</depend>

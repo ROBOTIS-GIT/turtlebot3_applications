@@ -12,6 +12,7 @@
 ## Wiki for turtlebot3_applications Packages
 - http://wiki.ros.org/turtlebot3_applications (metapackage)
 - http://wiki.ros.org/turtlebot3_automatic_parking
+- http://wiki.ros.org/turtlebot3_automatic_parking_vision
 - http://wiki.ros.org/turtlebot3_follow_filter
 - http://wiki.ros.org/turtlebot3_follower
 - http://wiki.ros.org/turtlebot3_panorama

@@ -25,7 +25,6 @@ import tf
 from enum import Enum
 from nav_msgs.msg import Odometry
 from ar_track_alvar_msgs.msg import AlvarMarkers
-# from ar_pose.msg import ARMarker
 from geometry_msgs.msg import Twist
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 import math
@@ -69,7 +68,6 @@ class AutomaticParkingVision():
             loop_rate.sleep()
 
         rospy.on_shutdown(self.fnShutDown)
-
 
     def cbGetRobotOdom(self, robot_odom_msg):
         if self.is_odom_received == False:
@@ -309,7 +307,6 @@ class AutomaticParkingVision():
 
         theta = theta + np.pi / 2.
         # rospy.loginfo("theta : %f", theta)
-
 
         if theta < 0:
             theta = theta + np.pi * 2
