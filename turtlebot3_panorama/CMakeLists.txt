@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
   turtlebot3_msgs
+  turtlebot3_applications_msgs
   cv_bridge
   image_transport
   cmake_modules
@@ -38,7 +39,7 @@ find_package(OpenCV REQUIRED)
 ################################################################################
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp rospy std_msgs std_srvs sensor_msgs geometry_msgs nav_msgs turtlebot3_msgs cv_bridge image_transport cmake_modules
+  CATKIN_DEPENDS roscpp rospy std_msgs std_srvs sensor_msgs geometry_msgs nav_msgs turtlebot3_msgs turtlebot3_applications_msgs cv_bridge image_transport cmake_modules
   DEPENDS Boost Eigen3 OpenCV
 )
 

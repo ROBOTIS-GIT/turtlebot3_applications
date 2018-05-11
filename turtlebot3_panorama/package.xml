@@ -22,7 +22,8 @@
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
-  <depend>turtlebot3_msgs</depend>cv_bridge
+  <depend>turtlebot3_msgs</depend>
+  <depend>turtlebot3_applications_msgs</depend>
   <depend>cv_bridge</depend>
   <depend>image_transport</depend>
   <depend>cmake_modules</depend>
