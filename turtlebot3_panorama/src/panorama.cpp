@@ -151,7 +151,7 @@ void PanoApp::spin()
           }
           if (take_snapshot)
           {
-            if (std::abs(ang_vel_cur) <= 0.000001) // wait until robot has stopped
+            if (std::abs(ang_vel_cur) <= 0.01) // wait until robot has stopped
             {
               snap();
               take_snapshot = false;
