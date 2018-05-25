@@ -151,7 +151,7 @@ void PanoApp::spin()
           }
           if (take_snapshot)
           {
-            if (std::abs(ang_vel_cur) <= 0.000001) // wait until robot has stopped
+            if (std::abs(ang_vel_cur) <= 0.01) // wait until robot has stopped
             {
               snap();
               take_snapshot = false;
@@ -232,8 +232,8 @@ void PanoApp::odomCb(const nav_msgs::OdometryConstPtr& msg)
 //*************************
 // Public interface
 //*************************
-bool PanoApp::takePanoServiceCb(turtlebot3_msgs::TakePanorama::Request& request,
-                                turtlebot3_msgs::TakePanorama::Response& response)
+bool PanoApp::takePanoServiceCb(turtlebot3_applications_msgs::TakePanorama::Request& request,
+                                turtlebot3_applications_msgs::TakePanorama::Response& response)
 {
   if (is_active && (request.mode == request.CONTINUOUS || request.mode == request.SNAPANDROTATE))
   {
@@ -276,7 +276,7 @@ bool PanoApp::takePanoServiceCb(turtlebot3_msgs::TakePanorama::Request& request,
       snap_interval = request.snap_interval;
       cmd_vel.angular.z = request.rot_vel;
     }
-    if (request.mode == turtlebot3_msgs::TakePanoramaRequest::CONTINUOUS)
+    if (request.mode == turtlebot3_applications_msgs::TakePanoramaRequest::CONTINUOUS)
     {
       continuous = true;
     }

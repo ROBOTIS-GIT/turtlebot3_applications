@@ -51,7 +51,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>		
 #include <image_transport/image_transport.h>	
-#include <turtlebot3_msgs/TakePanorama.h>
+#include <turtlebot3_applications_msgs/TakePanorama.h>
 
 #include "geometry.h"
 
@@ -137,8 +137,8 @@ private:
    * @param response the current state of the app (started, in progress, stopped)
    * @return true, if service call was successful
    */
-  bool takePanoServiceCb(turtlebot3_msgs::TakePanorama::Request& request,
-                         turtlebot3_msgs::TakePanorama::Response& response);
+  bool takePanoServiceCb(turtlebot3_applications_msgs::TakePanorama::Request& request,
+                         turtlebot3_applications_msgs::TakePanorama::Response& response);
 
   void snap();
 
