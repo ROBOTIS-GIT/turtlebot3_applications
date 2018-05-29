@@ -28,5 +28,5 @@
   <depend>image_transport</depend>
   <depend>cmake_modules</depend>
   <depend>eigen</depend>
-  <exec_depend>turtlebot_bringup</exec_depend>
+  <exec_depend>turtlebot3_bringup</exec_depend>
 </package>
