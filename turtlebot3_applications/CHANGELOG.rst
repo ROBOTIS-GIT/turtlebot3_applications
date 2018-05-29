@@ -2,6 +2,15 @@
 Changelog for package turtlebot3_applications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.0 (2018-05-29)
+------------------
+* added turtlebot3_automatic_parking
+* added turtlebot3_automatic_parking_vision
+* deleted unused msg
+* modified msg to use turtlebot3_applications_msg package
+* merged pull request `#18 <https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues/18>`_ `#17 <https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues/17>`_ `#16 <https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues/16>`_ `#14 <https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues/14>`_
+* Contributors: Darby Lim, Leon Jung, Gilbert, Pyo
+
 0.2.0 (2018-04-20)
 ------------------
 * added turtlebot3 automatic parking vision example source code (turtlebot3_automatic_parking_vision)

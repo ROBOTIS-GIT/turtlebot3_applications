@@ -1,11 +1,11 @@
 ################################################################################
-# CMake
+# Set minimum required version of cmake, project name and compile options
 ################################################################################
 cmake_minimum_required(VERSION 2.8.3)
 project(turtlebot3_automatic_parking)
 
 ################################################################################
-# Packages
+# Find catkin packages and libraries for catkin and system dependencies
 ################################################################################
 find_package(catkin REQUIRED COMPONENTS
   rospy
@@ -16,6 +16,10 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ################################################################################
+# Setup for python modules and scripts
+################################################################################
+
+################################################################################
 # Declare ROS messages, services and actions
 ################################################################################
 
@@ -24,7 +28,7 @@ find_package(catkin REQUIRED COMPONENTS
 ################################################################################
 
 ################################################################################
-# Catkin specific configuration
+# Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
 catkin_package(
   CATKIN_DEPENDS rospy std_msgs sensor_msgs geometry_msgs nav_msgs

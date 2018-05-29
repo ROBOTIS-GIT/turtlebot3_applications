@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>turtlebot3_automatic_parking</name>
-  <version>0.2.0</version>
+  <version>1.0.0</version>
   <description>
 	  Package for turtlebot3 automatic_parking. You need a reflective tape and real robots. You can see parking spot using this pacakge on rviz.
   </description>
   <license>Apache 2.0</license>
   <author email="kkjong@robotis.com">Gilbert</author>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
-  <url type="website">http://wiki.ros.org/turtlebot3</url>
+  <url type="website">http://wiki.ros.org/turtlebot3_automatic_parking</url>
   <url type="emanual">http://turtlebot3.robotis.com</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>

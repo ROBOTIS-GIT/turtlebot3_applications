@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>turtlebot3_follow_filter</name>
-  <version>0.2.0</version>
+  <version>1.0.0</version>
   <description>
     turtlebot3_follow_filter package using laser_filters for turtlebot3_follower package
   </description>
@@ -9,7 +9,7 @@
   <author>Christopher Tatsch</author>
   <author>Ashe Kim</author>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
-  <url type="website">http://wiki.ros.org/turtlebot3</url>
+  <url type="website">http://wiki.ros.org/turtlebot3_follow_filter</url>
   <url type="emanual">http://turtlebot3.robotis.com</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
