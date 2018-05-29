@@ -2,6 +2,12 @@
 Changelog for package turtlebot3_automatic_parking_vision
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.0 (2018-05-29)
+------------------
+* added turtlebot3_automatic_parking_vision
+* merged pull request `#14 <https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues/14>`_
+* Contributors: Leon Jung
+
 0.2.0 (2018-04-20)
 ------------------
 * added turtlebot3 automatic parking vision example source code
