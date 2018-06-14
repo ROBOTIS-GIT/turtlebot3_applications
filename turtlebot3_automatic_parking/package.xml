@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>turtlebot3_automatic_parking</name>
-  <version>0.2.0</version>
+  <version>1.0.0</version>
   <description>
 	  Package for turtlebot3 automatic_parking. You need a reflective tape and real robots. You can see parking spot using this pacakge on rviz.
   </description>
