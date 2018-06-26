@@ -18,26 +18,25 @@ find_package(catkin REQUIRED COMPONENTS
 ################################################################################
 # Setup for python modules and scripts
 ################################################################################
-
-################################################################################
-# Declare ROS messages, services and actions
-################################################################################
-
-################################################################################
-# Declare ROS dynamic reconfigure parameters
-################################################################################
+catkin_python_setup()
 
 ################################################################################
 # Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs sensor_msgs geometry_msgs nav_msgs
+  CATKIN_DEPENDS
+    rospy
+    std_msgs 
+    sensor_msgs 
+    geometry_msgs
+    nav_msgs
 )
 
 ################################################################################
 # Build
 ################################################################################
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -45,11 +44,11 @@ include_directories(
 # Install
 ################################################################################
 catkin_install_python(PROGRAMS 
-  scripts/automatic_parking.py
- 	DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  nodes/automatic_parking
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY rviz
+install(DIRECTORY launch rviz
 	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
