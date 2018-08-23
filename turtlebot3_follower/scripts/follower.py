@@ -10,8 +10,8 @@ class follower:
     def __init__(self):
         rospy.loginfo('Follower node initialized')
         self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size = 1)
-        self.clf = pickle.load( open( "clf", "rb"))
-        self.clf2 = pickle.load( open( "clf2", "rb"))
+        self.clf = pickle.load(open(os.path.join(os.path.dirname(__file__), "clf"), "rb"))
+        self.clf2 = pickle.load(open(os.path.join(os.path.dirname(__file__), "clf2"), "rb"))
         self.labels = {'30_0':0, '30_l':1, '30_r':2, '45_0':3, '45_l':4, '45_r':5,'15_0':6, 'empty':7}
         rospy.loginfo('Tree initialized')
         self.follow()
