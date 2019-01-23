@@ -45,13 +45,9 @@ include_directories(
 # Install
 ################################################################################
 install(PROGRAMS
-  scripts/add_comment
-  scripts/add_data
-  scripts/clf
-  scripts/clf2
-  scripts/follower.py
-  scripts/laser_subscriber.py
-  scripts/ploting.py
+  nodes/follower
+  nodes/laser_subscriber
+  nodes/ploting
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
