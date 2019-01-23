@@ -4,7 +4,7 @@
 ## ROS Packages for TurtleBot3 Applications
 |Version|Kinetic + Ubuntu Xenial|Melodic + Ubuntu Bionic|
 |:---:|:---:|:---:|
-|[![GitHub version](https://badge.fury.io/gh/ROBOTIS-GIT%2Fturtlebot3_applications.svg)](https://badge.fury.io/gh/ROBOTIS-GIT%2Fturtlebot3_applications)|[![Build Status](https://travis-ci.org/ROBOTIS-GIT/turtlebot3_applications.svg?branch=kinetic-devel)](https://travis-ci.org/ROBOTIS-GIT/turtlebot3_applications)|-|
+|[![GitHub version](https://badge.fury.io/gh/ROBOTIS-GIT%2Fturtlebot3_applications.svg)](https://badge.fury.io/gh/ROBOTIS-GIT%2Fturtlebot3_applications)|[![Build Status](https://travis-ci.org/ROBOTIS-GIT/turtlebot3_applications.svg?branch=kinetic-devel)](https://travis-ci.org/ROBOTIS-GIT/turtlebot3_applications)|[![Build Status](https://travis-ci.org/ROBOTIS-GIT/turtlebot3_applications.svg?branch=melodic-devel)](https://travis-ci.org/ROBOTIS-GIT/turtlebot3_applications)|
 
 ## ROBOTIS e-Manual for TurtleBot3
 - [ROBOTIS e-Manual for TurtleBot3](http://turtlebot3.robotis.com/)
@@ -26,6 +26,7 @@
 - [turtlebot3_autorace](https://github.com/ROBOTIS-GIT/turtlebot3_autorace)
 - [turtlebot3_deliver](https://github.com/ROBOTIS-GIT/turtlebot3_deliver)
 - [hls_lfcd_lds_driver](https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver)
+- [robotis_manipulator](https://github.com/ROBOTIS-GIT/robotis_manipulator)
 - [open_manipulator_msgs](https://github.com/ROBOTIS-GIT/open_manipulator_msgs)
 - [open_manipulator](https://github.com/ROBOTIS-GIT/open_manipulator)
 - [open_manipulator_simulations](https://github.com/ROBOTIS-GIT/open_manipulator_simulations)
