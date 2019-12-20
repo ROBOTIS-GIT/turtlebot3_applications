@@ -1,4 +1,0 @@
-<launch>
-  <node pkg="turtlebot3_automatic_parking" type="automatic_parking" name="automatic_parking" output="screen">
-  </node>
-</launch>
