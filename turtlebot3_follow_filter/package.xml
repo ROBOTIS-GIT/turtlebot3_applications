@@ -17,4 +17,5 @@
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>laser_filters</exec_depend>
+  <exec_depend>turtlebot3_bringup</exec_depend>
 </package>
