@@ -3,7 +3,7 @@ scan_filter_chain:
 - name: Remove over 0.35 meters on the right
   type: laser_filters/LaserScanBoxFilter
   params:
-    box_frame: odom
+    box_frame: base_footprint
     min_x: -3.5
     max_x: 3.5
     min_y: -3.5
@@ -14,7 +14,7 @@ scan_filter_chain:
 - name: Remove over 0.35 meters on the left
   type: laser_filters/LaserScanBoxFilter
   params:
-    box_frame: odom
+    box_frame: base_footprint
     min_x: -3.5
     max_x: 3.5
     min_y: 0.35
