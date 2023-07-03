@@ -71,7 +71,6 @@ class AutomaticParking(Node):
             '/scan',
             self._scan_callback,
             qos_profile=QoSProfile(depth=10))
-
         self.odom_subscriber = self.create_subscription(
             Odometry,
             '/odom',
@@ -103,9 +102,29 @@ class AutomaticParking(Node):
         )
         self.euler = self.quaternion_to_euler(quaternion)
 
+    def _get_point(self, start_angle_distance):
+        angle = start_angle_distance[0]
+        angle = np.deg2rad(angle - 180)
+        distance = start_angle_distance[1]
+
+        if angle >= 0 and angle < pi / 2:
+            x = distance * cos(angle) * -1
+            y = distance * sin(angle) * -1
+        elif angle >= pi / 2 and angle < pi:
+            x = distance * cos(angle) * -1
+            y = distance * sin(angle) * -1
+        elif angle >= -pi / 2 and angle < 0:
+            x = distance * cos(angle) * -1
+            y = distance * sin(angle) * -1
+        else:
+            x = distance * cos(angle) * -1
+            y = distance * sin(angle) * -1
+
+        return [x, y]
+
     def _get_angle_distance(self, angle):
         distance = self.scan.ranges[int(angle)]
-        if self.scan.ranges[int(angle)] is not None and distance is not 0:
+        if self.scan.ranges[int(angle)] != None and distance != 0:
             angle = int(angle)
             distance = distance
         return angle, distance
@@ -121,7 +140,7 @@ class AutomaticParking(Node):
 
         for i in range(360):
             if i >= min_scan_angle and i < max_scan_angle:
-                spot_intensity = msg.intensities[i] ** 2 * msg.ranges[i] / 100000
+                spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 100000
                 if spot_intensity >= intensity_threshold:
                     intensity_index.append(i)
                     index_count.append(i)
@@ -151,9 +170,9 @@ class AutomaticParking(Node):
 
         if start_angle_distance[1] != 0 and center_angle_distance[1] != 0 and end_angle_distance[1] != 0:
             self.get_logger().info("calibration......")
-            self.start_point = get_point(start_angle_distance)
-            self.center_point = get_point(center_angle_distance)
-            self.end_point = get_point(end_angle_distance)
+            self.start_point = self._get_point(start_angle_distance)
+            self.center_point = self._get_point(center_angle_distance)
+            self.end_point = self._get_point(end_angle_distance)
             self.theta = np.arctan2(
                 self.start_point[1] - self.end_point[1],
                 self.start_point[0] - self.end_point[0])
@@ -261,7 +280,9 @@ class AutomaticParking(Node):
 def main(args=None):
     rclpy.init(args=args)
     automatic_parking = AutomaticParking()
+
     rclpy.spin(automatic_parking)
+
     automatic_parking.destroy_node()
     rclpy.shutdown()
 
