@@ -50,8 +50,6 @@ class AutomaticParking(Node):
         self.rotation_point = [0.0, 0.0]
         self.parking_sequence = 0
         self.theta = 0.0
-        self.enable_scan = False
-        self.enable_odom = False
 
         # Set publisher
         self.cmd_vel_publisher = self.create_publisher(
@@ -72,7 +70,7 @@ class AutomaticParking(Node):
         # Set subscriber
         self.scan_subscriber = self.create_subscription(
             LaserScan,
-            '/scan',
+            '/base_scan',
             self._scan_callback,
             qos_profile=QoSProfile(depth=10))
 
@@ -95,7 +93,6 @@ class AutomaticParking(Node):
         scan_spot_list[self.end_angle] = msg.ranges[self.end_angle] + 10000
         scan_spot.intensities = tuple(scan_spot_list)
         self.scan_spot_publisher.publish(scan_spot)
-        self.enable_scan = True
 
     def _odom_callback(self, msg):
         self.odom = msg
