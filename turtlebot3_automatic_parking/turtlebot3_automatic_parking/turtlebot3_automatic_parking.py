@@ -53,16 +53,18 @@ class AutomaticParking(Node):
 
         # Set publisher
         self.cmd_vel_publisher = self.create_publisher(
-            '/cmd_vel',
             Twist,
+            '/cmd_vel',
             qos_profile=QoSProfile(depth=10))
+
         self.reset_publisher = self.create_publisher(
-            '/reset',
             Empty,
+            '/reset',
             qos_profile=QoSProfile(depth=10))
+
         self.scan_spot_publisher = self.create_publisher(
-            '/scan_spot',
             LaserScan,
+            '/scan_spot',
             qos_profile=QoSProfile(depth=10))
 
         # Set subscriber
@@ -71,6 +73,7 @@ class AutomaticParking(Node):
             '/scan',
             self._scan_callback,
             qos_profile=QoSProfile(depth=10))
+
         self.odom_subscriber = self.create_subscription(
             Odometry,
             '/odom',
