@@ -25,6 +25,7 @@ import rclpy
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from rclpy.node import Node
+from rclpy.qos import QoSProfile
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Empty
 
@@ -51,22 +52,31 @@ class AutomaticParking(Node):
         self.theta = 0.0
 
         # Set publisher
-        self.cmd_vel_publisher = self.create_publisher('/cmd_vel', Twist, queue_size=10)
-        self.reset_publisher = self.create_publisher('/reset', Empty, queue_size=10)
-        self.scan_spot_publisher = self.create_publisher('/scan_spot', LaserScan, queue_size=10)
+        self.cmd_vel_publisher = self.create_publisher(
+            '/cmd_vel',
+            Twist,
+            qos_profile=QoSProfile(depth=10))
+        self.reset_publisher = self.create_publisher(
+            '/reset',
+            Empty,
+            qos_profile=QoSProfile(depth=10))
+        self.scan_spot_publisher = self.create_publisher(
+            '/scan_spot',
+            LaserScan,
+            qos_profile=QoSProfile(depth=10))
 
         # Set subscriber
         self.scan_subscriber = self.create_subscription(
             LaserScan,
             '/scan',
             self._scan_callback,
-            10)
+            qos_profile=QoSProfile(depth=10))
 
         self.odom_subscriber = self.create_subscription(
             Odometry,
             '/odom',
             self._odom_callback,
-            10)
+            qos_profile=QoSProfile(depth=10))
 
         self._run_timer = self.create_timer(0.05, self._run)
 
