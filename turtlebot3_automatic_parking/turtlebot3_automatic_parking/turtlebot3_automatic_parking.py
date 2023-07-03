@@ -28,10 +28,9 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Empty
-from tf_transformations import quaternion_to_euler
 
 import numpy as np
-
+import tf_transformations
 
 class AutomaticParking(Node):
 
@@ -105,7 +104,7 @@ class AutomaticParking(Node):
             orientation.w
         )
 
-        self.euler = quaternion_to_euler(quaternion)
+        self.euler = tf_transformations.quaternion_to_euler(quaternion)
 
     def _get_point(self, start_angle_distance):
         angle = start_angle_distance[0]
