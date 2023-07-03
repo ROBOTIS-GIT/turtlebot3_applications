@@ -50,6 +50,8 @@ class AutomaticParking(Node):
         self.rotation_point = [0.0, 0.0]
         self.parking_sequence = 0
         self.theta = 0.0
+        self.enable_scan = False
+        self.enable_odom = False
 
         # Set publisher
         self.cmd_vel_publisher = self.create_publisher(
@@ -93,6 +95,7 @@ class AutomaticParking(Node):
         scan_spot_list[self.end_angle] = msg.ranges[self.end_angle] + 10000
         scan_spot.intensities = tuple(scan_spot_list)
         self.scan_spot_publisher.publish(scan_spot)
+        self.enable_scan = True
 
     def _odom_callback(self, msg):
         self.odom = msg
@@ -133,7 +136,6 @@ class AutomaticParking(Node):
         return angle, distance
 
     def _scan_parking_spot(self):
-        scan_done = False
         intensity_index = []
         index_count = []
         spot_angle_index = []
@@ -141,28 +143,31 @@ class AutomaticParking(Node):
         max_scan_angle = 330
         intensity_threshold = 100
 
-        for i in range(360):
-            if i >= min_scan_angle and i < max_scan_angle:
-                spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 100000
-                if spot_intensity >= intensity_threshold:
-                    intensity_index.append(i)
-                    index_count.append(i)
+        try:
+            for i in range(360):
+                if i >= min_scan_angle and i < max_scan_angle:
+                    spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 100000
+                    if spot_intensity >= intensity_threshold:
+                        intensity_index.append(i)
+                        index_count.append(i)
+                    else:
+                        intensity_index.append(0)
                 else:
                     intensity_index.append(0)
-            else:
-                intensity_index.append(0)
 
-        for i in index_count:
-            if abs(i - index_count[int(len(index_count) / 2)]) < 20:
-                spot_angle_index.append(i)
-                if len(spot_angle_index) > 10:
-                    scan_done = True
-                    self.center_angle = spot_angle_index[int(len(spot_angle_index) / 2)]
-                    self.start_angle = spot_angle_index[2]
-                    self.end_angle = spot_angle_index[-3]
+            for i in index_count:
+                if abs(i - index_count[int(len(index_count) / 2)]) < 20:
+                    spot_angle_index.append(i)
+                    if len(spot_angle_index) > 10:
+                        scan_done = True
+                        self.center_angle = spot_angle_index[int(len(spot_angle_index) / 2)]
+                        self.start_angle = spot_angle_index[2]
+                        self.end_angle = spot_angle_index[-3]
+                    else:
+                        scan_done = False
+        except:
+            scan_done = False
 
-                else:
-                    scan_done = False
         return scan_done
 
     def _finding_spot_position(self):
