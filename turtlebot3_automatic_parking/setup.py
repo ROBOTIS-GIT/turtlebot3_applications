@@ -2,10 +2,14 @@
 # Copyright 2023 ROBOTIS CO., LTD.
 # Authors: Gilbert
 
+import glob
+import os
+
 from setuptools import find_packages
 from setuptools import setup
 
 package_name = 'turtlebot3_automatic_parking'
+share_dir = 'share/' + package_name
 
 setup(
     name=package_name,
@@ -13,7 +17,8 @@ setup(
     packages=find_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
-        ('share/' + package_name, ['package.xml']),
+        (share_dir, ['package.xml']),
+        (share_dir + '/launch', glob.glob(os.path.join('launch', '*.launch.py'))),
     ],
     install_requires=['setuptools', 'launch'],
     zip_safe=True,
