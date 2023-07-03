@@ -30,7 +30,7 @@ from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Empty
 
 import numpy as np
-import tf_transformations
+import transforms3d
 
 class AutomaticParking(Node):
 
@@ -104,7 +104,7 @@ class AutomaticParking(Node):
             orientation.w
         )
 
-        self.euler = tf_transformations.quaternion_to_euler(quaternion)
+        self.euler = transforms3d.quat2euler(quaternion)
 
     def _get_point(self, start_angle_distance):
         angle = start_angle_distance[0]
