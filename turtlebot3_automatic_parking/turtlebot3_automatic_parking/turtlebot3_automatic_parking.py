@@ -70,7 +70,7 @@ class AutomaticParking(Node):
         # Set subscriber
         self.scan_subscriber = self.create_subscription(
             LaserScan,
-            '/base_scan',
+            '/scan',
             self._scan_callback,
             qos_profile=QoSProfile(depth=10))
 
