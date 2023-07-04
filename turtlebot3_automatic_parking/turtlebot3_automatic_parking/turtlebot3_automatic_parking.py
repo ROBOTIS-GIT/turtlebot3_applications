@@ -26,6 +26,7 @@ from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Empty
 
@@ -67,20 +68,20 @@ class AutomaticParking(Node):
         self.scan_spot_publisher = self.create_publisher(
             LaserScan,
             '/scan_spot',
-            qos_profile=QoSProfile(depth=10))
+            qos_profile=qos_profile_sensor_data)
 
         # Set subscriber
         self.scan_subscriber = self.create_subscription(
             LaserScan,
             '/scan',
             self._scan_callback,
-            qos_profile=QoSProfile(depth=10))
+            qos_profile=qos_profile_sensor_data)
 
         self.odom_subscriber = self.create_subscription(
             Odometry,
             '/odom',
             self._odom_callback,
-            qos_profile=QoSProfile(depth=10))
+            qos_profile=qos_profile_sensor_data)
 
         self._run_timer = self.create_timer(0.05, self._run)
 
