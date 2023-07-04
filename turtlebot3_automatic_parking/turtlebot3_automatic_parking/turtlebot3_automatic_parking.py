@@ -208,8 +208,8 @@ class AutomaticParking(Node):
     def _stop_and_reset(self):
         cmd_vel = Twist()
         reset = Empty()
-        cmd_vel.linear.x = 0
-        cmd_vel.angular.z = 0
+        cmd_vel.linear.x = 0.0
+        cmd_vel.angular.z = 0.0
         self.cmd_vel_publisher.publish(cmd_vel)
         time.sleep(1)
         self.reset_publisher.publish(reset)
