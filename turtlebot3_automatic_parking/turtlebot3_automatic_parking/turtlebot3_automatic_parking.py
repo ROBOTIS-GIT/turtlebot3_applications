@@ -137,6 +137,7 @@ class AutomaticParking(Node):
         return angle, distance
 
     def _scan_parking_spot(self):
+        scan_done = False
         intensity_index = []
         index_count = []
         spot_angle_index = []
@@ -155,7 +156,7 @@ class AutomaticParking(Node):
                         intensity_index.append(0)
                 else:
                     intensity_index.append(0)
-
+            self.get_logger().info("intensity_index: {}".format(intensity_index))
             for i in index_count:
                 if abs(i - index_count[int(len(index_count) / 2)]) < 20:
                     spot_angle_index.append(i)
@@ -164,10 +165,6 @@ class AutomaticParking(Node):
                         self.center_angle = spot_angle_index[int(len(spot_angle_index) / 2)]
                         self.start_angle = spot_angle_index[2]
                         self.end_angle = spot_angle_index[-3]
-                    else:
-                        scan_done = False
-        else:
-            scan_done = False
 
         return scan_done
 
