@@ -143,7 +143,7 @@ class AutomaticParking(Node):
         spot_angle_index = []
         min_scan_angle = 30
         max_scan_angle = 330
-        intensity_threshold = 100
+        intensity_threshold = 120
 
         if self.scan != None:
             for i in range(len(self.scan.ranges)):
@@ -195,7 +195,7 @@ class AutomaticParking(Node):
         self.get_logger().info('| end    | {0:>10.3f}| {1:>10.3f}|'.format(self.end_point[0], self.end_point[1]))
         self.get_logger().info("=================================")
         self.get_logger().info('| theta  | {0:.2f} deg'.format(np.rad2deg(self.theta)))
-        self.get_logger().info('| yaw    | {0:.2f} deg'.format(np.rad2deg(self.euler[2])))
+        self.get_logger().info('| yaw    | {0:.2f} deg'.format(np.rad2deg(self.euler[0])))
         self.get_logger().info("=================================")
         self.get_logger().info("===== Go to parking spot!!! =====")
 
@@ -232,8 +232,7 @@ class AutomaticParking(Node):
                     self.search_count = 0
 
         elif self.parking_sequence == 2:
-            init_yaw = self.euler[2]
-            self.yaw = self.theta + self.euler[2]
+            init_yaw = self.euler[0]
             if self.theta > 0:
                 if self.theta - init_yaw > 0.1:
                     cmd_vel.linear.x = 0.0
@@ -265,7 +264,7 @@ class AutomaticParking(Node):
                 self.parking_sequence += 1
 
         elif self.parking_sequence == 4:
-            if self.theta + self.euler[2] > -pi / 2:
+            if self.theta + self.euler[0] > -pi / 2:
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = -0.2
             else:
