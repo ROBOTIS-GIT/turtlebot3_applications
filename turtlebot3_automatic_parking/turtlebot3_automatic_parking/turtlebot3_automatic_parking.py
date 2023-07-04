@@ -93,7 +93,7 @@ class AutomaticParking(Node):
             scan_spot_list[self.start_angle] = msg.ranges[self.start_angle] + 10000
             scan_spot_list[self.center_angle] = msg.ranges[self.center_angle] + 10000
             scan_spot_list[self.end_angle] = msg.ranges[self.end_angle] + 10000
-            scan_spot.intensities = tuple(scan_spot_list)
+            scan_spot.intensities = msg.intensities
         self.scan_spot_publisher.publish(scan_spot)
         self._run()
 
@@ -148,7 +148,7 @@ class AutomaticParking(Node):
         if self.scan != None:
             for i in range(len(self.scan.ranges)):
                 if i >= min_scan_angle and i < max_scan_angle:
-                    spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 100000
+                    spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 1000
                     if spot_intensity >= intensity_threshold:
                         intensity_index.append(i)
                         index_count.append(i)
