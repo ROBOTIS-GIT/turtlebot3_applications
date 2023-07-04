@@ -143,30 +143,30 @@ class AutomaticParking(Node):
         max_scan_angle = 330
         intensity_threshold = 100
 
-        try:
-            for i in range(360):
-                if i >= min_scan_angle and i < max_scan_angle:
-                    spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 100000
-                    if spot_intensity >= intensity_threshold:
-                        intensity_index.append(i)
-                        index_count.append(i)
-                    else:
-                        intensity_index.append(0)
+        # try:
+        for i in range(360):
+            if i >= min_scan_angle and i < max_scan_angle:
+                spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 100000
+                if spot_intensity >= intensity_threshold:
+                    intensity_index.append(i)
+                    index_count.append(i)
                 else:
                     intensity_index.append(0)
-            self.get_logger().info('intensity_index {0}'.format(intensity_index))
-            for i in index_count:
-                if abs(i - index_count[int(len(index_count) / 2)]) < 20:
-                    spot_angle_index.append(i)
-                    if len(spot_angle_index) > 10:
-                        scan_done = True
-                        self.center_angle = spot_angle_index[int(len(spot_angle_index) / 2)]
-                        self.start_angle = spot_angle_index[2]
-                        self.end_angle = spot_angle_index[-3]
-                    else:
-                        scan_done = False
-        except:
-            scan_done = False
+            else:
+                intensity_index.append(0)
+        self.get_logger().info('intensity_index {0}'.format(intensity_index))
+        for i in index_count:
+            if abs(i - index_count[int(len(index_count) / 2)]) < 20:
+                spot_angle_index.append(i)
+                if len(spot_angle_index) > 10:
+                    scan_done = True
+                    self.center_angle = spot_angle_index[int(len(spot_angle_index) / 2)]
+                    self.start_angle = spot_angle_index[2]
+                    self.end_angle = spot_angle_index[-3]
+                else:
+                    scan_done = False
+        # except:
+        #     scan_done = False
 
         return scan_done
 
@@ -229,7 +229,7 @@ class AutomaticParking(Node):
                     self.parking_sequence += 1
             else:
                 self.search_count += 1
-                if self.search_count > 10:
+                if self.search_count > 100:
                     self.get_logger().error("Fail finding parking spot.")
                     self.search_count = 0
 
