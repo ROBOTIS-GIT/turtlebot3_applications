@@ -41,6 +41,7 @@ class AutomaticParking(Node):
         # Set initial value
         self.scan = LaserScan()
         self.odom = Odometry()
+        self.search_count = 0
         self.euler = [0.0, 0.0, 0.0]
         self.center_angle = 0
         self.start_angle = 0
@@ -155,7 +156,7 @@ class AutomaticParking(Node):
                         intensity_index.append(0)
                 else:
                     intensity_index.append(0)
-
+            self.get_logger().info('intensity_index {0}'.format(intensity_index))
             for i in index_count:
                 if abs(i - index_count[int(len(index_count) / 2)]) < 20:
                     spot_angle_index.append(i)
@@ -221,14 +222,19 @@ class AutomaticParking(Node):
     def _run(self):
         cmd_vel = Twist()
         if self.parking_sequence == 0:
+            self.get_logger().info("===== Start auto parking!!! =====")
+        elif self.parking_sequence == 1:
             if self._scan_parking_spot():
                 if self._finding_spot_position():
                     self._print_parking_log()
-                    self.parking_sequence = 1
-            # else:
-            #     self.get_logger().error("Fail finding parking spot.")
+                    self.parking_sequence += 1
+            else:
+                self.search_count += 1
+                if self.search_count > 10:
+                    self.get_logger().error("Fail finding parking spot.")
+                    self.search_count = 0
 
-        elif self.parking_sequence == 1:
+        elif self.parking_sequence == 2:
             init_yaw = self.euler[2]
             self.yaw = self.theta + self.euler[2]
             if self.theta > 0:
@@ -238,7 +244,7 @@ class AutomaticParking(Node):
                 else:
                     self._stop_and_reset()
                     self._rotate_origin_only(init_yaw)
-                    self.parking_sequence = 2
+                    self.parking_sequence += 1
             else:
                 if self.theta - init_yaw < -0.1:
                     cmd_vel.linear.x = 0.0
@@ -246,9 +252,9 @@ class AutomaticParking(Node):
                 else:
                     self._stop_and_reset()
                     self._rotate_origin_only(init_yaw)
-                    self.parking_sequence = 2
+                    self.parking_sequence += 1
 
-        elif self.parking_sequence == 2:
+        elif self.parking_sequence == 3:
             if abs(self.odom.pose.pose.position.x - (self.rotation_point[1])) > 0.02:
                 if self.odom.pose.pose.position.x > (self.rotation_point[1]):
                     cmd_vel.linear.x = -0.05
@@ -259,18 +265,18 @@ class AutomaticParking(Node):
             else:
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = 0.0
-                self.parking_sequence = 3
+                self.parking_sequence += 1
 
-        elif self.parking_sequence == 3:
+        elif self.parking_sequence == 4:
             if self.theta + self.euler[2] > -pi / 2:
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = -0.2
             else:
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = 0.0
-                self.parking_sequence = 4
+                self.parking_sequence += 1
 
-        elif self.parking_sequence == 4:
+        elif self.parking_sequence == 5:
             ranges = []
             for i in range(150, 210):
                 if self.scan.ranges[i] != 0:
