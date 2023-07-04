@@ -44,9 +44,9 @@ class AutomaticParking(Node):
         self.odom = None
         self.search_count = 0
         self.euler = [0.0, 0.0, 0.0]
-        self.center_angle = 0
-        self.start_angle = 0
-        self.end_angle = 0
+        self.center_angle = None
+        self.start_angle = None
+        self.end_angle = None
         self.start_point = [0.0, 0.0]
         self.end_point = [0.0, 0.0]
         self.center_point = [0.0, 0.0]
@@ -88,13 +88,12 @@ class AutomaticParking(Node):
     def _scan_callback(self, msg):
         self.scan = msg
         scan_spot = LaserScan()
-        scan_spot_list = list(msg.intensities)
-        for i in range(360):
-            scan_spot_list[i] = 0
-        scan_spot_list[self.start_angle] = msg.ranges[self.start_angle] + 10000
-        scan_spot_list[self.center_angle] = msg.ranges[self.center_angle] + 10000
-        scan_spot_list[self.end_angle] = msg.ranges[self.end_angle] + 10000
-        scan_spot.intensities = tuple(scan_spot_list)
+        scan_spot_list = [0] * len(msg.intensities)
+        if self.start_angle != None and self.center_angle != None and self.end_angle != None:
+            scan_spot_list[self.start_angle] = msg.ranges[self.start_angle] + 10000
+            scan_spot_list[self.center_angle] = msg.ranges[self.center_angle] + 10000
+            scan_spot_list[self.end_angle] = msg.ranges[self.end_angle] + 10000
+            scan_spot.intensities = tuple(scan_spot_list)
         self.scan_spot_publisher.publish(scan_spot)
 
     def _odom_callback(self, msg):
