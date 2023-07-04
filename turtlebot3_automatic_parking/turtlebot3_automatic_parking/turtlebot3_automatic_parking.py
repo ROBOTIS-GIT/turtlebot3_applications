@@ -83,7 +83,7 @@ class AutomaticParking(Node):
             self._odom_callback,
             qos_profile=qos_profile_sensor_data)
 
-        self._run_timer = self.create_timer(0.05, self._run)
+        # self._run_timer = self.create_timer(0.1, self._run)
 
     def _scan_callback(self, msg):
         self.scan = msg
@@ -95,6 +95,7 @@ class AutomaticParking(Node):
             scan_spot_list[self.end_angle] = msg.ranges[self.end_angle] + 10000
             scan_spot.intensities = tuple(scan_spot_list)
         self.scan_spot_publisher.publish(scan_spot)
+        self._run()
 
     def _odom_callback(self, msg):
         self.odom = msg
@@ -154,7 +155,7 @@ class AutomaticParking(Node):
                         intensity_index.append(0)
                 else:
                     intensity_index.append(0)
-            self.get_logger().info('intensity_index {0}'.format(intensity_index))
+
             for i in index_count:
                 if abs(i - index_count[int(len(index_count) / 2)]) < 20:
                     spot_angle_index.append(i)
