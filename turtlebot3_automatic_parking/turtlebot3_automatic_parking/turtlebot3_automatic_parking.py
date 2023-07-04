@@ -94,6 +94,7 @@ class AutomaticParking(Node):
         scan_spot_list[self.end_angle] = msg.ranges[self.end_angle] + 10000
         scan_spot.intensities = tuple(scan_spot_list)
         self.scan_spot_publisher.publish(scan_spot)
+        self.get_logger().info('scan {0}'.format(self.scan))
 
     def _odom_callback(self, msg):
         self.odom = msg
@@ -106,6 +107,7 @@ class AutomaticParking(Node):
         )
 
         self.euler = quat2euler(quaternion)
+        self.get_logger().info('odom {0}'.format(self.odom))
 
     def _get_point(self, start_angle_distance):
         angle = start_angle_distance[0]
@@ -223,8 +225,8 @@ class AutomaticParking(Node):
                 if self._finding_spot_position():
                     self._print_parking_log()
                     self.parking_sequence = 1
-            else:
-                self.get_logger().error("Fail finding parking spot.")
+            # else:
+            #     self.get_logger().error("Fail finding parking spot.")
 
         elif self.parking_sequence == 1:
             init_yaw = self.euler[2]
