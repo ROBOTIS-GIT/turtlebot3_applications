@@ -39,8 +39,8 @@ class AutomaticParking(Node):
         super().__init__('automatic_parking')
 
         # Set initial value
-        self.scan = LaserScan()
-        self.odom = Odometry()
+        self.scan = None
+        self.odom = None
         self.search_count = 0
         self.euler = [0.0, 0.0, 0.0]
         self.center_angle = 0
@@ -143,7 +143,7 @@ class AutomaticParking(Node):
         max_scan_angle = 330
         intensity_threshold = 100
 
-        if len(self.scan.ranges) > 0:
+        if self.scan != None:
             for i in range(360):
                 if i >= min_scan_angle and i < max_scan_angle:
                     spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 100000
