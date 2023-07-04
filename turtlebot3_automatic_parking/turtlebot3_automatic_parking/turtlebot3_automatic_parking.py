@@ -89,6 +89,7 @@ class AutomaticParking(Node):
         self.scan = msg
         scan_spot = LaserScan()
         scan_spot_list = [0] * len(msg.ranges)
+        self.get_logger().info('start angle {} center angle {} end angle {}'.format(self.start_angle, self.center_angle, self.end_angle))
         if self.start_angle != None and self.center_angle != None and self.end_angle != None:
             scan_spot_list[self.start_angle] = msg.ranges[self.start_angle] + 10000
             scan_spot_list[self.center_angle] = msg.ranges[self.center_angle] + 10000
