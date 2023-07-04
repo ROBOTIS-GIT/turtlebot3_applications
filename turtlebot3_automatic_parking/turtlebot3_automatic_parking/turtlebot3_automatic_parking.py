@@ -133,7 +133,7 @@ class AutomaticParking(Node):
     def _get_angle_distance(self, angle):
         distance = self.scan.ranges[int(angle)]
         if self.scan.ranges[int(angle)] != None and distance != 0:
-            angle = int(angle)
+            angle = int(angle) * 360 / len(self.scan.ranges)
             distance = distance
         return angle, distance
 
