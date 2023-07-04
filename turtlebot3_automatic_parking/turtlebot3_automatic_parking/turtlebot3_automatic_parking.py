@@ -143,7 +143,7 @@ class AutomaticParking(Node):
         spot_angle_index = []
         min_scan_angle = 30
         max_scan_angle = 330
-        intensity_threshold = 120
+        intensity_threshold = 150
 
         if self.scan != None:
             for i in range(len(self.scan.ranges)):
@@ -225,6 +225,7 @@ class AutomaticParking(Node):
                 if self._finding_spot_position():
                     self._print_parking_log()
                     self.parking_sequence += 1
+                    self.get_logger().info("Rotation!")
             else:
                 self.search_count += 1
                 if self.search_count > 100:
@@ -241,6 +242,7 @@ class AutomaticParking(Node):
                     self._stop_and_reset()
                     self._rotate_origin_only(init_yaw)
                     self.parking_sequence += 1
+                    self.get_logger().info("Go to parking spot!")
             else:
                 if self.theta - init_yaw < -0.1:
                     cmd_vel.linear.x = 0.0
@@ -249,6 +251,7 @@ class AutomaticParking(Node):
                     self._stop_and_reset()
                     self._rotate_origin_only(init_yaw)
                     self.parking_sequence += 1
+                    self.get_logger().info("Go to parking spot!")
 
         elif self.parking_sequence == 3:
             if abs(self.odom.pose.pose.position.x - (self.rotation_point[1])) > 0.02:
@@ -262,6 +265,7 @@ class AutomaticParking(Node):
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = 0.0
                 self.parking_sequence += 1
+                self.get_logger().info("Rotation Done.")
 
         elif self.parking_sequence == 4:
             if self.theta + self.euler[0] > -pi / 2:
@@ -271,6 +275,7 @@ class AutomaticParking(Node):
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = 0.0
                 self.parking_sequence += 1
+                self.get_logger().info("Approach spot.")
 
         elif self.parking_sequence == 5:
             ranges = []
