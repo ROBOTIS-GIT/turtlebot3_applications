@@ -22,14 +22,12 @@
 import rclpy
 from rclpy.node import Node
 import numpy as np
-import tf
 from enum import Enum
 from nav_msgs.msg import Odometry
-from ar_track_alvar_msgs.msg import AlvarMarkers
 from geometry_msgs.msg import Twist
-from tf.transformations import euler_from_quaternion
+from transforms3d.euler import quat2euler
 import math
-import time
+
 
 MARKER_ID_DETECTION = 17
 
@@ -289,7 +287,7 @@ class AutomaticParkingVision(Node):
 
     def fnGet2DRobotPose(self, robot_odom_msg):
         quaternion = (robot_odom_msg.pose.pose.orientation.x, robot_odom_msg.pose.pose.orientation.y, robot_odom_msg.pose.pose.orientation.z, robot_odom_msg.pose.pose.orientation.w)
-        theta = tf.transformations.euler_from_quaternion(quaternion)[2]
+        theta = quat2euler(quaternion)[2]
 
         if theta < 0:
             theta = theta + np.pi * 2
@@ -303,7 +301,7 @@ class AutomaticParkingVision(Node):
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
         quaternion = (marker_odom_msg.pose.pose.orientation.x, marker_odom_msg.pose.pose.orientation.y, marker_odom_msg.pose.pose.orientation.z, marker_odom_msg.pose.pose.orientation.w)
-        theta = tf.transformations.euler_from_quaternion(quaternion)[2]
+        theta = quat2euler(quaternion)[2]
 
         theta = theta + np.pi / 2.
 
