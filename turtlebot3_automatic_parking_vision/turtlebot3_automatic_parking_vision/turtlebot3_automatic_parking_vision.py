@@ -25,9 +25,8 @@ import numpy as np
 from enum import Enum
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
-from transforms3d.euler import quat2euler
 import math
-
+from tf_transformations import euler_from_quaternion
 
 MARKER_ID_DETECTION = 17
 
@@ -287,7 +286,7 @@ class AutomaticParkingVision(Node):
 
     def fnGet2DRobotPose(self, robot_odom_msg):
         quaternion = (robot_odom_msg.pose.pose.orientation.x, robot_odom_msg.pose.pose.orientation.y, robot_odom_msg.pose.pose.orientation.z, robot_odom_msg.pose.pose.orientation.w)
-        theta = quat2euler(quaternion)[2]
+        theta = euler_from_quaternion(quaternion)[2]
 
         if theta < 0:
             theta = theta + np.pi * 2
@@ -301,7 +300,7 @@ class AutomaticParkingVision(Node):
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
         quaternion = (marker_odom_msg.pose.pose.orientation.x, marker_odom_msg.pose.pose.orientation.y, marker_odom_msg.pose.pose.orientation.z, marker_odom_msg.pose.pose.orientation.w)
-        theta = quat2euler(quaternion)[2]
+        theta = euler_from_quaternion(quaternion)[2]
 
         theta = theta + np.pi / 2.
 
