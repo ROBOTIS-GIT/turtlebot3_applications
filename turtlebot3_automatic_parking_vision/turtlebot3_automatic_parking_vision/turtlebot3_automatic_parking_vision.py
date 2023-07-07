@@ -247,12 +247,12 @@ class AutomaticParkingVision(Node):
 
     def fnStop(self):
         twist = Twist()
-        twist.linear.x = 0
-        twist.linear.y = 0
-        twist.linear.z = 0
-        twist.angular.x = 0
-        twist.angular.y = 0
-        twist.angular.z = 0
+        twist.linear.x = 0.0
+        twist.linear.y = 0.0
+        twist.linear.z = 0.0
+        twist.angular.x = 0.0
+        twist.angular.y = 0.0
+        twist.angular.z = 0.0
         self.pub_cmd_vel.publish(twist)
 
     def fnTurn(self, theta):
@@ -261,22 +261,22 @@ class AutomaticParkingVision(Node):
         angular_z = Kp * theta
 
         twist = Twist()
-        twist.linear.x = 0
-        twist.linear.y = 0
-        twist.linear.z = 0
-        twist.angular.x = 0
-        twist.angular.y = 0
+        twist.linear.x = 0.0
+        twist.linear.y = 0.0
+        twist.linear.z = 0.0
+        twist.angular.x = 0.0
+        twist.angular.y = 0.0
         twist.angular.z = -angular_z
         self.pub_cmd_vel.publish(twist)
 
     def fnGoStraight(self):
         twist = Twist()
         twist.linear.x = 0.2
-        twist.linear.y = 0
-        twist.linear.z = 0
-        twist.angular.x = 0
-        twist.angular.y = 0
-        twist.angular.z = 0
+        twist.linear.y = 0.0
+        twist.linear.z = 0.0
+        twist.angular.x = 0.0
+        twist.angular.y = 0.0
+        twist.angular.z = 0.0
         self.pub_cmd_vel.publish(twist)
 
     def fnTrackMarker(self, theta):
@@ -286,10 +286,10 @@ class AutomaticParkingVision(Node):
 
         twist = Twist()
         twist.linear.x = 0.10
-        twist.linear.y = 0
-        twist.linear.z = 0
-        twist.angular.x = 0
-        twist.angular.y = 0
+        twist.linear.y = 0.0
+        twist.linear.z = 0.0
+        twist.angular.x = 0.0
+        twist.angular.y = 0.0
         twist.angular.z = -angular_z
         self.pub_cmd_vel.publish(twist)
 
@@ -297,7 +297,7 @@ class AutomaticParkingVision(Node):
         quaternion = (robot_odom_msg.pose.pose.orientation.x, robot_odom_msg.pose.pose.orientation.y, robot_odom_msg.pose.pose.orientation.z, robot_odom_msg.pose.pose.orientation.w)
         theta = euler_from_quaternion(quaternion)[2]
 
-        if theta < 0:
+        if theta < 0.0:
             theta = theta + np.pi * 2
         if theta > np.pi * 2:
             theta = theta - np.pi * 2
@@ -313,7 +313,7 @@ class AutomaticParkingVision(Node):
 
         theta = theta + np.pi / 2.
 
-        if theta < 0:
+        if theta < 0.0:
             theta = theta + np.pi * 2
         if theta > np.pi * 2:
             theta = theta - np.pi * 2
