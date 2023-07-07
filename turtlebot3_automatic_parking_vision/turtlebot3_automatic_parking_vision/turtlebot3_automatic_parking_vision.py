@@ -19,14 +19,18 @@
 
 # Authors: Leon Jung, Gilbert
 
+from enum import Enum
+import math
+
 import rclpy
 from rclpy.node import Node
-import numpy as np
-from enum import Enum
-from nav_msgs.msg import Odometry
+from rclpy.qos import qos_profile_sensor_data
 from geometry_msgs.msg import Twist
-import math
+from nav_msgs.msg import Odometry
+
 from tf_transformations import euler_from_quaternion
+import numpy as np
+
 
 MARKER_ID_DETECTION = 17
 
@@ -36,7 +40,11 @@ class AutomaticParkingVision(Node):
     def __init__(self):
         super().__init__('automatic_parking_vision')
 
-        self.sub_odom_robot = self.create_subscription(Odometry, '/odom', self.cbGetRobotOdom, 1)
+        self.sub_odom_robot = self.create_subscription(
+            Odometry,
+            '/odom',
+            self.cbGetRobotOdom,
+            qos_profile=qos_profile_sensor_data)
         # self.sub_info_marker = rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.cbGetMarkerOdom, queue_size = 1)
 
         self.pub_cmd_vel = self.create_publisher(Twist, '/cmd_vel', 1)
@@ -70,6 +78,7 @@ class AutomaticParkingVision(Node):
     def cbGetRobotOdom(self, robot_odom_msg):
         if self.is_odom_received == False:
             self.is_odom_received = True
+            self.get_logger().info('Odometry received')
 
         pos_x, pos_y, theta = self.fnGet2DRobotPose(robot_odom_msg)
 

@@ -9,6 +9,14 @@ from launch_ros.actions import Node
 def generate_launch_description():
     return LaunchDescription([
         Node(
+            package='v4l2_camera',
+            executable='v4l2_camera_node',
+            name='v4l2_camera_node',
+            parameters=[
+                {'image_size': [640, 480]},
+            ],
+        ),
+        Node(
             package='turtlebot3_automatic_parking_vision',
             executable='turtlebot3_automatic_parking_vision',
             name='turtlebot3_automatic_parking_vision',
