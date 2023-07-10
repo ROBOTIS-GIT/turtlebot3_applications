@@ -50,7 +50,7 @@ class AutomaticParkingVision(Node):
 
         self.sub_info_marker = self.create_subscription(
             PoseStamped,
-            '/pose',
+            '/aruco_single/pose',
             self.cbGetMarkerOdom,
             qos_profile=qos_profile_sensor_data)
 

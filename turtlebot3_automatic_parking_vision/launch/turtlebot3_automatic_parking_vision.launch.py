@@ -15,10 +15,6 @@ def generate_launch_description():
             parameters=[
                 {'image_size': [640, 480]},
             ],
-            remappings=[
-                ('/camera_info', '/stereo/left/camera_info'),
-                ('/image_raw', '/stereo/left/image_rect_color'),
-        ]
         ),
         Node(
             package='turtlebot3_automatic_parking_vision',
