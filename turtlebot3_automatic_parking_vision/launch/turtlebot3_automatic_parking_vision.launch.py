@@ -17,7 +17,7 @@ def generate_launch_description():
             ],
             remappings=[
                 ('/camera_info', '/stereo/left/camera_info'),
-                ('/image_raw', '/stereo/left/image_rect_colo'),
+                ('/image_raw', '/stereo/left/image_rect_color'),
         ]
         ),
         Node(
