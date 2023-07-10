@@ -49,8 +49,8 @@ class AutomaticParkingVision(Node):
             qos_profile=qos_profile_sensor_data)
 
         self.sub_info_marker = self.create_subscription(
-            '/pose',
             PoseStamped,
+            '/pose',
             self.cbGetMarkerOdom,
             qos_profile=qos_profile_sensor_data)
 
