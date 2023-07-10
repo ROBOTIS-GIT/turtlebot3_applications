@@ -24,7 +24,9 @@ import math
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile
 from rclpy.qos import qos_profile_sensor_data
+from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 
@@ -45,11 +47,27 @@ class AutomaticParkingVision(Node):
             '/odom',
             self.cbGetRobotOdom,
             qos_profile=qos_profile_sensor_data)
-        # self.sub_info_marker = rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.cbGetMarkerOdom, queue_size = 1)
 
-        self.pub_cmd_vel = self.create_publisher(Twist, '/cmd_vel', 1)
-        self.ParkingSequence = Enum('ParkingSequence', 'searching_parking_lot changing_direction moving_nearby_parking_lot parking stop finished')
-        self.NearbySequence = Enum('NearbySequence', 'initial_turn go_straight turn_right parking')
+        self.sub_info_marker = self.create_subscription(
+            '/pose',
+            PoseStamped,
+            self.cbGetMarkerOdom,
+            qos_profile=qos_profile_sensor_data)
+
+        self.pub_cmd_vel = self.create_publisher(
+            Twist,
+            '/cmd_vel',
+            qos_profile=QoSProfile(depth=10))
+
+
+        self.ParkingSequence = Enum(
+            'ParkingSequence',
+            'searching_parking_lot changing_direction moving_nearby_parking_lot parking stop finished')
+
+        self.NearbySequence = Enum(
+            'NearbySequence',
+            'initial_turn go_straight turn_right parking')
+
         self.current_nearby_sequence = self.NearbySequence.initial_turn.value
         self.current_parking_sequence = self.ParkingSequence.searching_parking_lot.value
 
