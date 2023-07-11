@@ -47,6 +47,7 @@ class AutomaticParkingVision(Node):
         self.goal_position = Point()
         self.goal_heading = 0.0
         self.heading = 0.0
+        self.position = Point()
         self.position_error = Point()
         self.heading_error = 0.0
         self.angular_speed = 0.3
