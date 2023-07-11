@@ -318,7 +318,7 @@ class AutomaticParkingVision(Node):
 
     def fnGet2DRobotPose(self, robot_odom_msg):
         quaternion = (robot_odom_msg.pose.pose.orientation.x, robot_odom_msg.pose.pose.orientation.y, robot_odom_msg.pose.pose.orientation.z, robot_odom_msg.pose.pose.orientation.w)
-        theta = euler_from_quaternion(quaternion)[2]
+        theta = euler_from_quaternion(quaternion)[0]
 
         if theta < 0.0:
             theta = theta + np.pi * 2
@@ -405,7 +405,7 @@ class AutomaticParkingVision(Node):
             odom.orientation.y,
             odom.orientation.z,
             odom.orientation.w)
-        theta = euler_from_quaternion(quaternion)[2]
+        theta = euler_from_quaternion(quaternion)[0]
         theta = theta + np.pi / 2.
 
         if theta < 0.0:

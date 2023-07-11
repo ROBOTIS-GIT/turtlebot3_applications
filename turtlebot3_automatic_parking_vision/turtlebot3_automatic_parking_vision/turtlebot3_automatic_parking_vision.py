@@ -119,7 +119,12 @@ class AutomaticParkingVision(Node):
 
     def _get_odom(self, msg):
         self.position = msg.pose.pose.position
-        _, _, self.heading = self._euler_from_quaternion(msg.pose.pose.orientation)
+        quaternion = (
+            msg.pose.pose.orientation.x,
+            msg.pose.pose.orientation.y,
+            msg.pose.pose.orientation.z,
+            msg.pose.pose.orientation.w)
+        self.heading = euler_from_quaternion(quaternion)[0]
         # self.get_logger().info('heading: ' + str(self.heading))
 
     def _get_aruco_markers(self, msg):
@@ -178,7 +183,7 @@ class AutomaticParkingVision(Node):
                 pose.orientation.y,
                 pose.orientation.z,
                 pose.orientation.w)
-            theta = euler_from_quaternion(quaternion)[2]
+            theta = euler_from_quaternion(quaternion)[0]
             theta = theta + np.pi / 2.
 
             if theta < 0.0:
