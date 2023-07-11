@@ -335,8 +335,8 @@ class AutomaticParkingVision(Node):
         self.get_logger().info("odom {0}".format(odom.position))
         camera_pose = TransformStamped()
         camera_pose.header.stamp = self.get_clock().now().to_msg()
-        camera_pose.header.frame_id = 'camera_frame'
-        camera_pose.child_frame_id = 'world_frame'
+        camera_pose.header.frame_id = 'base_link'
+        camera_pose.child_frame_id = ''
         camera_pose.transform.translation.x = odom.position.x
         camera_pose.transform.translation.y = odom.position.y
         camera_pose.transform.translation.z = odom.position.z
