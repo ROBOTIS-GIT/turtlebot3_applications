@@ -330,40 +330,24 @@ class AutomaticParkingVision(Node):
 
         return pos_x, pos_y, theta
 
+    def quaternion_to_rotation_matrix(self, quaternion):
+        x, y, z, w = quaternion
+        rotation_matrix = np.array([[1-2*y**2-2*z**2, 2*x*y-2*z*w, 2*x*z+2*y*w],
+                                    [2*x*y+2*z*w, 1-2*x**2-2*z**2, 2*y*z-2*x*w],
+                                    [2*x*z-2*y*w, 2*y*z+2*x*w, 1-2*x**2-2*y**2]])
+        return rotation_matrix
+
     def rotateOdom(self, odom):
         self.get_logger().info("odom {0}".format(odom.position))
-        rotation_x = -math.pi / 2
-        cos_angle_x = math.cos(rotation_x)
-        sin_angle_x = math.sin(rotation_x)
-        rotation_matrix_x = [[1, 0, 0],
-                            [0, cos_angle_x, -sin_angle_x],
-                            [0, sin_angle_x, cos_angle_x]]
+        position = np.array([odom.position.x, odom.position.y, odom.position.z])
+        orientation = np.array([odom.orientation.x, odom.orientation.y,
+                                odom.orientation.z, odom.orientation.w])
 
-        rotation_z = -math.pi / 2
-        cos_angle_z = math.cos(rotation_z)
-        sin_angle_z = math.sin(rotation_z)
-        rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
-                            [sin_angle_z, cos_angle_z, 0],
-                            [0, 0, 1]]
+        rotation_matrix = self.quaternion_to_rotation_matrix(orientation)
 
-        position = [odom.position.x, odom.position.y, odom.position.z]
-        rotated_position = [0, 0, 0]
-        for i in range(3):
-            for j in range(3):
-                rotated_position[i] += rotation_matrix_z[i][j] * position[j]
-        for i in range(3):
-            for j in range(3):
-                position[i] = rotated_position[i]
-                rotated_position[i] = 0
-                for k in range(3):
-                    rotated_position[i] += rotation_matrix_x[i][k] * position[k]
+        rotated_position = np.dot(rotation_matrix, position)
 
-        orientation = [odom.orientation.x, odom.orientation.y, odom.orientation.z, odom.orientation.w]
-        rotated_orientation = [0, 0, 0, 0]
-        rotated_orientation[0] = cos_angle_x * cos_angle_z * orientation[0] - sin_angle_x * sin_angle_z * orientation[1]
-        rotated_orientation[1] = sin_angle_x * cos_angle_z * orientation[0] + cos_angle_x * sin_angle_z * orientation[1]
-        rotated_orientation[2] = cos_angle_x * sin_angle_z * orientation[0] + sin_angle_x * cos_angle_z * orientation[2]
-        rotated_orientation[3] = cos_angle_x * cos_angle_z * orientation[3] - sin_angle_x * sin_angle_z * orientation[3]
+        rotated_orientation = orientation
 
         rotated_odom = Pose()
         rotated_odom.position.x = rotated_position[0]
@@ -373,6 +357,8 @@ class AutomaticParkingVision(Node):
         rotated_odom.orientation.y = rotated_orientation[1]
         rotated_odom.orientation.z = rotated_orientation[2]
         rotated_odom.orientation.w = rotated_orientation[3]
+
+
         # rotation_x = math.pi / 2
         # cos_angle_x = math.cos(-rotation_x)
         # sin_angle_x = math.sin(-rotation_x)
