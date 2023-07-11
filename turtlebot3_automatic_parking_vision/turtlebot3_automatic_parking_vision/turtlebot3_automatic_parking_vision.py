@@ -29,6 +29,7 @@ from rclpy.qos import qos_profile_sensor_data
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
+from ros2_aruco_interfaces.msg import ArucoMarkers
 
 from tf_transformations import euler_from_quaternion
 import numpy as np
@@ -50,7 +51,7 @@ class AutomaticParkingVision(Node):
 
         self.sub_info_marker = self.create_subscription(
             PoseStamped,
-            '/aruco_single/pose',
+            '/aruco_markers',
             self.cbGetMarkerOdom,
             qos_profile=qos_profile_sensor_data)
 
@@ -117,12 +118,12 @@ class AutomaticParkingVision(Node):
         self.robot_2d_theta = self.total_robot_2d_theta
 
     def cbGetMarkerOdom(self, markers_odom_msg):
-        for marker_odom_msg in markers_odom_msg.markers:
-            if marker_odom_msg.id == MARKER_ID_DETECTION:
+        for i in range(len(markers_odom_msg.marker_ids)):
+            if markers_odom_msg.marker_ids[i] == MARKER_ID_DETECTION:
                 if self.is_marker_pose_received == False:
                     self.is_marker_pose_received = True
 
-                pos_x, pos_y, theta = self.fnGet2DMarkerPose(marker_odom_msg)
+                pos_x, pos_y, theta = self.fnGet2DMarkerPose(markers_odom_msg.poses[i])
 
                 self.marker_2d_pose_x = pos_x
                 self.marker_2d_pose_y = pos_y
