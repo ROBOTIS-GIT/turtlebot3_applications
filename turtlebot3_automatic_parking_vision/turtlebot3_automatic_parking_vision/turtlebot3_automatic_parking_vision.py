@@ -92,6 +92,8 @@ class AutomaticParkingVision(Node):
         self.is_marker_pose_received = False
 
         self.timer = self.create_timer(0.1, self._run)
+        self.transform_listener = TransformListener(self)
+        self.transform_broadcaster = TransformBroadcaster(self)
 
     def _run(self):
         if self.is_odom_received is True:
@@ -333,6 +335,7 @@ class AutomaticParkingVision(Node):
         return pos_x, pos_y, theta
 
     def rotateOdom(self, odom):
+        rotated_odom = Pose()
         try:
             transform = self.transform_listener.lookup_transform(
                 'base_link',
@@ -341,7 +344,6 @@ class AutomaticParkingVision(Node):
         except Exception as e:
             self.get_logger().warn('Failed to lookup transform: %s' % str(e))
             return
-
         self.get_logger().info("odom {0}".format(odom.position, transform))
         rotated_odom = do_transform_pose(odom, transform)
         # rotation_x = math.pi / 2
