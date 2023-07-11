@@ -335,7 +335,7 @@ class AutomaticParkingVision(Node):
         angle_x = math.pi / 2
         cos_angle_x = math.cos(angle_x)
         sin_angle_x = math.sin(angle_x)
-
+        self.get_logger().info("odom {0}".format(odom.position))
         rotated_x = cos_angle_x * odom.position.x - sin_angle_x * odom.position.y
         rotated_y = sin_angle_x * odom.position.x + cos_angle_x * odom.position.y
 
@@ -363,8 +363,7 @@ class AutomaticParkingVision(Node):
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
         odom = self.rotateOdom(marker_odom_msg)
-
-
+        self.get_logger().info("rotation odom {0}".format(odom.position))
         quaternion = (
             odom.orientation.x,
             odom.orientation.y,
