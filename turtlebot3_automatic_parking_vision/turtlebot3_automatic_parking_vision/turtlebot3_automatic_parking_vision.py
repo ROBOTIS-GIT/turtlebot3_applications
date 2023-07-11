@@ -57,54 +57,56 @@ class AutomaticParkingVision(Node):
             qos_profile=QoSProfile(depth=10))
 
         self.is_marker_received = False
+        self.is_set_goal = False
         self.timer = self.create_timer(0.05, self._timer_callback)
 
     def _timer_callback(self):
-        self.position_error.x = self.goal_position.x - self.position.x
-        self.position_error.y = self.goal_position.y - self.position.y
+        if self.is_set_goal:
+            self.position_error.x = self.goal_position.x - self.position.x
+            self.position_error.y = self.goal_position.y - self.position.y
 
-        distance = math.sqrt(pow(self.position_error.x, 2) + pow(self.position_error.y, 2))
-        goal_direction = math.atan2(self.position_error.y, self.position_error.x)
+            distance = math.sqrt(pow(self.position_error.x, 2) + pow(self.position_error.y, 2))
+            goal_direction = math.atan2(self.position_error.y, self.position_error.x)
 
-        if distance > 0.1:
-            path_angle = goal_direction - self.heading
+            if distance > 0.1:
+                path_angle = goal_direction - self.heading
 
-            if path_angle < -math.pi:
-                path_angle = path_angle + 2 * math.pi
-            elif path_angle > math.pi:
-                path_angle = path_angle - 2 * math.pi
+                if path_angle < -math.pi:
+                    path_angle = path_angle + 2 * math.pi
+                elif path_angle > math.pi:
+                    path_angle = path_angle - 2 * math.pi
 
-            self.cmd_vel.angular.z = path_angle
-            self.cmd_vel.linear.x = min(self.linear_speed * distance, 0.1)
+                self.cmd_vel.angular.z = path_angle
+                self.cmd_vel.linear.x = min(self.linear_speed * distance, 0.1)
 
-            if self.cmd_vel.angular.z > 0:
-                self.cmd_vel.angular.z = min(self.cmd_vel.angular.z, 1.5)
+                if self.cmd_vel.angular.z > 0:
+                    self.cmd_vel.angular.z = min(self.cmd_vel.angular.z, 1.5)
+                else:
+                    self.cmd_vel.angular.z = max(self.cmd_vel.angular.z,  -1.5)
+                self.cmd_vel_pub.publish(self.cmd_vel)
+
             else:
-                self.cmd_vel.angular.z = max(self.cmd_vel.angular.z,  -1.5)
-            self.cmd_vel_pub.publish(self.cmd_vel)
+                self.heading_error = self.goal_heading - self.heading
 
-        else:
-            self.heading_error = self.goal_heading - self.heading
+                if self.heading_error < -math.pi:
+                    self.heading_error = self.heading_error+ 2 * math.pi
+                elif self.heading_error > math.pi:
+                    self.heading_error = self.heading_error- 2 * math.pi
 
-            if self.heading_error < -math.pi:
-                self.heading_error = self.heading_error+ 2 * math.pi
-            elif self.heading_error > math.pi:
-                self.heading_error = self.heading_error- 2 * math.pi
-
-            self.cmd_vel.linear.x = 0.0
-            self.cmd_vel.angular.z = self.heading_error
-
-            if abs(self.heading_error * 180.0 / math.pi) < 1.0:
                 self.cmd_vel.linear.x = 0.0
-                self.cmd_vel.angular.z = 0.0
+                self.cmd_vel.angular.z = self.heading_error
 
-        self.get_logger().info("distance: " + str(distance))
-        self.get_logger().info("heading_angle: " + str(self.heading_error * 180.0 / math.pi))
-        self.cmd_vel_pub.publish(self.cmd_vel)
+                if abs(self.heading_error * 180.0 / math.pi) < 1.0:
+                    self.cmd_vel.linear.x = 0.0
+                    self.cmd_vel.angular.z = 0.0
+
+            self.get_logger().info("distance: " + str(distance))
+            self.get_logger().info("heading_angle: " + str(self.heading_error * 180.0 / math.pi))
+            self.cmd_vel_pub.publish(self.cmd_vel)
 
     def _get_odom(self, msg):
         self.position = msg.pose.pose.position
-        _, _, self.heading = self.euler_from_quaternion(msg.pose.pose.orientation)
+        _, _, self.heading = self._euler_from_quaternion(msg.pose.pose.orientation)
         # self.get_logger().info('heading: ' + str(self.heading))
 
     def _get_aruco_markers(self, msg):
@@ -130,10 +132,10 @@ class AutomaticParkingVision(Node):
             self.goal_heading = -(-self.goal_heading % (math.pi * 180.0 / math.pi))
 
         self.goal_heading = self.goal_heading * math.pi / 180.0
-
+        self.is_set_goal = True
         self.get_logger().info(str(self.goal_position.x) + str(self.goal_position.y) + str(self.goal_heading))
 
-    def euler_from_quaternion(self, quat):
+    def _euler_from_quaternion(self, quat):
         """
         Convert quaternion (w in last place) to euler roll, pitch, yaw.
 
