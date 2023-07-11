@@ -332,32 +332,32 @@ class AutomaticParkingVision(Node):
         return pos_x, pos_y, theta
 
     def rotateOdom(self, odom):
-        angle_x = math.pi / 2
-        cos_angle_x = math.cos(angle_x)
-        sin_angle_x = math.sin(angle_x)
         self.get_logger().info("odom {0}".format(odom.position))
-        rotated_x = cos_angle_x * odom.position.x - sin_angle_x * odom.position.y
-        rotated_y = sin_angle_x * odom.position.x + cos_angle_x * odom.position.y
+        rotation_x = math.pi / 2
+        cos_angle_x = math.cos(rotation_x)
+        sin_angle_x = math.sin(rotation_x)
+        rotation_matrix_x = [[1, 0, 0],
+                            [0, cos_angle_x, -sin_angle_x],
+                            [0, sin_angle_x, cos_angle_x]]
 
-        angle_z = math.pi / 2
-        cos_angle_z = math.cos(angle_z)
-        sin_angle_z = math.sin(angle_z)
+        rotation_z = math.pi / 2
+        cos_angle_z = math.cos(rotation_z)
+        sin_angle_z = math.sin(rotation_z)
+        rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
+                            [sin_angle_z, cos_angle_z, 0],
+                            [0, 0, 1]]
 
-        qx = odom.orientation.x
-        qy = odom.orientation.y
-        qz = odom.orientation.z
-        qw = odom.orientation.w
 
-        rotated_qx = cos_angle_z * qx - sin_angle_z * qy
-        rotated_qy = sin_angle_z * qx + cos_angle_z * qy
+        pose_matrix = [[odom.position.x],
+                    [odom.position.y],
+                    [odom.position.z]]
+        rotated_odom_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
 
         rotated_odom = Pose()
-        rotated_odom.position.x = rotated_x
-        rotated_odom.position.y = rotated_y
-        rotated_odom.position.z = odom.position.z
-        rotated_odom.orientation = Quaternion(
-            x=rotated_qx, y=rotated_qy, z=qz, w=qw
-        )
+        rotated_odom.position.x = rotated_odom_matrix[0][0]
+        rotated_odom.position.y = rotated_odom_matrix[1][0]
+        rotated_odom.position.z = rotated_odom_matrix[2][0]
+        rotated_odom.orientation = odom.orientation
 
         return rotated_odom
 
