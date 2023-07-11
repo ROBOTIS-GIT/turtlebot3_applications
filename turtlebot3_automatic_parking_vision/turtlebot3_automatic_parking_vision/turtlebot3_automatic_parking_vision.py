@@ -28,6 +28,7 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import qos_profile_sensor_data
 from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Pose
 from nav_msgs.msg import Odometry
 from ros2_aruco_interfaces.msg import ArucoMarkers
 
@@ -350,9 +351,7 @@ class AutomaticParkingVision(Node):
         rotated_qx = cos_angle_z * qx - sin_angle_z * qy
         rotated_qy = sin_angle_z * qx + cos_angle_z * qy
 
-        rotated_odom = Odometry()
-        rotated_odom.header = odom.header
-        rotated_odom.child_frame_id = odom.child_frame_id
+        rotated_odom = Pose()
         rotated_odom.position.x = rotated_x
         rotated_odom.position.y = rotated_y
         rotated_odom.position.z = odom.position.z
