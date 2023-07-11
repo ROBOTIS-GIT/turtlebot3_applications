@@ -171,7 +171,8 @@ class AutomaticParkingVision(Node):
             self.fnStop()
             self.get_logger().info("Finished 5")
             self.current_parking_sequence = self.ParkingSequence.finished.value
-            self.on_shutdown(self.fnShutDown)
+            self.fnShutDown()
+            rclpy.shutdown()
 
     def fnSeqSearchingGoal(self):
         if self.is_marker_pose_received is False:
@@ -232,7 +233,7 @@ class AutomaticParkingVision(Node):
             # rospy.loginfo("remained_dist %f desired_dist %f dist_from_start %f", remained_dist, desired_dist, dist_from_start)
 
             self.fnGoStraight()
-            if remained_dist < 0.01:
+            if remained_dist < 0.02:
                 self.fnStop()
                 self.current_nearby_sequence = self.NearbySequence.turn_right.value
 
