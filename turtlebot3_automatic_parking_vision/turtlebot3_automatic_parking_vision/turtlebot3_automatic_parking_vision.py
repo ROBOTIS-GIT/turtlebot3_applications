@@ -50,7 +50,7 @@ class AutomaticParkingVision(Node):
             qos_profile=qos_profile_sensor_data)
 
         self.sub_info_marker = self.create_subscription(
-            PoseStamped,
+            ArucoMarkers,
             '/aruco_markers',
             self.cbGetMarkerOdom,
             qos_profile=qos_profile_sensor_data)
@@ -119,6 +119,7 @@ class AutomaticParkingVision(Node):
 
     def cbGetMarkerOdom(self, markers_odom_msg):
         for i in range(len(markers_odom_msg.marker_ids)):
+            self.get_logger().info('find marker id: %d' % markers_odom_msg.marker_ids[i])
             if markers_odom_msg.marker_ids[i] == MARKER_ID_DETECTION:
                 if self.is_marker_pose_received == False:
                     self.is_marker_pose_received = True
