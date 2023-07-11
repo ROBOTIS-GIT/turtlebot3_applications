@@ -32,6 +32,7 @@ from geometry_msgs.msg import Pose
 from nav_msgs.msg import Odometry
 from ros2_aruco_interfaces.msg import ArucoMarkers
 from tf2_geometry_msgs import do_transform_pose
+from tf2_ros import TransformListener, TransformBroadcaster
 
 from tf_transformations import euler_from_quaternion
 import numpy as np
@@ -332,20 +333,17 @@ class AutomaticParkingVision(Node):
         return pos_x, pos_y, theta
 
     def rotateOdom(self, odom):
-        self.get_logger().info("odom {0}".format(odom.position))
-        camera_pose = TransformStamped()
-        camera_pose.header.stamp = self.get_clock().now().to_msg()
-        camera_pose.header.frame_id = 'base_link'
-        camera_pose.child_frame_id = ''
-        camera_pose.transform.translation.x = odom.position.x
-        camera_pose.transform.translation.y = odom.position.y
-        camera_pose.transform.translation.z = odom.position.z
-        camera_pose.transform.rotation.x = odom.orientation.x
-        camera_pose.transform.rotation.y = odom.orientation.y
-        camera_pose.transform.rotation.z = odom.orientation.z
-        camera_pose.transform.rotation.w = odom.orientation.w
+        try:
+            transform = self.transform_listener.lookup_transform(
+                'base_link',
+                'camera_frame',
+                rclpy.time.Time())
+        except Exception as e:
+            self.get_logger().warn('Failed to lookup transform: %s' % str(e))
+            return
 
-        rotated_odom = do_transform_pose(Pose(), camera_pose)
+        self.get_logger().info("odom {0}".format(odom.position, transform))
+        rotated_odom = do_transform_pose(odom, transform)
         # rotation_x = math.pi / 2
         # cos_angle_x = math.cos(rotation_x)
         # sin_angle_x = math.sin(rotation_x)
