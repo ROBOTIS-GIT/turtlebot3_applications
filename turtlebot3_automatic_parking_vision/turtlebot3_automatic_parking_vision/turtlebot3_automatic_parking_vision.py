@@ -181,13 +181,16 @@ class AutomaticParkingVision(Node):
 
     def fnSeqChangingDirection(self):
         desired_angle_turn = -1. *  math.atan2(self.marker_2d_pose_y - 0, self.marker_2d_pose_x - 0)
-
+        self.get_logger().info(
+            "desired_angle_turn {} self.marker_2d_pose_x {} self.marker_2d_pose_y {}".format(
+                desired_angle_turn, self.marker_2d_pose_x, self.marker_2d_pose_y))
         # rospy.loginfo("desired_angle_turn %f self.marker_2d_pose_x %f self.marker_2d_pose_y %f"
         # , desired_angle_turn, self.marker_2d_pose_x, self.marker_2d_pose_y)
 
         self.fnTurn(desired_angle_turn)
 
         if abs(desired_angle_turn) < 0.01:
+        # if abs(desired_angle_turn) < 1.58 and abs(desired_angle_turn) > 1.55:
             self.fnStop()
             return True
         else:
@@ -317,10 +320,10 @@ class AutomaticParkingVision(Node):
         quaternion = (robot_odom_msg.pose.pose.orientation.x, robot_odom_msg.pose.pose.orientation.y, robot_odom_msg.pose.pose.orientation.z, robot_odom_msg.pose.pose.orientation.w)
         theta = euler_from_quaternion(quaternion)[2]
 
-        if theta < 0.0:
-            theta = theta + np.pi * 2
-        if theta > np.pi * 2:
-            theta = theta - np.pi * 2
+        # if theta < 0.0:
+        #     theta = theta + np.pi * 2
+        # if theta > np.pi * 2:
+        #     theta = theta - np.pi * 2
 
         pos_x = robot_odom_msg.pose.pose.position.x
         pos_y = robot_odom_msg.pose.pose.position.y
@@ -328,7 +331,11 @@ class AutomaticParkingVision(Node):
         return pos_x, pos_y, theta
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
-        quaternion = (marker_odom_msg.orientation.x, marker_odom_msg.orientation.y, marker_odom_msg.orientation.z, marker_odom_msg.orientation.w)
+        quaternion = (
+            marker_odom_msg.orientation.x,
+            marker_odom_msg.orientation.y,
+            marker_odom_msg.orientation.z,
+            marker_odom_msg.orientation.w)
         theta = euler_from_quaternion(quaternion)[2]
         theta = theta + np.pi / 2.
 
