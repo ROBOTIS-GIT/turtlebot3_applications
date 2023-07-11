@@ -120,8 +120,8 @@ class AutomaticParkingVision(Node):
                     self.get_logger().info('marker detected {} {} {}'.format(pos_x, pos_y, theta))
                     self.is_marker_received = True
 
-    def _rotate_odom(self, odom):
-        self.get_logger().info("odom {0}".format(odom.position))
+    def _rotate_pose(self, pose):
+        self.get_logger().info("pose {0}".format(pose.position))
         rotation_x = math.pi / 2
         cos_angle_x = math.cos(rotation_x)
         sin_angle_x = math.sin(rotation_x)
@@ -136,28 +136,28 @@ class AutomaticParkingVision(Node):
                             [sin_angle_z, cos_angle_z, 0],
                             [0, 0, 1]]
 
-        pose_matrix = [[odom.position.x],
-                    [odom.position.y],
-                    [odom.position.z]]
-        rotated_odom_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
+        pose_matrix = [[pose.position.x],
+                    [pose.position.y],
+                    [pose.position.z]]
+        rotated_pose_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
 
-        orientation = [odom.orientation.x, odom.orientation.y, odom.orientation.z, odom.orientation.w]
+        orientation = [pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w]
         rotated_orientation = [0, 0, 0, 0]
         rotated_orientation[0] = cos_angle_x * cos_angle_z * orientation[0] - sin_angle_x * sin_angle_z * orientation[1]
         rotated_orientation[1] = sin_angle_x * cos_angle_z * orientation[0] + cos_angle_x * sin_angle_z * orientation[1]
         rotated_orientation[2] = cos_angle_x * sin_angle_z * orientation[0] + sin_angle_x * cos_angle_z * orientation[2]
         rotated_orientation[3] = cos_angle_x * cos_angle_z * orientation[3] - sin_angle_x * sin_angle_z * orientation[3]
 
-        rotated_odom = Pose()
-        rotated_odom.position.x = rotated_odom_matrix[0][0]
-        rotated_odom.position.y = -rotated_odom_matrix[1][0]
-        rotated_odom.position.z = rotated_odom_matrix[2][0]
-        rotated_odom.orientation.x = rotated_orientation[0]
-        rotated_odom.orientation.y = rotated_orientation[1]
-        rotated_odom.orientation.z = rotated_orientation[2]
-        rotated_odom.orientation.w = rotated_orientation[3]
+        rotated_pose = Pose()
+        rotated_pose.position.x = rotated_pose_matrix[0][0]
+        rotated_pose.position.y = -rotated_pose_matrix[1][0]
+        rotated_pose.position.z = rotated_pose_matrix[2][0]
+        rotated_pose.orientation.x = rotated_orientation[0]
+        rotated_pose.orientation.y = rotated_orientation[1]
+        rotated_pose.orientation.z = rotated_orientation[2]
+        rotated_pose.orientation.w = rotated_orientation[3]
 
-        return rotated_odom
+        return rotated_pose
 
     def _get_marker_pose(self, marker_pose):
             pose = self._rotate_pose(marker_pose)
