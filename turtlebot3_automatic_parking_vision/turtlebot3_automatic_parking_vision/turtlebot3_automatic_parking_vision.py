@@ -337,8 +337,8 @@ class AutomaticParkingVision(Node):
         if theta > np.pi * 2:
             theta = theta - np.pi * 2
 
-        pos_x = marker_odom_msg.pose.position.x
-        pos_y = marker_odom_msg.pose.position.y
+        pos_x = marker_odom_msg.position.x
+        pos_y = marker_odom_msg.position.y
 
         return pos_x, pos_y, theta
 
