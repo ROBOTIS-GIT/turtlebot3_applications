@@ -328,9 +328,8 @@ class AutomaticParkingVision(Node):
         return pos_x, pos_y, theta
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
-        quaternion = (marker_odom_msg.pose.pose.orientation.x, marker_odom_msg.pose.pose.orientation.y, marker_odom_msg.pose.pose.orientation.z, marker_odom_msg.pose.pose.orientation.w)
+        quaternion = (marker_odom_msg.pose.orientation.x, marker_odom_msg.pose.orientation.y, marker_odom_msg.pose.orientation.z, marker_odom_msg.pose.orientation.w)
         theta = euler_from_quaternion(quaternion)[2]
-
         theta = theta + np.pi / 2.
 
         if theta < 0.0:
@@ -338,8 +337,8 @@ class AutomaticParkingVision(Node):
         if theta > np.pi * 2:
             theta = theta - np.pi * 2
 
-        pos_x = marker_odom_msg.pose.pose.position.x
-        pos_y = marker_odom_msg.pose.pose.position.y
+        pos_x = marker_odom_msg.pose.position.x
+        pos_y = marker_odom_msg.pose.position.y
 
         return pos_x, pos_y, theta
 
