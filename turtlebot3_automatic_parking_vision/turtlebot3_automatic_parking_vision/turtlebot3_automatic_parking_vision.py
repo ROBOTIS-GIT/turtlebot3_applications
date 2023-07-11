@@ -26,11 +26,12 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from rclpy.qos import qos_profile_sensor_data
-from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import TransformStamped
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose
 from nav_msgs.msg import Odometry
 from ros2_aruco_interfaces.msg import ArucoMarkers
+from tf2_geometry_msgs import do_transform_pose
 
 from tf_transformations import euler_from_quaternion
 import numpy as np
@@ -332,31 +333,44 @@ class AutomaticParkingVision(Node):
 
     def rotateOdom(self, odom):
         self.get_logger().info("odom {0}".format(odom.position))
-        rotation_x = math.pi / 2
-        cos_angle_x = math.cos(rotation_x)
-        sin_angle_x = math.sin(rotation_x)
-        rotation_matrix_x = [[1, 0, 0],
-                            [0, cos_angle_x, -sin_angle_x],
-                            [0, sin_angle_x, cos_angle_x]]
+        camera_pose = TransformStamped()
+        camera_pose.header.stamp = self.get_clock().now().to_msg()
+        camera_pose.header.frame_id = 'camera_frame'
+        camera_pose.child_frame_id = 'world_frame'
+        camera_pose.transform.translation.x = odom.position.x
+        camera_pose.transform.translation.y = odom.position.y
+        camera_pose.transform.translation.z = odom.position.z
+        camera_pose.transform.rotation.x = odom.orientation.x
+        camera_pose.transform.rotation.y = odom.orientation.y
+        camera_pose.transform.rotation.z = odom.orientation.z
+        camera_pose.transform.rotation.w = odom.orientation.w
 
-        rotation_z = math.pi / 2
-        cos_angle_z = math.cos(rotation_z)
-        sin_angle_z = math.sin(rotation_z)
-        rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
-                            [sin_angle_z, cos_angle_z, 0],
-                            [0, 0, 1]]
+        rotated_odom = do_transform_pose(Pose(), camera_pose)
+        # rotation_x = math.pi / 2
+        # cos_angle_x = math.cos(rotation_x)
+        # sin_angle_x = math.sin(rotation_x)
+        # rotation_matrix_x = [[1, 0, 0],
+        #                     [0, cos_angle_x, -sin_angle_x],
+        #                     [0, sin_angle_x, cos_angle_x]]
+
+        # rotation_z = math.pi / 2
+        # cos_angle_z = math.cos(rotation_z)
+        # sin_angle_z = math.sin(rotation_z)
+        # rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
+        #                     [sin_angle_z, cos_angle_z, 0],
+        #                     [0, 0, 1]]
 
 
-        pose_matrix = [[odom.position.x],
-                    [odom.position.y],
-                    [odom.position.z]]
-        rotated_odom_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
+        # pose_matrix = [[odom.position.x],
+        #             [odom.position.y],
+        #             [odom.position.z]]
+        # rotated_odom_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
 
-        rotated_odom = Pose()
-        rotated_odom.position.x = rotated_odom_matrix[0][0]
-        rotated_odom.position.y = -rotated_odom_matrix[1][0]
-        rotated_odom.position.z = rotated_odom_matrix[2][0]
-        rotated_odom.orientation = odom.orientation
+        # rotated_odom = Pose()
+        # rotated_odom.position.x = rotated_odom_matrix[0][0]
+        # rotated_odom.position.y = -rotated_odom_matrix[1][0]
+        # rotated_odom.position.z = rotated_odom_matrix[2][0]
+        # rotated_odom.orientation = odom.orientation
 
         return rotated_odom
 
