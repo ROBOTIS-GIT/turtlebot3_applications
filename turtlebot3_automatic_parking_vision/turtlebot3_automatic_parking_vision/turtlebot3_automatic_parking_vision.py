@@ -121,13 +121,12 @@ class AutomaticParkingVision(Node):
 
     def cbGetMarkerOdom(self, markers_odom_msg):
         for i in range(len(markers_odom_msg.marker_ids)):
-            self.get_logger().info('find marker id: %d' % markers_odom_msg.marker_ids[i])
             if markers_odom_msg.marker_ids[i] == MARKER_ID_DETECTION:
                 if self.is_marker_pose_received == False:
                     self.is_marker_pose_received = True
 
                 pos_x, pos_y, theta = self.fnGet2DMarkerPose(markers_odom_msg.poses[i])
-
+                self.get_logger().info('Marker pose received: {}, {}, {}'.format(pos_x, pos_y, math.degrees(theta)))
                 self.marker_2d_pose_x = pos_x
                 self.marker_2d_pose_y = pos_y
                 self.marker_2d_theta = theta - math.pi
