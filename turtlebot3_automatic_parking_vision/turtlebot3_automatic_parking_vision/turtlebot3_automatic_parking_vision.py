@@ -190,7 +190,7 @@ class AutomaticParkingVision(Node):
 
         self.fnTurn(desired_angle_turn)
 
-        if abs(desired_angle_turn) < 0.3:
+        if abs(desired_angle_turn) < 0.01:
         # if abs(desired_angle_turn) < 1.58 and abs(desired_angle_turn) > 1.55:
             self.fnStop()
             return True
@@ -280,8 +280,7 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTurn(self, theta):
-        Kp = 0.2
-
+        Kp = 0.8
         angular_z = Kp * theta
 
         twist = Twist()
