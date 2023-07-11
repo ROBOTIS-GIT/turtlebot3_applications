@@ -74,6 +74,7 @@ class AutomaticParkingVision(Node):
 
     def _timer_callback(self):
         if self.is_set_goal:
+            self.get_logger().info('self.position {}'.format(self.position))
             self.position_error.x = self.goal_position.x - self.position.x
             self.position_error.y = self.goal_position.y - self.position.y
 
