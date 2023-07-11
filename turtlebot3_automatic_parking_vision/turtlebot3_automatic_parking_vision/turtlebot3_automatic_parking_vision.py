@@ -190,7 +190,7 @@ class AutomaticParkingVision(Node):
 
         self.fnTurn(desired_angle_turn)
 
-        if abs(desired_angle_turn) < 0.01:
+        if abs(desired_angle_turn) < 0.1:
         # if abs(desired_angle_turn) < 1.58 and abs(desired_angle_turn) > 1.55:
             self.fnStop()
             return True
@@ -354,7 +354,7 @@ class AutomaticParkingVision(Node):
 
         rotated_odom = Pose()
         rotated_odom.position.x = rotated_odom_matrix[0][0]
-        rotated_odom.position.y = rotated_odom_matrix[1][0]
+        rotated_odom.position.y = -rotated_odom_matrix[1][0]
         rotated_odom.position.z = rotated_odom_matrix[2][0]
         rotated_odom.orientation = odom.orientation
 
