@@ -361,8 +361,8 @@ class AutomaticParkingVision(Node):
         return rotated_odom
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
-        # odom = self.rotateOdom(marker_odom_msg)
-        odom = marker_odom_msg
+        odom = self.rotateOdom(marker_odom_msg)
+        # odom = marker_odom_msg
         self.get_logger().info("rotation odom {0}".format(odom.position))
         quaternion = (
             odom.orientation.x,
