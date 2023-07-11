@@ -26,13 +26,12 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from rclpy.qos import qos_profile_sensor_data
-from geometry_msgs.msg import TransformStamped
+from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose
 from nav_msgs.msg import Odometry
 from ros2_aruco_interfaces.msg import ArucoMarkers
 from tf2_geometry_msgs import do_transform_pose
-from tf2_ros import TransformListener, TransformBroadcaster
 
 from tf_transformations import euler_from_quaternion
 import numpy as np
@@ -92,8 +91,6 @@ class AutomaticParkingVision(Node):
         self.is_marker_pose_received = False
 
         self.timer = self.create_timer(0.1, self._run)
-        self.transform_listener = TransformListener(self)
-        self.transform_broadcaster = TransformBroadcaster(self)
 
     def _run(self):
         if self.is_odom_received is True:
@@ -335,42 +332,32 @@ class AutomaticParkingVision(Node):
         return pos_x, pos_y, theta
 
     def rotateOdom(self, odom):
+        self.get_logger().info("odom {0}".format(odom.position))
+        rotation_x = math.pi / 2
+        cos_angle_x = math.cos(-rotation_x)
+        sin_angle_x = math.sin(-rotation_x)
+        rotation_matrix_x = [[1, 0, 0],
+                            [0, cos_angle_x, -sin_angle_x],
+                            [0, sin_angle_x, cos_angle_x]]
+
+        rotation_z = math.pi / 2
+        cos_angle_z = math.cos(-rotation_z)
+        sin_angle_z = math.sin(-rotation_z)
+        rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
+                            [sin_angle_z, cos_angle_z, 0],
+                            [0, 0, 1]]
+
+
+        pose_matrix = [[odom.position.x],
+                    [odom.position.y],
+                    [odom.position.z]]
+        rotated_odom_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
+
         rotated_odom = Pose()
-        try:
-            transform = self.transform_listener.lookup_transform(
-                'base_link',
-                'camera_frame',
-                rclpy.time.Time())
-        except Exception as e:
-            self.get_logger().warn('Failed to lookup transform: %s' % str(e))
-            return
-        self.get_logger().info("odom {0}".format(odom.position, transform))
-        rotated_odom = do_transform_pose(odom, transform)
-        # rotation_x = math.pi / 2
-        # cos_angle_x = math.cos(rotation_x)
-        # sin_angle_x = math.sin(rotation_x)
-        # rotation_matrix_x = [[1, 0, 0],
-        #                     [0, cos_angle_x, -sin_angle_x],
-        #                     [0, sin_angle_x, cos_angle_x]]
-
-        # rotation_z = math.pi / 2
-        # cos_angle_z = math.cos(rotation_z)
-        # sin_angle_z = math.sin(rotation_z)
-        # rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
-        #                     [sin_angle_z, cos_angle_z, 0],
-        #                     [0, 0, 1]]
-
-
-        # pose_matrix = [[odom.position.x],
-        #             [odom.position.y],
-        #             [odom.position.z]]
-        # rotated_odom_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
-
-        # rotated_odom = Pose()
-        # rotated_odom.position.x = rotated_odom_matrix[0][0]
-        # rotated_odom.position.y = -rotated_odom_matrix[1][0]
-        # rotated_odom.position.z = rotated_odom_matrix[2][0]
-        # rotated_odom.orientation = odom.orientation
+        rotated_odom.position.x = rotated_odom_matrix[0][0]
+        rotated_odom.position.y = rotated_odom_matrix[1][0]
+        rotated_odom.position.z = rotated_odom_matrix[2][0]
+        rotated_odom.orientation = odom.orientation
 
         return rotated_odom
 
