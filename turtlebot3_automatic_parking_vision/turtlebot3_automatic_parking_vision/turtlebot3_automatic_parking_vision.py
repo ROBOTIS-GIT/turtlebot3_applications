@@ -78,7 +78,7 @@ class AutomaticParkingVision(Node):
 
             distance = math.sqrt(pow(self.position_error.x, 2) + pow(self.position_error.y, 2))
             goal_direction = math.atan2(self.position_error.y, self.position_error.x)
-
+            cmd_vel = Twist()
             if distance > 0.1:
                 path_angle = goal_direction - self.heading
 
@@ -87,14 +87,14 @@ class AutomaticParkingVision(Node):
                 elif path_angle > math.pi:
                     path_angle = path_angle - 2 * math.pi
 
-                self.cmd_vel.angular.z = path_angle
-                self.cmd_vel.linear.x = min(self.linear_speed * distance, 0.1)
+                cmd_vel.angular.z = path_angle
+                cmd_vel.linear.x = min(self.linear_speed * distance, 0.1)
 
-                if self.cmd_vel.angular.z > 0:
-                    self.cmd_vel.angular.z = min(self.cmd_vel.angular.z, 1.5)
+                if cmd_vel.angular.z > 0:
+                    cmd_vel.angular.z = min(cmd_vel.angular.z, 1.5)
                 else:
-                    self.cmd_vel.angular.z = max(self.cmd_vel.angular.z,  -1.5)
-                self.cmd_vel_pub.publish(self.cmd_vel)
+                    cmd_vel.angular.z = max(cmd_vel.angular.z,  -1.5)
+                self.cmd_vel_pub.publish(cmd_vel)
 
             else:
                 self.heading_error = self.goal_heading - self.heading
@@ -104,16 +104,16 @@ class AutomaticParkingVision(Node):
                 elif self.heading_error > math.pi:
                     self.heading_error = self.heading_error- 2 * math.pi
 
-                self.cmd_vel.linear.x = 0.0
-                self.cmd_vel.angular.z = self.heading_error
+                cmd_vel.linear.x = 0.0
+                cmd_vel.angular.z = self.heading_error
 
                 if abs(self.heading_error * 180.0 / math.pi) < 1.0:
-                    self.cmd_vel.linear.x = 0.0
-                    self.cmd_vel.angular.z = 0.0
+                    cmd_vel.linear.x = 0.0
+                    cmd_vel.angular.z = 0.0
 
             self.get_logger().info("distance: " + str(distance))
             self.get_logger().info("heading_angle: " + str(self.heading_error * 180.0 / math.pi))
-            self.cmd_vel_pub.publish(self.cmd_vel)
+            self.cmd_vel_pub.publish(cmd_vel)
 
     def _get_odom(self, msg):
         self.position = msg.pose.pose.position
