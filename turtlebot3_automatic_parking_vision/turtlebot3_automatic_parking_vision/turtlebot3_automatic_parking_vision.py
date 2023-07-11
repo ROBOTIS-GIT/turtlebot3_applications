@@ -94,7 +94,7 @@ class AutomaticParkingVision(Node):
                     cmd_vel.angular.z = min(cmd_vel.angular.z, 1.5)
                 else:
                     cmd_vel.angular.z = max(cmd_vel.angular.z,  -1.5)
-                self.cmd_vel_pub.publish(cmd_vel)
+                self.pub_cmd_vel.publish(cmd_vel)
 
             else:
                 self.heading_error = self.goal_heading - self.heading
@@ -113,7 +113,7 @@ class AutomaticParkingVision(Node):
 
             self.get_logger().info("distance: " + str(distance))
             self.get_logger().info("heading_angle: " + str(self.heading_error * 180.0 / math.pi))
-            self.cmd_vel_pub.publish(cmd_vel)
+            self.pub_cmd_vel.publish(cmd_vel)
 
     def _get_odom(self, msg):
         self.position = msg.pose.pose.position
