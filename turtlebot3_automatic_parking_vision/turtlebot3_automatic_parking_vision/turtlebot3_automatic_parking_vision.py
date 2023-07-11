@@ -26,7 +26,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from rclpy.qos import qos_profile_sensor_data
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from ros2_aruco_interfaces.msg import ArucoMarkers
@@ -189,7 +189,7 @@ class AutomaticParkingVision(Node):
 
         self.fnTurn(desired_angle_turn)
 
-        if abs(desired_angle_turn) < 0.01:
+        if abs(desired_angle_turn) < 0.3:
         # if abs(desired_angle_turn) < 1.58 and abs(desired_angle_turn) > 1.55:
             self.fnStop()
             return True
@@ -320,32 +320,67 @@ class AutomaticParkingVision(Node):
         quaternion = (robot_odom_msg.pose.pose.orientation.x, robot_odom_msg.pose.pose.orientation.y, robot_odom_msg.pose.pose.orientation.z, robot_odom_msg.pose.pose.orientation.w)
         theta = euler_from_quaternion(quaternion)[2]
 
-        # if theta < 0.0:
-        #     theta = theta + np.pi * 2
-        # if theta > np.pi * 2:
-        #     theta = theta - np.pi * 2
+        if theta < 0.0:
+            theta = theta + np.pi * 2
+        if theta > np.pi * 2:
+            theta = theta - np.pi * 2
 
         pos_x = robot_odom_msg.pose.pose.position.x
         pos_y = robot_odom_msg.pose.pose.position.y
 
         return pos_x, pos_y, theta
 
+    def rotateOdom(self, odom):
+        angle_x = math.pi / 2
+        cos_angle_x = math.cos(angle_x)
+        sin_angle_x = math.sin(angle_x)
+
+        rotated_x = cos_angle_x * odom.position.x - sin_angle_x * odom.position.y
+        rotated_y = sin_angle_x * odom.position.x + cos_angle_x * odom.position.y
+
+        angle_z = math.pi / 2
+        cos_angle_z = math.cos(angle_z)
+        sin_angle_z = math.sin(angle_z)
+
+        qx = odom.orientation.x
+        qy = odom.orientation.y
+        qz = odom.orientation.z
+        qw = odom.orientation.w
+
+        rotated_qx = cos_angle_z * qx - sin_angle_z * qy
+        rotated_qy = sin_angle_z * qx + cos_angle_z * qy
+
+        rotated_odom = Odometry()
+        rotated_odom.header = odom.header
+        rotated_odom.child_frame_id = odom.child_frame_id
+        rotated_odom.position.x = rotated_x
+        rotated_odom.position.y = rotated_y
+        rotated_odom.position.z = odom.position.z
+        rotated_odom.orientation = Quaternion(
+            x=rotated_qx, y=rotated_qy, z=qz, w=qw
+        )
+
+        return rotated_odom
+
     def fnGet2DMarkerPose(self, marker_odom_msg):
+        odom = self.rotateOdom(marker_odom_msg)
+
+
         quaternion = (
-            marker_odom_msg.orientation.x,
-            marker_odom_msg.orientation.y,
-            marker_odom_msg.orientation.z,
-            marker_odom_msg.orientation.w)
+            odom.orientation.x,
+            odom.orientation.y,
+            odom.orientation.z,
+            odom.orientation.w)
         theta = euler_from_quaternion(quaternion)[2]
         theta = theta + np.pi / 2.
 
-        # if theta < 0.0:
-        #     theta = theta + np.pi * 2
-        # if theta > np.pi * 2:
-        #     theta = theta - np.pi * 2
+        if theta < 0.0:
+            theta = theta + np.pi * 2
+        if theta > np.pi * 2:
+            theta = theta - np.pi * 2
 
-        pos_x = marker_odom_msg.position.x
-        pos_y = marker_odom_msg.position.y
+        pos_x = odom.position.x
+        pos_y = odom.position.y
 
         return pos_x, pos_y, theta
 
