@@ -126,11 +126,11 @@ class AutomaticParkingVision(Node):
                     self.is_marker_pose_received = True
 
                 pos_x, pos_y, theta = self.fnGet2DMarkerPose(markers_odom_msg.poses[i])
-                self.get_logger().info('Marker pose received: {}, {}, {}'.format(pos_x, pos_y, math.degrees(theta)))
+
                 self.marker_2d_pose_x = pos_x
                 self.marker_2d_pose_y = pos_y
                 self.marker_2d_theta = theta - math.pi
-
+                self.get_logger().info('Marker pose received: {}, {}, {}'.format(pos_x, pos_y, math.degrees(self.marker_2d_theta)))
     def fnParking(self):
         if self.current_parking_sequence == self.ParkingSequence.searching_parking_lot.value:
             self.is_sequence_finished = self.fnSeqSearchingGoal()
