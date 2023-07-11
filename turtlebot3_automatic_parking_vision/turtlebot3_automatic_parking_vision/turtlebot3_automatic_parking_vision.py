@@ -332,14 +332,14 @@ class AutomaticParkingVision(Node):
 
     def rotateOdom(self, odom):
         self.get_logger().info("odom {0}".format(odom.position))
-        rotation_x = math.pi / 2
+        rotation_x = -math.pi / 2
         cos_angle_x = math.cos(rotation_x)
         sin_angle_x = math.sin(rotation_x)
         rotation_matrix_x = [[1, 0, 0],
                             [0, cos_angle_x, -sin_angle_x],
                             [0, sin_angle_x, cos_angle_x]]
 
-        rotation_z = math.pi / 2
+        rotation_z = -math.pi / 2
         cos_angle_z = math.cos(rotation_z)
         sin_angle_z = math.sin(rotation_z)
         rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
