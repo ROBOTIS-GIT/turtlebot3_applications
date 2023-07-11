@@ -193,7 +193,7 @@ class AutomaticParkingVision(Node):
         self.goal_position.x = x
         self.goal_position.y = y
 
-        self.goal_heading = theta
+        self.goal_heading = math.degrees(theta)
         if self.goal_heading >= math.pi:
             self.goal_heading = self.goal_heading % (math.pi * 180.0 / math.pi)
         elif self.goal_heading <= -math.pi:
