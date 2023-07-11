@@ -333,30 +333,71 @@ class AutomaticParkingVision(Node):
     def rotateOdom(self, odom):
         self.get_logger().info("odom {0}".format(odom.position))
         rotation_x = math.pi / 2
-        cos_angle_x = math.cos(-rotation_x)
-        sin_angle_x = math.sin(-rotation_x)
+        cos_angle_x = math.cos(rotation_x)
+        sin_angle_x = math.sin(rotation_x)
         rotation_matrix_x = [[1, 0, 0],
                             [0, cos_angle_x, -sin_angle_x],
                             [0, sin_angle_x, cos_angle_x]]
 
         rotation_z = math.pi / 2
-        cos_angle_z = math.cos(-rotation_z)
-        sin_angle_z = math.sin(-rotation_z)
+        cos_angle_z = math.cos(rotation_z)
+        sin_angle_z = math.sin(rotation_z)
         rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
                             [sin_angle_z, cos_angle_z, 0],
                             [0, 0, 1]]
 
+        position = [odom.position.x, odom.position.y, odom.position.z]
+        rotated_position = [0, 0, 0]
+        for i in range(3):
+            for j in range(3):
+                rotated_position[i] += rotation_matrix_z[i][j] * position[j]
+        for i in range(3):
+            for j in range(3):
+                position[i] = rotated_position[i]
+                rotated_position[i] = 0
+                for k in range(3):
+                    rotated_position[i] += rotation_matrix_x[i][k] * position[k]
 
-        pose_matrix = [[odom.position.x],
-                    [odom.position.y],
-                    [odom.position.z]]
-        rotated_odom_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
+        orientation = [odom.orientation.x, odom.orientation.y, odom.orientation.z, odom.orientation.w]
+        rotated_orientation = [0, 0, 0, 0]
+        rotated_orientation[0] = cos_angle_x * cos_angle_z * orientation[0] - sin_angle_x * sin_angle_z * orientation[1]
+        rotated_orientation[1] = sin_angle_x * cos_angle_z * orientation[0] + cos_angle_x * sin_angle_z * orientation[1]
+        rotated_orientation[2] = cos_angle_x * sin_angle_z * orientation[0] + sin_angle_x * cos_angle_z * orientation[2]
+        rotated_orientation[3] = cos_angle_x * cos_angle_z * orientation[3] - sin_angle_x * sin_angle_z * orientation[3]
 
         rotated_odom = Pose()
-        rotated_odom.position.x = rotated_odom_matrix[0][0]
-        rotated_odom.position.y = rotated_odom_matrix[1][0]
-        rotated_odom.position.z = rotated_odom_matrix[2][0]
-        rotated_odom.orientation = odom.orientation
+        rotated_odom.position.x = rotated_position[0]
+        rotated_odom.position.y = rotated_position[1]
+        rotated_odom.position.z = rotated_position[2]
+        rotated_odom.orientation.x = rotated_orientation[0]
+        rotated_odom.orientation.y = rotated_orientation[1]
+        rotated_odom.orientation.z = rotated_orientation[2]
+        rotated_odom.orientation.w = rotated_orientation[3]
+        # rotation_x = math.pi / 2
+        # cos_angle_x = math.cos(-rotation_x)
+        # sin_angle_x = math.sin(-rotation_x)
+        # rotation_matrix_x = [[1, 0, 0],
+        #                     [0, cos_angle_x, -sin_angle_x],
+        #                     [0, sin_angle_x, cos_angle_x]]
+
+        # rotation_z = math.pi / 2
+        # cos_angle_z = math.cos(-rotation_z)
+        # sin_angle_z = math.sin(-rotation_z)
+        # rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
+        #                     [sin_angle_z, cos_angle_z, 0],
+        #                     [0, 0, 1]]
+
+
+        # pose_matrix = [[odom.position.x],
+        #             [odom.position.y],
+        #             [odom.position.z]]
+        # rotated_odom_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
+
+        # rotated_odom = Pose()
+        # rotated_odom.position.x = rotated_odom_matrix[0][0]
+        # rotated_odom.position.y = rotated_odom_matrix[1][0]
+        # rotated_odom.position.z = rotated_odom_matrix[2][0]
+        # rotated_odom.orientation = odom.orientation
 
         return rotated_odom
 
