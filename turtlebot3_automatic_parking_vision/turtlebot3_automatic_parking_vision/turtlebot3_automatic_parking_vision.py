@@ -192,7 +192,6 @@ class AutomaticParkingVision(Node):
         self.fnTurn(desired_angle_turn)
 
         if abs(desired_angle_turn) < 0.1:
-        # if abs(desired_angle_turn) < 1.58 and abs(desired_angle_turn) > 1.55:
             self.fnStop()
             return True
         else:
@@ -281,7 +280,7 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTurn(self, theta):
-        Kp = 0.8
+        Kp = 0.4
         angular_z = Kp * theta
 
         twist = Twist()
@@ -304,12 +303,12 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTrackMarker(self, theta):
-        Kp = 0.6
+        Kp = 0.3
 
         angular_z = Kp * theta
 
         twist = Twist()
-        twist.linear.x = 0.10
+        twist.linear.x = 0.1
         twist.linear.y = 0.0
         twist.linear.z = 0.0
         twist.angular.x = 0.0
