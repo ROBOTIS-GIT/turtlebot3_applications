@@ -321,10 +321,10 @@ class AutomaticParkingVision(Node):
         quaternion = (robot_odom_msg.pose.pose.orientation.x, robot_odom_msg.pose.pose.orientation.y, robot_odom_msg.pose.pose.orientation.z, robot_odom_msg.pose.pose.orientation.w)
         theta = euler_from_quaternion(quaternion)[2]
 
-        # if theta < 0.0:
-        #     theta = theta + np.pi * 2
-        # if theta > np.pi * 2:
-        #     theta = theta - np.pi * 2
+        if theta < 0.0:
+            theta = theta + np.pi * 2
+        if theta > np.pi * 2:
+            theta = theta - np.pi * 2
 
         pos_x = robot_odom_msg.pose.pose.position.x
         pos_y = robot_odom_msg.pose.pose.position.y
@@ -362,7 +362,8 @@ class AutomaticParkingVision(Node):
         return rotated_odom
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
-        odom = self.rotateOdom(marker_odom_msg)
+        # odom = self.rotateOdom(marker_odom_msg)
+        odom = marker_odom_msg
         self.get_logger().info("rotation odom {0}".format(odom.position))
         quaternion = (
             odom.orientation.x,
@@ -372,10 +373,10 @@ class AutomaticParkingVision(Node):
         theta = euler_from_quaternion(quaternion)[2]
         theta = theta + np.pi / 2.
 
-        # if theta < 0.0:
-        #     theta = theta + np.pi * 2
-        # if theta > np.pi * 2:
-        #     theta = theta - np.pi * 2
+        if theta < 0.0:
+            theta = theta + np.pi * 2
+        if theta > np.pi * 2:
+            theta = theta - np.pi * 2
 
         pos_x = odom.position.x
         pos_y = odom.position.y
