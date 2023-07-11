@@ -279,7 +279,7 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTurn(self, theta):
-        Kp = 0.8
+        Kp = 0.2
 
         angular_z = Kp * theta
 
@@ -303,7 +303,7 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTrackMarker(self, theta):
-        Kp = 1.2
+        Kp = 0.6
 
         angular_z = Kp * theta
 
@@ -339,10 +339,10 @@ class AutomaticParkingVision(Node):
         theta = euler_from_quaternion(quaternion)[2]
         theta = theta + np.pi / 2.
 
-        if theta < 0.0:
-            theta = theta + np.pi * 2
-        if theta > np.pi * 2:
-            theta = theta - np.pi * 2
+        # if theta < 0.0:
+        #     theta = theta + np.pi * 2
+        # if theta > np.pi * 2:
+        #     theta = theta - np.pi * 2
 
         pos_x = marker_odom_msg.position.x
         pos_y = marker_odom_msg.position.y
