@@ -27,6 +27,7 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Point
 from nav_msgs.msg import Odometry
 from ros2_aruco_interfaces.msg import ArucoMarkers
 
@@ -60,6 +61,7 @@ class AutomaticParkingVision(Node):
 
         self.is_marker_received = False
         self.is_set_goal = False
+        self.goal_position = Point()
         self.timer = self.create_timer(0.05, self._timer_callback)
 
     def _timer_callback(self):
