@@ -42,6 +42,16 @@ class AutomaticParkingVision(Node):
     def __init__(self):
         super().__init__('automatic_parking_vision')
 
+        self.is_marker_received = False
+        self.is_set_goal = False
+        self.goal_position = Point()
+        self.goal_heading = 0.0
+        self.heading = 0.0
+        self.position_error = Point()
+        self.heading_error = 0.0
+        self.angular_speed = 0.3
+        self.linear_speed = 0.5
+
         self.sub_odom_robot = self.create_subscription(
             Odometry,
             '/odom',
@@ -59,9 +69,6 @@ class AutomaticParkingVision(Node):
             '/cmd_vel',
             qos_profile=QoSProfile(depth=10))
 
-        self.is_marker_received = False
-        self.is_set_goal = False
-        self.goal_position = Point()
         self.timer = self.create_timer(0.05, self._timer_callback)
 
     def _timer_callback(self):
