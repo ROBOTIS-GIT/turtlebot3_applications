@@ -358,12 +358,13 @@ class AutomaticParkingVision(Node):
         # rotated_odom.orientation.z = rotated_orientation[2]
         # rotated_odom.orientation.w = rotated_orientation[3]
 
-        rotation_x = math.pi / 2
-        cos_angle_x = math.cos(rotation_x)
-        sin_angle_x = math.sin(rotation_x)
-        rotation_matrix_x = [[1, 0, 0],
-                            [0, cos_angle_x, -sin_angle_x],
-                            [0, sin_angle_x, cos_angle_x]]
+        rotation_y = -math.pi / 2
+        cos_angle_y = math.cos(rotation_y)
+        sin_angle_y = math.sin(rotation_y)
+
+        rotation_matrix_y = [[cos_angle_y, 0, -sin_angle_y],
+                            [0, 1, 0],
+                            [sin_angle_y, 0, cos_angle_y]]
 
         rotation_z = math.pi / 2
         cos_angle_z = math.cos(rotation_z)
@@ -375,14 +376,15 @@ class AutomaticParkingVision(Node):
         pose_matrix = [[odom.position.x],
                     [odom.position.y],
                     [odom.position.z]]
-        rotated_odom_matrix = np.dot(rotation_matrix_z, np.dot(rotation_matrix_x, pose_matrix))
+
+        rotated_odom_matrix =  np.dot(rotation_matrix_z ,np.dot(rotation_matrix_y, pose_matrix))
 
         orientation = [odom.orientation.x, odom.orientation.y, odom.orientation.z, odom.orientation.w]
         rotated_orientation = [0, 0, 0, 0]
-        rotated_orientation[0] = cos_angle_x * cos_angle_z * orientation[0] - sin_angle_x * sin_angle_z * orientation[1]
-        rotated_orientation[1] = sin_angle_x * cos_angle_z * orientation[0] + cos_angle_x * sin_angle_z * orientation[1]
-        rotated_orientation[2] = cos_angle_x * sin_angle_z * orientation[0] + sin_angle_x * cos_angle_z * orientation[2]
-        rotated_orientation[3] = cos_angle_x * cos_angle_z * orientation[3] - sin_angle_x * sin_angle_z * orientation[3]
+        rotated_orientation[0] = cos_angle_y * cos_angle_z * orientation[0] - sin_angle_y * sin_angle_z * orientation[1]
+        rotated_orientation[1] = sin_angle_y * cos_angle_z * orientation[0] + cos_angle_y * sin_angle_z * orientation[1]
+        rotated_orientation[2] = cos_angle_y * sin_angle_z * orientation[0] + sin_angle_y * cos_angle_z * orientation[2]
+        rotated_orientation[3] = cos_angle_y * cos_angle_z * orientation[3] - sin_angle_y * sin_angle_z * orientation[3]
 
         rotated_odom = Pose()
         rotated_odom.position.x = rotated_odom_matrix[0][0]
