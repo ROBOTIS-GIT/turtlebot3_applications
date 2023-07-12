@@ -80,8 +80,8 @@ class follower(Node):
                 normalized_intensity.append(msg.intensities[range_index])
                 range_index += 1
             else:
-                normalized_range.append(None)
-                normalized_intensity.append(None)
+                normalized_range.append(float('nan'))
+                normalized_intensity.append(float('nan'))
 
         self.scan.ranges = normalized_range
         self.scan.intensities = normalized_intensity
@@ -100,8 +100,8 @@ class follower(Node):
             if np.nan_to_num(self.scan.intensities[i] ) != 0 :
                 laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
-            elif (i+1) in itertools.chain(range(self.left_side,-2,-1), range(359, 289, -1)) \
-                and (i-1) in itertools.chain(range(self.left_side,-2,-1), range(359, 289, -1)) \
+            elif (i+1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
+                and (i-1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
                 and np.nan_to_num(self.scan.intensities[i]) == 0:
                 laser_data.append((np.nan_to_num(self.scan.intensities[i+1])+np.nan_to_num(self.scan.intensities[i-1]))/2)
 
