@@ -60,7 +60,7 @@ class follower(Node):
 
         self.run_timer = self.create_timer(0.1, self.follow)
 
-    def _scan_received(self, msg):
+    def _scan_callback(self, msg):
         self.scan = msg
         self.is_scan_received = True
 
