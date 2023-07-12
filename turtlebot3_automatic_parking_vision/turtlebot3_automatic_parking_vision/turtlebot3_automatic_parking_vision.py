@@ -115,8 +115,8 @@ class AutomaticParkingVision(Node):
                     cmd_vel.angular.z = 0.0
 
             self.get_logger().info("distance: " + str(distance))
-            self.get_logger().info("heading_angle: " + str(self.goal_heading))
-            self.get_logger().info("goal_heading: " + str(self.heading))
+            self.get_logger().info("heading_angle: " + str(self.goal_heading * 180 / math.pi))
+            self.get_logger().info("goal_heading: " + str(self.heading * 180 / math.pi))
             self.pub_cmd_vel.publish(cmd_vel)
 
     def _get_odom(self, msg):
