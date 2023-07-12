@@ -92,7 +92,10 @@ class follower(Node):
 
         laser_data_set.append(laser_data)
 
-        [x for (x , y) in self.labels.items() if y == self.clf2.predict(laser_data_set) ] ## Predict the position
+        # [x for (x , y) in self.labels.items() if y == self.clf2.predict(laser_data_set) ] ## Predict the position
+        for x, y in self.labels.items():
+            if y == self.clf2.predict(laser_data_set):
+                result.append(x)
 
         if result == ['empty']:
             ret = 0
