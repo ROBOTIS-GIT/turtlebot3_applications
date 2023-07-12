@@ -24,6 +24,7 @@ from ament_index_python.packages import get_package_share_directory
 from geometry_msgs.msg import Twist
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import LaserScan
 
 import pickle
@@ -36,9 +37,10 @@ class follower(Node):
 
         package_dir = get_package_share_directory('turtlebot3_follower')
         self.config_dir = os.path.join(package_dir, 'config')
-        # self.config_dir = self.config_dir.replace('nodes', 'config')
         self.laser_scan_data =[]
         self.comments=[]
+        self.is_scan_received = False
+        self.scan = LaserScan()
 
         self.cmd_vel_publisher = self.create_publisher(
             Twist,
@@ -47,7 +49,7 @@ class follower(Node):
 
         self.scan_subscriber = self.create_subscription(
             LaserScan,
-            '/scan',
+            '/scan_filtered',
             self._scan_callback,
             qos_profile=qos_profile_sensor_data)
 
@@ -58,23 +60,28 @@ class follower(Node):
 
         self.run_timer = self.create_timer(0.1, self.follow)
 
+    def _scan_received(self, msg):
+        self.scan = msg
+        self.is_scan_received = True
+
     def check_people(self):
         laser_data=[]
         laser_data_set=[]
         result=[]
         ret = 0
-        self.msg = rospy.wait_for_message("scan_filtered", LaserScan)
+        if not self.is_scan_received:
+            return 0
 
         for i in range(70,-2,-1) + range(359, 289,-1):
 
-            if   np.nan_to_num( self.msg.intensities[i] ) != 0 :
-                 laser_data.append(np.nan_to_num(self.msg.intensities[i]))
+            if   np.nan_to_num( self.scan.intensities[i] ) != 0 :
+                 laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
-            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.msg.intensities[i]) == 0:
-                 laser_data.append((np.nan_to_num(self.msg.intensities[i+1])+np.nan_to_num(self.msg.intensities[i-1]))/2)
+            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.scan.intensities[i]) == 0:
+                 laser_data.append((np.nan_to_num(self.scan.intensities[i+1])+np.nan_to_num(self.scan.intensities[i-1]))/2)
 
             else :
-                 laser_data.append(np.nan_to_num(self.msg.intensities[i]))
+                 laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
         laser_data_set.append(laser_data)
 
@@ -91,61 +98,62 @@ class follower(Node):
     def laser_scan(self):
         data_test=[]
         data_test_set=[]
-        self.msg = rospy.wait_for_message("scan_filtered", LaserScan)
+        if self.scan_received:
+            for i in range(70,-2,-1) + range(359, 289,-1):
+                if   np.nan_to_num( self.scan.ranges[i] ) != 0 :
+                    data_test.append(np.nan_to_num(self.scan.ranges[i]))
 
-        for i in range(70,-2,-1) + range(359, 289,-1):
+                elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.scan.ranges[i]) == 0:
+                    data_test.append((np.nan_to_num(self.scan.ranges[i+1])+np.nan_to_num(self.scan.ranges[i-1]))/2)
 
-            if   np.nan_to_num( self.msg.ranges[i] ) != 0 :
-                 data_test.append(np.nan_to_num(self.msg.ranges[i]))
+                else :
+                    data_test.append(np.nan_to_num(self.scan.ranges[i]))
 
-            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.msg.ranges[i]) == 0:
-                 data_test.append((np.nan_to_num(self.msg.ranges[i+1])+np.nan_to_num(self.msg.ranges[i-1]))/2)
+            data_test_set.append(data_test)
 
-            else :
-                 data_test.append(np.nan_to_num(self.msg.ranges[i]))
-
-        data_test_set.append(data_test)
-
-        return [x for (x , y) in self.labels.iteritems() if y == self.clf.predict(data_test_set) ]
+            return [x for (x , y) in self.labels.iteritems() if y == self.clf.predict(data_test_set) ]
+        else:
+            return None
 
     def follow(self):
         check = self.check_people()
-        if  check == 1:
-            x = self.laser_scan()
-            twist = Twist()
-            ## Do something according to each position##
-            if  x == ['30_0']:
-                twist.linear.x  = 0.13;      	twist.angular.z = 0.0;
-            elif x== ['30_l']:
-                twist.linear.x  = 0.10; 		twist.angular.z = 0.4;
-            elif x== ['30_r']:
-                twist.linear.x  = 0.10; 		twist.angular.z = -0.4;
-            elif x== ['45_0']:
-                twist.linear.x  = 0.13;      	twist.angular.z = 0.0;
-            elif x== ['45_l']:
-                twist.linear.x  = 0.10; 		twist.angular.z = 0.3;
-            elif x== ['45_r']:
-                twist.linear.x  = 0.10; 		twist.angular.z = -0.3;
-            elif x== ['15_0']:
-                twist.linear.x  = 0.0;	      	twist.angular.z = 0.0;
-            elif x== ['empty']:
-                twist.linear.x  = 0.0;	 	    twist.angular.z = 0.0;
-            else:
-                twist.linear.x  = 0.0;		    twist.angular.z = 0.0;
+        x = self.laser_scan()
+        if x is not None:
+            if  check == 1:
+                twist = Twist()
+                ## Do something according to each position##
+                if  x == ['30_0']:
+                    twist.linear.x  = 0.13;      	twist.angular.z = 0.0;
+                elif x== ['30_l']:
+                    twist.linear.x  = 0.10; 		twist.angular.z = 0.4;
+                elif x== ['30_r']:
+                    twist.linear.x  = 0.10; 		twist.angular.z = -0.4;
+                elif x== ['45_0']:
+                    twist.linear.x  = 0.13;      	twist.angular.z = 0.0;
+                elif x== ['45_l']:
+                    twist.linear.x  = 0.10; 		twist.angular.z = 0.3;
+                elif x== ['45_r']:
+                    twist.linear.x  = 0.10; 		twist.angular.z = -0.3;
+                elif x== ['15_0']:
+                    twist.linear.x  = 0.0;	      	twist.angular.z = 0.0;
+                elif x== ['empty']:
+                    twist.linear.x  = 0.0;	 	    twist.angular.z = 0.0;
+                else:
+                    twist.linear.x  = 0.0;		    twist.angular.z = 0.0;
 
-            self.pub.publish(twist)
+                self.cmd_vel_publisher.publish(twist)
 
-        elif check == 0:
-            x = self.laser_scan()
-            twist = Twist()
+            elif check == 0:
+                x = self.laser_scan()
+                twist = Twist()
 
-            if x== ['empty']:
-                twist.linear.x  = 0.0;		twist.angular.z = 0.0;
+                if x== ['empty']:
+                    twist.linear.x  = 0.0;		twist.angular.z = 0.0;
 
-            else:
-                twist.linear.x  = 0.0; 		twist.angular.z = 0.4;
+                else:
+                    twist.linear.x  = 0.0; 		twist.angular.z = 0.4;
 
-            self.pub.publish(twist)
+                self.cmd_vel_publisher.publish(twist)
 
 
 def main(args=None):
