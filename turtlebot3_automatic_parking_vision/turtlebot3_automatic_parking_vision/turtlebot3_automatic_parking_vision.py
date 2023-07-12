@@ -139,7 +139,7 @@ class AutomaticParkingVision(Node):
             median = sorted(window)[len(window) // 2]
             filtered_data.append(median)
 
-        return filtered_data
+        return filtered_data[-1]
 
     def _get_aruco_markers(self, msg):
         if not self.is_marker_received:
@@ -153,12 +153,12 @@ class AutomaticParkingVision(Node):
                         median_pose_x = self._median_filter(self.queue_pose_x)
                         median_pose_y = self._median_filter(self.queue_pose_y)
                         median_pose_theta = self._median_filter(self.queue_pose_theta)
+                        self.get_logger().info("marker received: {} {} {}".format(median_pose_x, median_pose_y, median_pose_theta))
                         self._set_goal_position(median_pose_x, median_pose_y, median_pose_theta)
                         self.queue_pose_x = []
                         self.queue_pose_y = []
                         self.queue_pose_theta = []
                         self.is_marker_received = True
-                        self.get_logger().info("marker received: {} {} {}".format(median_pose_x, median_pose_y, median_pose_theta))
 
     def _rotate_pose(self, pose):
         self.get_logger().info("pose {0}".format(pose.position))
