@@ -83,7 +83,7 @@ class AutomaticParkingVision(Node):
             distance = math.sqrt(pow(self.position_error.x, 2) + pow(self.position_error.y, 2))
             goal_direction = math.atan2(self.position_error.y, self.position_error.x)
             cmd_vel = Twist()
-            if distance > 0.1:
+            if distance > 0.05:
                 path_angle = goal_direction - self.heading
 
                 if path_angle < -math.pi:
@@ -110,7 +110,7 @@ class AutomaticParkingVision(Node):
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = self.heading_error
 
-                if abs(self.heading_error * 180.0 / math.pi) < 1.0:
+                if abs(self.heading_error * 180.0 / math.pi) < 0.2:
                     cmd_vel.linear.x = 0.0
                     cmd_vel.angular.z = 0.0
 
