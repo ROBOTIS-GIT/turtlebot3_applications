@@ -56,7 +56,9 @@ class follower(Node):
         # self.clf = pickle.load(open(self.config_dir + '/clf', "rb", encoding='latin1'))
         with open(self.config_dir + '/clf', 'rb') as file:
             self.clf = pickle.load(file, encoding='latin1')
-        self.clf2 = pickle.load(open(self.config_dir + '/clf2', "rb", encoding='latin1'))
+        with open(self.config_dir + '/clf2', 'rb') as file:
+            self.clf2 = pickle.load(file, encoding='latin1')
+
         self.labels = {'30_0':0, '30_l':1, '30_r':2, '45_0':3, '45_l':4, '45_r':5,'15_0':6, 'empty':7}
         self.get_logger().info('Tree initialized')
 
