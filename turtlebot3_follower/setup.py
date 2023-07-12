@@ -43,6 +43,8 @@ setup(
         'console_scripts': [
             'turtlebot3_follower = \
                 turtlebot3_follower.turtlebot3_follower:main',
+            'turtlebot3_follower_scan = \
+                turtlebot3_follower.laser_subscriber:main',
         ],
     },
 )

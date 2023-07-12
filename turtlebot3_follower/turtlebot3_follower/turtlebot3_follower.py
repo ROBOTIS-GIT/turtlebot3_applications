@@ -62,7 +62,7 @@ class follower(Node):
         self.labels = {'30_0':0, '30_l':1, '30_r':2, '45_0':3, '45_l':4, '45_r':5,'15_0':6, 'empty':7}
         self.get_logger().info('Tree initialized')
 
-        self.run_timer = self.create_timer(0.1, self.follow)
+        self.run_timer = self.create_timer(0.05, self._follow)
 
     def _scan_callback(self, msg):
         normalized_range = []
@@ -88,7 +88,7 @@ class follower(Node):
 
         self.is_scan_received = True
 
-    def check_people(self):
+    def _check_people(self):
         laser_data=[]
         laser_data_set=[]
         result=[]
@@ -100,17 +100,19 @@ class follower(Node):
             if np.nan_to_num(self.scan.intensities[i]) != 0 :
                 laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
-            elif (i+1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
-                and (i-1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
-                and np.nan_to_num(self.scan.intensities[i]) == 0:
-                laser_data.append((np.nan_to_num(self.scan.intensities[i+1])+np.nan_to_num(self.scan.intensities[i-1]))/2)
+            elif (i+1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) and \
+                (i-1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) and \
+                np.nan_to_num(self.scan.intensities[i]) == 0:
+                laser_data.append(
+                    (np.nan_to_num(self.scan.intensities[i+1]) + \
+                    np.nan_to_num(self.scan.intensities[i-1])) / 2)
 
             else :
                 laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
         laser_data_set.append(laser_data)
 
-        [x for (x , y) in self.labels.items() if y == self.clf2.predict(laser_data_set) ] ## Predict the position
+        [x for (x , y) in self.labels.items() if y == self.clf2.predict(laser_data_set) ]
 
         if result == ['empty']:
             ret = 0
@@ -120,7 +122,7 @@ class follower(Node):
 
         return ret
 
-    def laser_scan(self):
+    def _laser_scan(self):
         data_test=[]
         data_test_set=[]
         if self.is_scan_received:
@@ -142,9 +144,9 @@ class follower(Node):
         else:
             return None
 
-    def follow(self):
-        check = self.check_people()
-        x = self.laser_scan()
+    def _follow(self):
+        check = self._check_people()
+        x = self._laser_scan()
         if x is not None:
             self.get_logger().info('I am following {} {}'.format(x, check))
             if check == 1:
