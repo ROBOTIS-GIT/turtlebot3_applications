@@ -113,10 +113,10 @@ class follower(Node):
         [x for (x , y) in self.labels.items() if y == self.clf2.predict(laser_data_set) ] ## Predict the position
 
         if result == ['empty']:
-            ret = 1
+            ret = 0
 
         else:
-            ret = 0
+            ret = 1
 
         return ret
 
