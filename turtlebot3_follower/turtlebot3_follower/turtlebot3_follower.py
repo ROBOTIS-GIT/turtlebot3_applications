@@ -151,25 +151,35 @@ class follower(Node):
         if x is not None:
             if  check == 1:
                 twist = Twist()
+                self.get_logger().info('I am following {}'.format(x))
                 ## Do something according to each position##
                 if  x == ['30_0']:
-                    twist.linear.x  = 0.13;      	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.13
+                    twist.angular.z = 0.0
                 elif x== ['30_l']:
-                    twist.linear.x  = 0.10; 		twist.angular.z = 0.4;
+                    twist.linear.x  = 0.10
+                    twist.angular.z = 0.4
                 elif x== ['30_r']:
-                    twist.linear.x  = 0.10; 		twist.angular.z = -0.4;
+                    twist.linear.x  = 0.10
+                    twist.angular.z = -0.4
                 elif x== ['45_0']:
-                    twist.linear.x  = 0.13;      	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.13
+                    twist.angular.z = 0.0
                 elif x== ['45_l']:
-                    twist.linear.x  = 0.10; 		twist.angular.z = 0.3;
+                    twist.linear.x  = 0.10
+                    twist.angular.z = 0.3
                 elif x== ['45_r']:
-                    twist.linear.x  = 0.10; 		twist.angular.z = -0.3;
+                    twist.linear.x  = 0.10
+                    twist.angular.z = -0.3
                 elif x== ['15_0']:
-                    twist.linear.x  = 0.0;	      	twist.angular.z = 0.0;
+                    twist.linear.x  = 0.0
+                    twist.angular.z = 0.0
                 elif x== ['empty']:
-                    twist.linear.x  = 0.0;	 	    twist.angular.z = 0.0;
+                    twist.linear.x  = 0.0
+                    twist.angular.z = 0.0
                 else:
-                    twist.linear.x  = 0.0;		    twist.angular.z = 0.0;
+                    twist.linear.x  = 0.0
+                    twist.angular.z = 0.0
 
                 self.cmd_vel_publisher.publish(twist)
 
@@ -178,10 +188,11 @@ class follower(Node):
                 twist = Twist()
 
                 if x== ['empty']:
-                    twist.linear.x  = 0.0;		twist.angular.z = 0.0;
-
+                    twist.linear.x  = 0.0
+                    twist.angular.z = 0.0
                 else:
-                    twist.linear.x  = 0.0; 		twist.angular.z = 0.4;
+                    twist.linear.x  = 0.0
+                    twist.angular.z = 0.4
 
                 self.cmd_vel_publisher.publish(twist)
 
