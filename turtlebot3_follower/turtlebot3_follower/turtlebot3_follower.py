@@ -110,16 +110,13 @@ class follower(Node):
 
         laser_data_set.append(laser_data)
 
-        # [x for (x , y) in self.labels.items() if y == self.clf2.predict(laser_data_set) ] ## Predict the position
-        for x, y in self.labels.items():
-            if y == self.clf2.predict(laser_data_set):
-                result.append(x)
+        [x for (x , y) in self.labels.items() if y == self.clf2.predict(laser_data_set) ] ## Predict the position
 
         if result == ['empty']:
-            ret = 0
+            ret = 1
 
         else:
-            ret = 1
+            ret = 0
 
         return ret
 
@@ -149,8 +146,8 @@ class follower(Node):
         check = self.check_people()
         x = self.laser_scan()
         if x is not None:
-            self.get_logger().info('I am following {}'.format(x))
-            if  check == 1:
+            self.get_logger().info('I am following {} {}'.format(x, check))
+            if check == 1:
                 twist = Twist()
                 ## Do something according to each position##
                 if  x == ['30_0']:
