@@ -223,14 +223,13 @@ class AutomaticParkingVision(Node):
     def _set_goal_position(self, x, y, theta):
         self.goal_position.x = x
         self.goal_position.y = y
+        self.goal_heading = theta
+        # if self.goal_heading >= math.pi:
+        #     self.goal_heading = self.goal_heading % (math.pi * 180.0 / math.pi)
+        # elif self.goal_heading <= -math.pi:
+        #     self.goal_heading = -(-self.goal_heading % (math.pi * 180.0 / math.pi))
 
-        self.goal_heading = math.degrees(theta)
-        if self.goal_heading >= math.pi:
-            self.goal_heading = self.goal_heading % (math.pi * 180.0 / math.pi)
-        elif self.goal_heading <= -math.pi:
-            self.goal_heading = -(-self.goal_heading % (math.pi * 180.0 / math.pi))
-
-        self.goal_heading = self.goal_heading * math.pi / 180.0
+        # self.goal_heading = self.goal_heading * math.pi / 180.0
         self.is_set_goal = True
         self.get_logger().info(str(self.goal_position.x) + str(self.goal_position.y) + str(self.goal_heading))
 
