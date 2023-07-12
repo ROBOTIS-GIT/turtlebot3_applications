@@ -53,7 +53,6 @@ class follower(Node):
             self._scan_callback,
             qos_profile=qos_profile_sensor_data)
 
-        # self.clf = pickle.load(open(self.config_dir + '/clf', "rb", encoding='latin1'))
         with open(self.config_dir + '/clf', 'rb') as file:
             self.clf = pickle.load(file, encoding='latin1')
         with open(self.config_dir + '/clf2', 'rb') as file:
@@ -102,7 +101,7 @@ class follower(Node):
     def laser_scan(self):
         data_test=[]
         data_test_set=[]
-        if self.scan_received:
+        if self.is_scan_received:
             for i in range(70,-2,-1) + range(359, 289,-1):
                 if   np.nan_to_num( self.scan.ranges[i] ) != 0 :
                     data_test.append(np.nan_to_num(self.scan.ranges[i]))
