@@ -73,9 +73,10 @@ class follower(Node):
 
         for i in range(len(msg.ranges) - 1):
             normalized_index.append(round(i * normalized_rate))
-
+        self.get_logger().info('normalized_index: {}'.format(normalized_index))
         for i in range(standardized_scan_length - 1):
             if i in normalized_index:
+                self.get_logger().info('i: {}'.format(i))
                 normalized_range.append(msg.ranges[i])
                 normalized_intensity.append(msg.intensities[i])
             else:
