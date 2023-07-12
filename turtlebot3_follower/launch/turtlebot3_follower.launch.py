@@ -14,15 +14,14 @@ def generate_launch_description():
                 get_package_share_directory('turtlebot3_follower'),
                 'filter',
                 'turtlebot3_follow_filter.yaml')
+
     return LaunchDescription([
         Node(
             package='laser_filters',
             executable='scan_to_scan_filter_chain',
             name='scan_to_scan_filter_chain',
             output='screen',
-            parameters=[
-                {'params-file': filter_param},
-            ],
+            parameters=[filter_param],
         ),
 
         Node(

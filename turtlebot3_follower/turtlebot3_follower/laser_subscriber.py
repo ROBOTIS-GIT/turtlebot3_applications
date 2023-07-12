@@ -36,6 +36,8 @@ class laserSubscriber(Node):
         self.config_dir = os.path.join(package_dir, 'config')
         self.laser_scan_data =[]
         self.comments=[]
+        self.is_scan_received = False
+
         self.scan_subscriber = self.create_subscription(
             LaserScan,
             '/scan_filtered',
@@ -72,7 +74,7 @@ class laserSubscriber(Node):
         comment = input('Right a comment and pres Enter to continue..\n')
         self.comments.append(comment)
         if self.is_scan_received:
-            self.laser_scan_data.append(self.msg)
+            self.laser_scan_data.append(self.scan)
             with open(self.config_dir + '/add_comment', 'wb') as file:
                 pickle.dump(self.comments, file)
             with open(self.config_dir + '/add_data', 'wb') as file:
