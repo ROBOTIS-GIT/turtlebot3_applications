@@ -71,10 +71,10 @@ class follower(Node):
         standardized_scan_length = 360
         normalized_rate = standardized_scan_length / len(msg.ranges)
 
-        for i in range(len(msg.ranges) - 1):
+        for i in range(len(msg.ranges)):
             normalized_index.append(round(i * normalized_rate))
         range_index = 0
-        for i in range(standardized_scan_length - 1):
+        for i in range(standardized_scan_length):
             if i in normalized_index:
                 normalized_range.append(msg.ranges[range_index])
                 normalized_intensity.append(msg.intensities[range_index])
@@ -96,12 +96,12 @@ class follower(Node):
         if not self.is_scan_received:
             return 0
 
-        for i in itertools.chain(range(70, -2, -1), range(359, 289, -1)):
+        for i in itertools.chain(range(70, -1, -1), range(359, 289, -1)):
             if np.nan_to_num(self.scan.intensities[i] ) != 0 :
                 laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
-            elif (i+1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
-                and (i-1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
+            elif (i+1) in itertools.chain(range(70, -1, -1), range(359, 289, -1)) \
+                and (i-1) in itertools.chain(range(70, -1, -1), range(359, 289, -1)) \
                 and np.nan_to_num(self.scan.intensities[i]) == 0:
                 laser_data.append((np.nan_to_num(self.scan.intensities[i+1])+np.nan_to_num(self.scan.intensities[i-1]))/2)
 
@@ -127,11 +127,13 @@ class follower(Node):
         data_test=[]
         data_test_set=[]
         if self.is_scan_received:
-            for i in range(70,-2,-1) + range(359, 289,-1):
+            for i in itertools.chain(range(70, -1, -1), range(359, 289, -1)):
                 if   np.nan_to_num( self.scan.ranges[i] ) != 0 :
                     data_test.append(np.nan_to_num(self.scan.ranges[i]))
 
-                elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.scan.ranges[i]) == 0:
+                elif (i+1) in itertools.chain(range(70, -1, -1), range(359, 289, -1)) \
+                    and (i-1) in itertools.chain(range(70, -1, -1), range(359, 289, -1)) \
+                    and np.nan_to_num(self.scan.ranges[i]) == 0:
                     data_test.append((np.nan_to_num(self.scan.ranges[i+1])+np.nan_to_num(self.scan.ranges[i-1]))/2)
 
                 else :
@@ -139,7 +141,7 @@ class follower(Node):
 
             data_test_set.append(data_test)
 
-            return [x for (x , y) in self.labels.iteritems() if y == self.clf.predict(data_test_set) ]
+            return [x for (x , y) in self.labels.items() if y == self.clf.predict(data_test_set) ]
         else:
             return None
 
