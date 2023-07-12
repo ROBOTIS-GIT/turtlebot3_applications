@@ -66,6 +66,8 @@ class follower(Node):
     def _scan_callback(self, msg):
         self.scan = msg
         self.is_scan_received = True
+        self.right_side = int(290 * len(self.scan.ranges) / 360)
+        self.left_side = int(70 * len(self.scan.ranges) / 360)
 
     def check_people(self):
         laser_data=[]
@@ -75,12 +77,11 @@ class follower(Node):
         if not self.is_scan_received:
             return 0
 
-        for i in range(70,-2,-1) + range(359, 289,-1):
-
+        for i in range(self.right_side, -2, -1) + range(self.left_side, 289, -1):
             if   np.nan_to_num( self.scan.intensities[i] ) != 0 :
                  laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
-            elif (i+1) in range(70,-2,-1) + range(359, 289,-1) and (i-1) in range(70,-2,-1) + range(359, 289,-1) and np.nan_to_num(self.scan.intensities[i]) == 0:
+            elif (i+1) in range(self.left_side,-2,-1) + range(self.right_side, 289,-1) and (i-1) in range(self.left_side,-2,-1) + range(self.right_side, 289,-1) and np.nan_to_num(self.scan.intensities[i]) == 0:
                  laser_data.append((np.nan_to_num(self.scan.intensities[i+1])+np.nan_to_num(self.scan.intensities[i-1]))/2)
 
             else :
