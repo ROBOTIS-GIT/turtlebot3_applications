@@ -158,7 +158,7 @@ class AutomaticParkingVision(Node):
                         self.queue_pose_x = []
                         self.queue_pose_y = []
                         self.queue_pose_theta = []
-                        self.is_marker_received = True
+                        # self.is_marker_received = True
 
     def _rotate_pose(self, pose):
         self.get_logger().info("pose {0}".format(pose.position))
