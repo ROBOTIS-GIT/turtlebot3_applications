@@ -338,7 +338,7 @@ class AutomaticParkingVision(Node):
         return rotation_matrix
 
     def rotateOdom(self, odom):
-        self.get_logger().info("odom {0}".format(odom.position))
+        self.get_logger().info("odom {0}".format(odom))
         # position = np.array([odom.position.x, odom.position.y, odom.position.z])
         # orientation = np.array([odom.orientation.x, odom.orientation.y,
         #                         odom.orientation.z, odom.orientation.w])
@@ -357,7 +357,6 @@ class AutomaticParkingVision(Node):
         # rotated_odom.orientation.y = rotated_orientation[1]
         # rotated_odom.orientation.z = rotated_orientation[2]
         # rotated_odom.orientation.w = rotated_orientation[3]
-
 
         rotation_x = math.pi / 2
         cos_angle_x = math.cos(rotation_x)
@@ -397,9 +396,9 @@ class AutomaticParkingVision(Node):
         return rotated_odom
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
-        # odom = self.rotateOdom(marker_odom_msg)
-        odom = marker_odom_msg
-        self.get_logger().info("rotation odom {0}".format(odom.position))
+        odom = self.rotateOdom(marker_odom_msg)
+        # odom = marker_odom_msg
+        self.get_logger().info("rotation odom {0}".format(odom))
         quaternion = (
             odom.orientation.x,
             odom.orientation.y,
