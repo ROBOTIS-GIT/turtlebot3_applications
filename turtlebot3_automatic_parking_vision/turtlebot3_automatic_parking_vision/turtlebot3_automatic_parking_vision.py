@@ -207,8 +207,8 @@ class AutomaticParkingVision(Node):
                 pose.orientation.y,
                 pose.orientation.z,
                 pose.orientation.w)
-            theta = euler_from_quaternion(quaternion)[2]
-            # theta = theta + np.pi / 2.
+            theta = euler_from_quaternion(quaternion)[0]
+            theta = theta + np.pi / 2.
 
             # if theta < 0.0:
             #     theta = theta + np.pi * 2
