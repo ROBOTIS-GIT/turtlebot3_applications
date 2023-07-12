@@ -18,6 +18,7 @@
 # Authors: Gilbert #
 
 import os
+import itertools
 
 import rclpy
 from ament_index_python.packages import get_package_share_directory
@@ -77,11 +78,13 @@ class follower(Node):
         if not self.is_scan_received:
             return 0
 
-        for i in range(self.right_side, -2, -1) + range(self.left_side, 289, -1):
+        for i in itertools.chain(range(self.right_side, -2, -1) + range(self.left_side, 289, -1)):
             if   np.nan_to_num( self.scan.intensities[i] ) != 0 :
                  laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
-            elif (i+1) in range(self.left_side,-2,-1) + range(self.right_side, 289,-1) and (i-1) in range(self.left_side,-2,-1) + range(self.right_side, 289,-1) and np.nan_to_num(self.scan.intensities[i]) == 0:
+            elif (i+1) in itertools.chain(range(self.left_side,-2,-1) + range(self.right_side, 289,-1)) \
+                and (i-1) in itertools.chain(range(self.left_side,-2,-1) + range(self.right_side, 289,-1)) \
+                and np.nan_to_num(self.scan.intensities[i]) == 0:
                  laser_data.append((np.nan_to_num(self.scan.intensities[i+1])+np.nan_to_num(self.scan.intensities[i-1]))/2)
 
             else :
