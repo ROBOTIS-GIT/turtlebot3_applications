@@ -79,12 +79,12 @@ class follower(Node):
         if not self.is_scan_received:
             return 0
 
-        for i in itertools.chain(range(self.right_side, -2, -1), range(self.max_scan_range, self.right_side, -1)):
+        for i in itertools.chain(range(self.right_side, -2, -1), range(self.max_scan_range - 1, self.right_side, -1)):
             if   np.nan_to_num( self.scan.intensities[i] ) != 0 :
                  laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
-            elif (i+1) in itertools.chain(range(self.left_side,-2,-1), range(self.max_scan_range, self.right_side,-1)) \
-                and (i-1) in itertools.chain(range(self.left_side,-2,-1), range(self.max_scan_range, self.right_side,-1)) \
+            elif (i+1) in itertools.chain(range(self.left_side,-2,-1), range(self.max_scan_range - 1, self.right_side,-1)) \
+                and (i-1) in itertools.chain(range(self.left_side,-2,-1), range(self.max_scan_range - 1, self.right_side,-1)) \
                 and np.nan_to_num(self.scan.intensities[i]) == 0:
                  laser_data.append((np.nan_to_num(self.scan.intensities[i+1])+np.nan_to_num(self.scan.intensities[i-1]))/2)
 
