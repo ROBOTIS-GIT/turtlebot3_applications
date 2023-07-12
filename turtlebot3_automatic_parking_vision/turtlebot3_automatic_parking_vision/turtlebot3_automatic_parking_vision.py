@@ -126,7 +126,7 @@ class AutomaticParkingVision(Node):
             msg.pose.pose.orientation.y,
             msg.pose.pose.orientation.z,
             msg.pose.pose.orientation.w)
-        self.heading = euler_from_quaternion(quaternion)[2]
+        self.heading = self._euler_from_quaternion(quaternion)[2]
         # self.get_logger().info('heading: ' + str(self.heading))
 
     def _median_filter(self, data):
@@ -207,7 +207,7 @@ class AutomaticParkingVision(Node):
                 pose.orientation.y,
                 pose.orientation.z,
                 pose.orientation.w)
-            theta = euler_from_quaternion(quaternion)[0]
+            theta = self._euler_from_quaternion(quaternion)[2]
             theta = theta + np.pi / 2.
 
             # if theta < 0.0:
@@ -230,7 +230,7 @@ class AutomaticParkingVision(Node):
         #     self.goal_heading = -(-self.goal_heading % (math.pi * 180.0 / math.pi))
 
         # self.goal_heading = self.goal_heading * math.pi / 180.0
-        self.is_set_goal = True
+        # self.is_set_goal = True
         self.get_logger().info(str(self.goal_position.x) + str(self.goal_position.y) + str(self.goal_heading))
 
     def _euler_from_quaternion(self, quat):
