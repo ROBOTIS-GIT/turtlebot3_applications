@@ -65,11 +65,28 @@ class follower(Node):
         self.run_timer = self.create_timer(0.1, self.follow)
 
     def _scan_callback(self, msg):
-        self.scan = msg
+        self.scan = LaserScan()
+        normalized_range = []
+        normalized_intensity = []
+        normalized_index = []
+        standardized_scan_length = 360
+        normalized_rate = standardized_scan_length / len(msg.ranges)
+
+        for i in range(len(msg.ranges) - 1):
+            normalized_index.append(round(i * normalized_rate))
+
+        for i in range(len(standardized_scan_length) - 1):
+            if i in normalized_index:
+                normalized_range.append(msg.ranges[i])
+                normalized_intensity.append(msg.intensities[i])
+            else:
+                normalized_range.append(None)
+                normalized_intensity.append(None)
+
+        self.scan.ranges = normalized_range
+        self.scan.intensities = normalized_intensity
+
         self.is_scan_received = True
-        self.max_scan_range = len(self.scan.ranges)
-        self.right_side = int(290 * self.max_scan_range / 360)
-        self.left_side = int(70 * self.max_scan_range / 360)
 
     def check_people(self):
         laser_data=[]
@@ -79,17 +96,17 @@ class follower(Node):
         if not self.is_scan_received:
             return 0
 
-        for i in itertools.chain(range(self.right_side, -2, -1), range(self.max_scan_range - 1, self.right_side, -1)):
-            if   np.nan_to_num( self.scan.intensities[i] ) != 0 :
-                 laser_data.append(np.nan_to_num(self.scan.intensities[i]))
+        for i in itertools.chain(range(70, -2, -1), range(359, 289, -1)):
+            if np.nan_to_num(self.scan.intensities[i] ) != 0 :
+                laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
-            elif (i+1) in itertools.chain(range(self.left_side,-2,-1), range(self.max_scan_range - 1, self.right_side,-1)) \
-                and (i-1) in itertools.chain(range(self.left_side,-2,-1), range(self.max_scan_range - 1, self.right_side,-1)) \
+            elif (i+1) in itertools.chain(range(self.left_side,-2,-1), range(359, 289, -1)) \
+                and (i-1) in itertools.chain(range(self.left_side,-2,-1), range(359, 289, -1)) \
                 and np.nan_to_num(self.scan.intensities[i]) == 0:
-                 laser_data.append((np.nan_to_num(self.scan.intensities[i+1])+np.nan_to_num(self.scan.intensities[i-1]))/2)
+                laser_data.append((np.nan_to_num(self.scan.intensities[i+1])+np.nan_to_num(self.scan.intensities[i-1]))/2)
 
             else :
-                 laser_data.append(np.nan_to_num(self.scan.intensities[i]))
+                laser_data.append(np.nan_to_num(self.scan.intensities[i]))
 
         laser_data_set.append(laser_data)
 
