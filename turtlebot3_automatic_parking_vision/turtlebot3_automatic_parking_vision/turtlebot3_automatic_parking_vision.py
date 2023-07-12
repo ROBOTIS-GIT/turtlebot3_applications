@@ -129,7 +129,7 @@ class AutomaticParkingVision(Node):
         self.heading = math.degrees(euler_from_quaternion(quaternion)[0])
         # self.get_logger().info('heading: ' + str(self.heading))
 
-    def median_filter(data):
+    def _median_filter(data):
         filtered_data = []
         window_size = 5
 
