@@ -201,20 +201,11 @@ class AutomaticParking(Node):
         self.get_logger().info("=================================")
         self.get_logger().info("===== Go to parking spot!!! =====")
 
-    # def _rotate_origin_only(self, radians):
-    def _rotate_origin_only(self, x, y, radians):
-        # self.rotation_point[0] = self.center_point[0] * cos(-(radians)) \
-        #     + self.center_point[1] * sin(-(radians))
-        # self.rotation_point[1] = -self.center_point[0] * sin(-(radians)) \
-        #     + self.center_point[1] * cos(-(radians))
-        xx = x * cos(radians) + y * sin(radians)
-        yy = -x * sin(radians) + y * cos(radians)
-        self.rotation_point[0] = xx
-        self.rotation_point[1] = yy
-        # return xx, yy
-
-        # return
-        # self.get_logger().info("rotation_point: {}".format(self.rotation_point))
+    def _rotate_origin_only(self, radians):
+        self.rotation_point[0] = self.center_point[0] * cos(-(pi / 2 - radians)) \
+            + self.center_point[1] * sin(-(pi / 2 - radians))
+        self.rotation_point[1] = -self.center_point[0] * sin(-(pi / 2 - radians)) \
+            + self.center_point[1] * cos(-(pi / 2 - radians))
 
     def _stop_and_reset(self):
         cmd_vel = Twist()
@@ -254,23 +245,19 @@ class AutomaticParking(Node):
                 else:
                     self.search_count += 1
                     if self.search_count > 100:
-                        self.get_logger().error("Fail finding parking spot.")
+                        self.get_logger().error("Fail to finding parking spot.")
                         self.search_count = 0
 
             elif self.parking_sequence == 2:
                 init_yaw = yaw
                 yaw = self.theta + yaw
-                self.get_logger().info("init_yaw: {} theta: {}".format(init_yaw, self.theta))
-
                 if self.theta > 0:
                     if self.theta - init_yaw > 0.1:
                         cmd_vel.linear.x = 0.0
                         cmd_vel.angular.z = 0.2
                     else:
                         self._stop_and_reset()
-                        # self._rotate_origin_only(init_yaw)
-                        self._rotate_origin_only(self.center_point[0], self.center_point[1], -(pi / 2 - init_yaw))
-
+                        self._rotate_origin_only(init_yaw)
                         self.parking_sequence += 1
                         self.get_logger().info("Go to parking spot!")
                 else:
@@ -279,16 +266,11 @@ class AutomaticParking(Node):
                         cmd_vel.angular.z = -0.2
                     else:
                         self._stop_and_reset()
-                        # self._rotate_origin_only(init_yaw)
-                        self._rotate_origin_only(self.center_point[0], self.center_point[1], -(pi / 2 - init_yaw))
+                        self._rotate_origin_only(init_yaw)
                         self.parking_sequence += 1
                         self.get_logger().info("Go to parking spot!")
 
             elif self.parking_sequence == 3:
-                self.get_logger().info("{} {} / {}".format(
-                    self.odom.pose.pose.position.x,
-                    self.rotation_point,
-                    abs(self.odom.pose.pose.position.x - (self.rotation_point[1]))))
                 if abs(self.odom.pose.pose.position.x - (self.rotation_point[1])) > 0.02:
                     if self.odom.pose.pose.position.x > (self.rotation_point[1]):
                         cmd_vel.linear.x = -0.05
@@ -303,8 +285,6 @@ class AutomaticParking(Node):
                     self.get_logger().info("Rotation Done.")
 
             elif self.parking_sequence == 4:
-                self.get_logger().info("euler: {}".format(self.euler[2]))
-                # if self.euler[2] - self.theta > -pi / 2:
                 if yaw > -pi / 2:
                     cmd_vel.linear.x = 0.0
                     cmd_vel.angular.z = -0.2
