@@ -55,7 +55,7 @@ class AutomaticParking(Node):
         self.theta = 0.0
         self.is_scan_received = False
         self.is_odom_received = False
-
+        self.init_yaw = 0.0
         # Set publisher
         self.cmd_vel_publisher = self.create_publisher(
             Twist,
@@ -233,7 +233,6 @@ class AutomaticParking(Node):
         if self.is_scan_received and self.is_odom_received:
             yaw = self._get_yaw()
             cmd_vel = Twist()
-            init_yaw = 0.0
             if self.parking_sequence == 0:
                 self.get_logger().info("Start auto parking!")
                 self.parking_sequence += 1
@@ -250,24 +249,24 @@ class AutomaticParking(Node):
                         self.search_count = 0
 
             elif self.parking_sequence == 2:
-                init_yaw = yaw
+                self.init_yaw = yaw
                 yaw = self.theta + yaw
                 if self.theta > 0:
-                    if self.theta - init_yaw > 0.1:
+                    if self.theta - self.init_yaw > 0.1:
                         cmd_vel.linear.x = 0.0
                         cmd_vel.angular.z = 0.2
                     else:
                         self._stop_and_reset()
-                        self._rotate_origin_only(init_yaw)
+                        self._rotate_origin_only(self.init_yaw)
                         self.parking_sequence += 1
                         self.get_logger().info("Go to parking spot!")
                 else:
-                    if self.theta - init_yaw < -0.1:
+                    if self.theta - self.init_yaw < -0.1:
                         cmd_vel.linear.x = 0.0
                         cmd_vel.angular.z = -0.2
                     else:
                         self._stop_and_reset()
-                        self._rotate_origin_only(init_yaw)
+                        self._rotate_origin_only(self.init_yaw)
                         self.parking_sequence += 1
                         self.get_logger().info("Go to parking spot!")
 
@@ -286,7 +285,7 @@ class AutomaticParking(Node):
                     self.get_logger().info("Rotation Done.")
 
             elif self.parking_sequence == 4:
-                if yaw - init_yaw > -pi / 2:
+                if yaw - self.init_yaw > -pi / 2:
                     cmd_vel.linear.x = 0.0
                     cmd_vel.angular.z = -0.2
                 else:
