@@ -270,9 +270,9 @@ class AutomaticParking(Node):
                 self.get_logger().info("{} {} / {}".format(
                     self.odom.pose.pose.position.x,
                     self.rotation_point,
-                    abs(self.odom.pose.pose.position.x - (self.rotation_point[1]))))
-                if abs(self.odom.pose.pose.position.x - (self.rotation_point[1])) > 0.02:
-                    if self.odom.pose.pose.position.x > (self.rotation_point[1]):
+                    abs(-self.odom.pose.pose.position.x - (self.rotation_point[1]))))
+                if abs(-self.odom.pose.pose.position.x - (self.rotation_point[1])) > 0.02:
+                    if -self.odom.pose.pose.position.x > (self.rotation_point[1]):
                         cmd_vel.linear.x = -0.05
                         cmd_vel.angular.z = 0.0
                     else:
