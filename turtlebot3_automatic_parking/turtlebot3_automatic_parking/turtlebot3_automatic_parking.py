@@ -53,6 +53,8 @@ class AutomaticParking(Node):
         self.rotation_point = [0.0, 0.0]
         self.parking_sequence = 0
         self.theta = 0.0
+        self.is_scan_received = False
+        self.is_odom_received = False
 
         # Set publisher
         self.cmd_vel_publisher = self.create_publisher(
@@ -83,20 +85,20 @@ class AutomaticParking(Node):
             self._odom_callback,
             qos_profile=QoSProfile(depth=10))
 
-        # self._run_timer = self.create_timer(0.1, self._run)
+        self._run_timer = self.create_timer(0.2, self._run)
 
     def _scan_callback(self, msg):
         self.scan = msg
         scan_spot = LaserScan()
         scan_spot_list = [0] * len(msg.ranges)
-        self.get_logger().info('start angle {} center angle {} end angle {}'.format(self.start_angle, self.center_angle, self.end_angle))
+        scan_spot.ranges = self.scan.ranges
         if self.start_angle != None and self.center_angle != None and self.end_angle != None:
             scan_spot_list[self.start_angle] = msg.ranges[self.start_angle] + 10000
             scan_spot_list[self.center_angle] = msg.ranges[self.center_angle] + 10000
             scan_spot_list[self.end_angle] = msg.ranges[self.end_angle] + 10000
             scan_spot.intensities = msg.intensities
         self.scan_spot_publisher.publish(scan_spot)
-        self._run()
+        self.is_scan_received = True
 
     def _odom_callback(self, msg):
         self.odom = msg
@@ -109,6 +111,7 @@ class AutomaticParking(Node):
         )
 
         self.euler = quat2euler(quaternion)
+        self.is_odom_received = True
 
     def _get_point(self, start_angle_distance):
         angle = start_angle_distance[0]
@@ -157,7 +160,6 @@ class AutomaticParking(Node):
                         intensity_index.append(0)
                 else:
                     intensity_index.append(0)
-            self.get_logger().info("intensity_index: {}".format(intensity_index))
             for i in index_count:
                 if abs(i - index_count[int(len(index_count) / 2)]) < 20:
                     spot_angle_index.append(i)
@@ -217,82 +219,83 @@ class AutomaticParking(Node):
         time.sleep(3)
 
     def _run(self):
-        cmd_vel = Twist()
-        if self.parking_sequence == 0:
-            self.get_logger().info("Start auto parking!")
-            self.parking_sequence += 1
-        elif self.parking_sequence == 1:
-            if self._scan_parking_spot():
-                if self._finding_spot_position():
-                    self._print_parking_log()
-                    self.parking_sequence += 1
-                    self.get_logger().info("Rotation!")
-            else:
-                self.search_count += 1
-                if self.search_count > 100:
-                    self.get_logger().error("Fail finding parking spot.")
-                    self.search_count = 0
-
-        elif self.parking_sequence == 2:
-            init_yaw = self.euler[0]
-            if self.theta > 0:
-                if self.theta - init_yaw > 0.1:
-                    cmd_vel.linear.x = 0.0
-                    cmd_vel.angular.z = 0.2
+        if self.is_scan_received and self.is_odom_received:
+            cmd_vel = Twist()
+            if self.parking_sequence == 0:
+                self.get_logger().info("Start auto parking!")
+                self.parking_sequence += 1
+            elif self.parking_sequence == 1:
+                if self._scan_parking_spot():
+                    if self._finding_spot_position():
+                        self._print_parking_log()
+                        self.parking_sequence += 1
+                        self.get_logger().info("Rotation!")
                 else:
-                    self._stop_and_reset()
-                    self._rotate_origin_only(init_yaw)
+                    self.search_count += 1
+                    if self.search_count > 100:
+                        self.get_logger().error("Fail finding parking spot.")
+                        self.search_count = 0
+
+            elif self.parking_sequence == 2:
+                init_yaw = self.euler[0]
+                if self.theta > 0:
+                    if self.theta - init_yaw > 0.1:
+                        cmd_vel.linear.x = 0.0
+                        cmd_vel.angular.z = 0.2
+                    else:
+                        self._stop_and_reset()
+                        self._rotate_origin_only(init_yaw)
+                        self.parking_sequence += 1
+                        self.get_logger().info("Go to parking spot!")
+                else:
+                    if self.theta - init_yaw < -0.1:
+                        cmd_vel.linear.x = 0.0
+                        cmd_vel.angular.z = -0.2
+                    else:
+                        self._stop_and_reset()
+                        self._rotate_origin_only(init_yaw)
+                        self.parking_sequence += 1
+                        self.get_logger().info("Go to parking spot!")
+
+            elif self.parking_sequence == 3:
+                self.get_logger().info("rotation point : {0} and x : {1}".format(self.rotation_point, self.odom.pose.pose.position.x))
+                if abs(self.odom.pose.pose.position.x - (self.rotation_point[1])) > 0.02:
+                    if self.odom.pose.pose.position.x > (self.rotation_point[1]):
+                        cmd_vel.linear.x = -0.05
+                        cmd_vel.angular.z = 0.0
+                    else:
+                        cmd_vel.linear.x = 0.05
+                        cmd_vel.angular.z = 0.0
+                else:
+                    cmd_vel.linear.x = 0.0
+                    cmd_vel.angular.z = 0.0
                     self.parking_sequence += 1
-                    self.get_logger().info("Go to parking spot!")
-            else:
-                if self.theta - init_yaw < -0.1:
+                    self.get_logger().info("Rotation Done.")
+
+            elif self.parking_sequence == 4:
+                if self.theta + self.euler[0] > -pi / 2:
                     cmd_vel.linear.x = 0.0
                     cmd_vel.angular.z = -0.2
                 else:
-                    self._stop_and_reset()
-                    self._rotate_origin_only(init_yaw)
+                    cmd_vel.linear.x = 0.0
+                    cmd_vel.angular.z = 0.0
                     self.parking_sequence += 1
-                    self.get_logger().info("Go to parking spot!")
+                    self.get_logger().info("Approach spot.")
 
-        elif self.parking_sequence == 3:
-            self.get_logger().info("rotation point : {0} and x : {1}".format(self.rotation_point, self.odom.pose.pose.position.x))
-            if abs(self.odom.pose.pose.position.x - (self.rotation_point[1])) > 0.02:
-                if self.odom.pose.pose.position.x > (self.rotation_point[1]):
-                    cmd_vel.linear.x = -0.05
+            elif self.parking_sequence == 5:
+                ranges = []
+                for i in range(150, 210):
+                    if self.scan.ranges[i] != 0:
+                        ranges.append(self.scan.ranges[i])
+                if min(ranges) > 0.2:
+                    cmd_vel.linear.x = -0.04
                     cmd_vel.angular.z = 0.0
                 else:
-                    cmd_vel.linear.x = 0.05
-                    cmd_vel.angular.z = 0.0
-            else:
-                cmd_vel.linear.x = 0.0
-                cmd_vel.angular.z = 0.0
-                self.parking_sequence += 1
-                self.get_logger().info("Rotation Done.")
+                    self.get_logger().info("Auto parking Done.")
+                    self._stop_and_reset()
+                    sys.exit()
 
-        elif self.parking_sequence == 4:
-            if self.theta + self.euler[0] > -pi / 2:
-                cmd_vel.linear.x = 0.0
-                cmd_vel.angular.z = -0.2
-            else:
-                cmd_vel.linear.x = 0.0
-                cmd_vel.angular.z = 0.0
-                self.parking_sequence += 1
-                self.get_logger().info("Approach spot.")
-
-        elif self.parking_sequence == 5:
-            ranges = []
-            for i in range(150, 210):
-                if self.scan.ranges[i] != 0:
-                    ranges.append(self.scan.ranges[i])
-            if min(ranges) > 0.2:
-                cmd_vel.linear.x = -0.04
-                cmd_vel.angular.z = 0.0
-            else:
-                self.get_logger().info("Auto parking Done.")
-                self._stop_and_reset()
-                sys.exit()
-
-        self.cmd_vel_publisher.publish(cmd_vel)
+            self.cmd_vel_publisher.publish(cmd_vel)
 
 
 def main(args=None):
