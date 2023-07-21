@@ -95,6 +95,7 @@ class AutomaticParking(Node):
             for i in range(len(msg.ranges)):
                 if i == self.start_angle or i == self.center_angle or i == self.end_angle:
                     scan_spot.intensities[i] = msg.intensities[i] + 10000
+                    self.get_logger().info("intensity : {0} {1}".format(scan_spot.intensities[i], msg.intensities[i]))
                 else:
                     scan_spot.intensities[i] = msg.intensities[i]
         self.scan_spot_publisher.publish(scan_spot)
