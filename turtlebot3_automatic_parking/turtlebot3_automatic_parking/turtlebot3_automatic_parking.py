@@ -110,15 +110,6 @@ class AutomaticParking(Node):
 
     def _odom_callback(self, msg):
         self.odom = msg
-        orientation = msg.pose.pose.orientation
-        quaternion = (
-            orientation.x,
-            orientation.y,
-            orientation.z,
-            orientation.w
-        )
-
-        self.euler = euler_from_quaternion(quaternion)
         self.is_odom_received = True
 
     def _get_point(self, start_angle_distance):
@@ -210,12 +201,21 @@ class AutomaticParking(Node):
         self.get_logger().info("=================================")
         self.get_logger().info("===== Go to parking spot!!! =====")
 
-    def _rotate_origin_only(self, radians):
-        self.rotation_point[0] = self.center_point[0] * cos(-(radians)) \
-            + self.center_point[1] * sin(-(radians))
-        self.rotation_point[1] = -self.center_point[0] * sin(-(radians)) \
-            + self.center_point[1] * cos(-(radians))
-        self.get_logger().info("rotation_point: {}".format(self.rotation_point))
+    # def _rotate_origin_only(self, radians):
+    def _rotate_origin_only(self, x, y, radians):
+        # self.rotation_point[0] = self.center_point[0] * cos(-(radians)) \
+        #     + self.center_point[1] * sin(-(radians))
+        # self.rotation_point[1] = -self.center_point[0] * sin(-(radians)) \
+        #     + self.center_point[1] * cos(-(radians))
+        xx = x * cos(radians) + y * sin(radians)
+        yy = -x * sin(radians) + y * cos(radians)
+        self.rotation_point[0] = xx
+        self.rotation_point[1] = yy
+        # return xx, yy
+
+        # return
+        # self.get_logger().info("rotation_point: {}".format(self.rotation_point))
+
     def _stop_and_reset(self):
         cmd_vel = Twist()
         reset = Empty()
@@ -226,8 +226,21 @@ class AutomaticParking(Node):
         self.reset_publisher.publish(reset)
         time.sleep(3)
 
+    def _get_yaw(self):
+        orientation = self.odom.pose.pose.orientation
+        quaternion = (
+            orientation.x,
+            orientation.y,
+            orientation.z,
+            orientation.w
+        )
+        euler = euler_from_quaternion(quaternion)
+        yaw = euler[2]
+        return yaw
+
     def _run(self):
         if self.is_scan_received and self.is_odom_received:
+            yaw = self._get_yaw()
             cmd_vel = Twist()
             if self.parking_sequence == 0:
                 self.get_logger().info("Start auto parking!")
@@ -245,7 +258,8 @@ class AutomaticParking(Node):
                         self.search_count = 0
 
             elif self.parking_sequence == 2:
-                init_yaw = self.euler[2]
+                init_yaw = yaw
+                yaw = self.theta + yaw
                 self.get_logger().info("init_yaw: {} theta: {}".format(init_yaw, self.theta))
 
                 if self.theta > 0:
@@ -254,7 +268,9 @@ class AutomaticParking(Node):
                         cmd_vel.angular.z = 0.2
                     else:
                         self._stop_and_reset()
-                        self._rotate_origin_only(init_yaw)
+                        # self._rotate_origin_only(init_yaw)
+                        self._rotate_origin_only(self.center_point[0], self.center_point[1], -(pi / 2 - init_yaw))
+
                         self.parking_sequence += 1
                         self.get_logger().info("Go to parking spot!")
                 else:
@@ -263,7 +279,8 @@ class AutomaticParking(Node):
                         cmd_vel.angular.z = -0.2
                     else:
                         self._stop_and_reset()
-                        self._rotate_origin_only(init_yaw)
+                        # self._rotate_origin_only(init_yaw)
+                        self._rotate_origin_only(self.center_point[0], self.center_point[1], -(pi / 2 - init_yaw))
                         self.parking_sequence += 1
                         self.get_logger().info("Go to parking spot!")
 
@@ -271,9 +288,9 @@ class AutomaticParking(Node):
                 self.get_logger().info("{} {} / {}".format(
                     self.odom.pose.pose.position.x,
                     self.rotation_point,
-                    abs(self.odom.pose.pose.position.x - (self.rotation_point[0]))))
-                if abs(self.odom.pose.pose.position.x - (self.rotation_point[0])) > 0.02:
-                    if self.odom.pose.pose.position.x < (self.rotation_point[0]):
+                    abs(self.odom.pose.pose.position.x - (self.rotation_point[1]))))
+                if abs(self.odom.pose.pose.position.x - (self.rotation_point[1])) > 0.02:
+                    if self.odom.pose.pose.position.x > (self.rotation_point[1]):
                         cmd_vel.linear.x = -0.05
                         cmd_vel.angular.z = 0.0
                     else:
@@ -287,7 +304,8 @@ class AutomaticParking(Node):
 
             elif self.parking_sequence == 4:
                 self.get_logger().info("euler: {}".format(self.euler[2]))
-                if self.euler[2] - self.theta > -pi / 2:
+                # if self.euler[2] - self.theta > -pi / 2:
+                if yaw > -pi / 2:
                     cmd_vel.linear.x = 0.0
                     cmd_vel.angular.z = -0.2
                 else:
