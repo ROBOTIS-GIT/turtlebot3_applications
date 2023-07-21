@@ -119,7 +119,6 @@ class AutomaticParking(Node):
         )
 
         self.euler = euler_from_quaternion(quaternion)
-        self.get_logger().info("euler : {0}".format(self.euler))
         self.is_odom_received = True
 
     def _get_point(self, start_angle_distance):
