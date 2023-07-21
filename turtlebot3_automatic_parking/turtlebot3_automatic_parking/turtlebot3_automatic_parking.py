@@ -206,7 +206,7 @@ class AutomaticParking(Node):
         self.get_logger().info('| end    | {0:>10.3f}| {1:>10.3f}|'.format(self.end_point[0], self.end_point[1]))
         self.get_logger().info("=================================")
         self.get_logger().info('| theta  | {0:.2f} deg'.format(np.rad2deg(self.theta)))
-        self.get_logger().info('| yaw    | {0:.2f} deg'.format(np.rad2deg(self.euler[0])))
+        self.get_logger().info('| yaw    | {0:.2f} deg'.format(np.rad2deg(self.euler[2])))
         self.get_logger().info("=================================")
         self.get_logger().info("===== Go to parking spot!!! =====")
 
@@ -246,6 +246,7 @@ class AutomaticParking(Node):
 
             elif self.parking_sequence == 2:
                 init_yaw = self.euler[2]
+                self.get_logger().info("init_yaw: {} theta: {}".format(init_yaw, self.theta))
                 if self.theta > 0:
                     if self.theta - init_yaw > 0.1:
                         cmd_vel.linear.x = 0.0
