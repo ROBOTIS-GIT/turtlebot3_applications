@@ -248,10 +248,10 @@ class AutomaticParking(Node):
                 init_yaw = self.euler[2]
                 self.get_logger().info("init_yaw: {} theta: {}".format(init_yaw, self.theta))
 
-                if self.theta < 0:
+                if self.theta > 0:
                     if self.theta - init_yaw > 0.1:
                         cmd_vel.linear.x = 0.0
-                        cmd_vel.angular.z = -0.2
+                        cmd_vel.angular.z = 0.2
                     else:
                         self._stop_and_reset()
                         self._rotate_origin_only(init_yaw)
@@ -260,7 +260,7 @@ class AutomaticParking(Node):
                 else:
                     if self.theta - init_yaw < -0.1:
                         cmd_vel.linear.x = 0.0
-                        cmd_vel.angular.z = 0.2
+                        cmd_vel.angular.z = -0.2
                     else:
                         self._stop_and_reset()
                         self._rotate_origin_only(init_yaw)
