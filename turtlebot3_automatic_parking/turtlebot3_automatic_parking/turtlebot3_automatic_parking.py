@@ -286,7 +286,8 @@ class AutomaticParking(Node):
                     self.get_logger().info("Rotation Done.")
 
             elif self.parking_sequence == 4:
-                if self.theta + self.euler[2] > -pi / 2:
+                self.get_logger().info("euler: {}".format(self.euler[2]))
+                if self.euler[2] > -pi / 2:
                     cmd_vel.linear.x = 0.0
                     cmd_vel.angular.z = -0.2
                 else:
