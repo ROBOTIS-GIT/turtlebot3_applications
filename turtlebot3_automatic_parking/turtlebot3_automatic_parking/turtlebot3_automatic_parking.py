@@ -266,7 +266,6 @@ class AutomaticParking(Node):
                         self.get_logger().info("Go to parking spot!")
 
             elif self.parking_sequence == 3:
-                self.get_logger().info("rotation point : {0} and x : {1}".format(self.rotation_point, self.odom.pose.pose.position.x))
                 if abs(self.odom.pose.pose.position.x - (self.rotation_point[1])) > 0.02:
                     if self.odom.pose.pose.position.x > (self.rotation_point[1]):
                         cmd_vel.linear.x = -0.05
@@ -281,7 +280,7 @@ class AutomaticParking(Node):
                     self.get_logger().info("Rotation Done.")
 
             elif self.parking_sequence == 4:
-                if self.theta + self.euler[0] > -pi / 2:
+                if self.theta + self.euler[2] > -pi / 2:
                     cmd_vel.linear.x = 0.0
                     cmd_vel.angular.z = -0.2
                 else:
