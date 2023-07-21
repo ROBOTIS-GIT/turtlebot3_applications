@@ -18,6 +18,7 @@
 # Authors: Gilbert #
 
 from math import sin, cos, pi
+import os
 import sys
 import time
 
@@ -38,6 +39,10 @@ class AutomaticParking(Node):
 
     def __init__(self):
         super().__init__('automatic_parking')
+
+        if os.environ['LDS_MODEL'] == 'LDS-02':
+            self.get_logger().error('LDS-02 is not supported')
+            sys.exit()
 
         # Set initial value
         self.scan = None
