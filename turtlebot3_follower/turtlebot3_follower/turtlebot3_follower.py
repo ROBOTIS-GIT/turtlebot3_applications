@@ -71,27 +71,7 @@ class follower(Node):
         self.run_timer = self.create_timer(0.05, self._follow)
 
     def _scan_callback(self, msg):
-        normalized_range = []
-        normalized_intensity = []
-        normalized_index = []
-        standardized_scan_length = 360
-        normalized_rate = standardized_scan_length / len(msg.ranges)
-
-        for i in range(len(msg.ranges)):
-            normalized_index.append(round(i * normalized_rate))
-        range_index = 0
-        for i in range(standardized_scan_length):
-            if i in normalized_index:
-                normalized_range.append(msg.ranges[range_index])
-                normalized_intensity.append(msg.intensities[range_index])
-                range_index += 1
-            else:
-                normalized_range.append(float('nan'))
-                normalized_intensity.append(float('nan'))
-
-        self.scan.ranges = normalized_range
-        self.scan.intensities = normalized_intensity
-
+        self.scan = msg
         self.is_scan_received = True
 
     def _check_people(self):
