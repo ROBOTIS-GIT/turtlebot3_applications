@@ -29,6 +29,7 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Empty
+from std_msgs.msg import Float32MultiArray
 
 import numpy as np
 from transforms3d.euler import quat2euler
@@ -89,14 +90,13 @@ class AutomaticParking(Node):
 
     def _scan_callback(self, msg):
         self.scan = msg
-        scan_spot = LaserScan()
-        scan_spot_list = [0] * len(msg.ranges)
-        scan_spot.ranges = self.scan.ranges
+        scan_spot = msg
         if self.start_angle != None and self.center_angle != None and self.end_angle != None:
-            scan_spot_list[self.start_angle] = msg.ranges[self.start_angle] + 10000
-            scan_spot_list[self.center_angle] = msg.ranges[self.center_angle] + 10000
-            scan_spot_list[self.end_angle] = msg.ranges[self.end_angle] + 10000
-            scan_spot.intensities = msg.intensities
+            for i in range(len(msg.ranges)):
+                if i == self.start_angle or i == self.center_angle or i == self.end_angle:
+                    scan_spot.intensities[i] = msg.intensities[i] + 10000
+                else:
+                    scan_spot.intensities[i] = msg.intensities[i]
         self.scan_spot_publisher.publish(scan_spot)
         self.is_scan_received = True
 
