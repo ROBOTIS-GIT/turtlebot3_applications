@@ -211,10 +211,10 @@ class AutomaticParking(Node):
         self.get_logger().info("===== Go to parking spot!!! =====")
 
     def _rotate_origin_only(self, radians):
-        self.rotation_point[0] = self.center_point[0] * cos(-(pi / 2 - radians)) \
-            + self.center_point[1] * sin(-(pi / 2 - radians))
-        self.rotation_point[1] = -self.center_point[0] * sin(-(pi / 2 - radians)) \
-            + self.center_point[1] * cos(-(pi / 2 - radians))
+        self.rotation_point[0] = self.center_point[0] * cos(-(radians)) \
+            + self.center_point[1] * sin(-(radians))
+        self.rotation_point[1] = -self.center_point[0] * sin(-(radians)) \
+            + self.center_point[1] * cos(-(radians))
         self.get_logger().info("rotation_point: {}".format(self.rotation_point))
     def _stop_and_reset(self):
         cmd_vel = Twist()
