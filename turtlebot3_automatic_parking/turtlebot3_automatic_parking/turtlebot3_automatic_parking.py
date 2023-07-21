@@ -31,7 +31,7 @@ from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Empty
 
 import numpy as np
-from transforms3d.euler import quat2euler
+from tf_transformations import euler_from_quaternion
 
 
 class AutomaticParking(Node):
@@ -118,7 +118,8 @@ class AutomaticParking(Node):
             orientation.w
         )
 
-        self.euler = quat2euler(quaternion)
+        self.euler = euler_from_quaternion(quaternion)
+        self.get_logger().info("euler : {0}".format(self.euler))
         self.is_odom_received = True
 
     def _get_point(self, start_angle_distance):
@@ -245,7 +246,7 @@ class AutomaticParking(Node):
                         self.search_count = 0
 
             elif self.parking_sequence == 2:
-                init_yaw = self.euler[0]
+                init_yaw = self.euler[2]
                 if self.theta > 0:
                     if self.theta - init_yaw > 0.1:
                         cmd_vel.linear.x = 0.0
