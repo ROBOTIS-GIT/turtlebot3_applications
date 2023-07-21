@@ -54,11 +54,11 @@ class follower(Node):
             '/cmd_vel',
             qos_profile=QoSProfile(depth=10))
 
-        self.scan_subscriber = self.create_subscription(
-            LaserScan,
-            '/scan_filtered',
-            self._scan_callback,
-            qos_profile=qos_profile_sensor_data)
+        # self.scan_subscriber = self.create_subscription(
+        #     LaserScan,
+        #     '/scan_filtered',
+        #     self._scan_callback,
+        #     qos_profile=qos_profile_sensor_data)
 
         with open(self.config_dir + '/clf', 'rb') as file:
             self.clf = pickle.load(file, encoding='latin1')
@@ -68,11 +68,11 @@ class follower(Node):
         self.labels = {'30_0':0, '30_l':1, '30_r':2, '45_0':3, '45_l':4, '45_r':5,'15_0':6, 'empty':7}
         self.get_logger().info('Tree initialized')
 
-        self.run_timer = self.create_timer(0.05, self._follow)
+        self.run_timer = self.create_timer(0.2, self._follow)
 
-    def _scan_callback(self, msg):
-        self.scan = msg
-        self.is_scan_received = True
+    # def _scan_callback(self, msg):
+    #     self.scan = msg
+    #     self.is_scan_received = True
 
     def _check_people(self):
         laser_data=[]
@@ -109,24 +109,24 @@ class follower(Node):
     def _laser_scan(self):
         data_test=[]
         data_test_set=[]
-        if self.is_scan_received:
-            for i in itertools.chain(range(70, -2, -1), range(359, 289, -1)):
-                if   np.nan_to_num( self.scan.ranges[i] ) != 0 :
-                    data_test.append(np.nan_to_num(self.scan.ranges[i]))
+        self.scan = rclpy.wait_for_message('/scan_filtered', LaserScan)
+        # if self.is_scan_received:
+        for i in itertools.chain(range(70, -2, -1), range(359, 289, -1)):
+            if   np.nan_to_num( self.scan.ranges[i] ) != 0 :
+                data_test.append(np.nan_to_num(self.scan.ranges[i]))
 
-                elif (i+1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
-                    and (i-1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
-                    and np.nan_to_num(self.scan.ranges[i]) == 0:
-                    data_test.append((np.nan_to_num(self.scan.ranges[i+1])+np.nan_to_num(self.scan.ranges[i-1]))/2)
+            elif (i+1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
+                and (i-1) in itertools.chain(range(70, -2, -1), range(359, 289, -1)) \
+                and np.nan_to_num(self.scan.ranges[i]) == 0:
+                data_test.append((np.nan_to_num(self.scan.ranges[i+1])+np.nan_to_num(self.scan.ranges[i-1]))/2)
 
-                else :
-                    data_test.append(np.nan_to_num(self.scan.ranges[i]))
+            else :
+                data_test.append(np.nan_to_num(self.scan.ranges[i]))
 
-            data_test_set.append(data_test)
+        data_test_set.append(data_test)
 
-            return [x for (x , y) in self.labels.items() if y == self.clf.predict(data_test_set) ]
-        else:
-            return None
+        return [x for (x , y) in self.labels.items() if y == self.clf.predict(data_test_set) ]
+
 
     def _follow(self):
         check = self._check_people()
