@@ -17,8 +17,9 @@
 
 # Authors: Gilbert #
 
-import os
 import itertools
+import os
+import sys
 
 import rclpy
 from ament_index_python.packages import get_package_share_directory
@@ -37,6 +38,11 @@ class follower(Node):
         super().__init__('follower')
 
         package_dir = get_package_share_directory('turtlebot3_follower')
+
+        if os.environ['LDS_MODEL'] == 'LDS-02':
+            self.get_logger().error('LDS-02 is not supported')
+            sys.exit()
+
         self.config_dir = os.path.join(package_dir, 'config')
         self.laser_scan_data =[]
         self.comments=[]
@@ -116,10 +122,8 @@ class follower(Node):
 
         if result == ['empty']:
             ret = 0
-
         else:
             ret = 1
-
         return ret
 
     def _laser_scan(self):
