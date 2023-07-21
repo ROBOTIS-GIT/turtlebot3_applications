@@ -44,7 +44,7 @@ scan_to_scan_filter_chain:
       params:
         lower_threshold: 500.0
         upper_threshold: 4000.0
-        disp_histogram: 0.0
+        disp_histogram: 0
 
     filter6:
       name: interpolation
