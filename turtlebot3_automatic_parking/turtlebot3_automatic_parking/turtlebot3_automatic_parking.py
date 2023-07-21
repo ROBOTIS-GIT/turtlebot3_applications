@@ -81,7 +81,7 @@ class AutomaticParking(Node):
             Odometry,
             '/odom',
             self._odom_callback,
-            qos_profile=qos_profile_sensor_data)
+            qos_profile=QoSProfile(depth=10))
 
         # self._run_timer = self.create_timer(0.1, self._run)
 
@@ -149,7 +149,7 @@ class AutomaticParking(Node):
         if self.scan != None:
             for i in range(len(self.scan.ranges)):
                 if i >= min_scan_angle and i < max_scan_angle:
-                    spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 1000
+                    spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 100000
                     if spot_intensity >= intensity_threshold:
                         intensity_index.append(i)
                         index_count.append(i)

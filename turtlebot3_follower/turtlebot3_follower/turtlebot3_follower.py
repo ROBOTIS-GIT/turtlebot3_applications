@@ -138,7 +138,6 @@ class follower(Node):
         check = self._check_people()
         x = self._laser_scan()
         if x is not None:
-            self.get_logger().info('I am following {} {}'.format(x, check))
             if check == 1:
                 twist = Twist()
                 ## Do something according to each position##
