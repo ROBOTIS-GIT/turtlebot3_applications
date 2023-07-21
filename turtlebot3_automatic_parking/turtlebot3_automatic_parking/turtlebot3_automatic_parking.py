@@ -215,7 +215,7 @@ class AutomaticParking(Node):
             + self.center_point[1] * sin(-(pi / 2 - radians))
         self.rotation_point[1] = -self.center_point[0] * sin(-(pi / 2 - radians)) \
             + self.center_point[1] * cos(-(pi / 2 - radians))
-
+        self.get_logger().info("rotation_point: {}".format(self.rotation_point))
     def _stop_and_reset(self):
         cmd_vel = Twist()
         reset = Empty()
