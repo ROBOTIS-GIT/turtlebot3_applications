@@ -130,7 +130,7 @@ class AutomaticParkingVision(Node):
                 self.marker_2d_pose_x = pos_x
                 self.marker_2d_pose_y = pos_y
                 self.marker_2d_theta = theta - math.pi
-                self.get_logger().info('Marker pose received: {}, {}, {}'.format(pos_x, pos_y, math.degrees(self.marker_2d_theta)))
+
     def fnParking(self):
         if self.current_parking_sequence == self.ParkingSequence.searching_parking_lot.value:
             self.is_sequence_finished = self.fnSeqSearchingGoal()
@@ -232,7 +232,7 @@ class AutomaticParkingVision(Node):
             # rospy.loginfo("remained_dist %f desired_dist %f dist_from_start %f", remained_dist, desired_dist, dist_from_start)
 
             self.fnGoStraight()
-            if remained_dist < 0.02:
+            if remained_dist < 0.01:
                 self.fnStop()
                 self.current_nearby_sequence = self.NearbySequence.turn_right.value
 
@@ -303,7 +303,7 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTrackMarker(self, theta):
-        Kp = 0.3
+        Kp = 0.6
 
         angular_z = Kp * theta
 
@@ -318,7 +318,7 @@ class AutomaticParkingVision(Node):
 
     def fnGet2DRobotPose(self, robot_odom_msg):
         quaternion = (robot_odom_msg.pose.pose.orientation.x, robot_odom_msg.pose.pose.orientation.y, robot_odom_msg.pose.pose.orientation.z, robot_odom_msg.pose.pose.orientation.w)
-        theta = euler_from_quaternion(quaternion)[0]
+        theta = euler_from_quaternion(quaternion)[2]
 
         if theta < 0.0:
             theta = theta + np.pi * 2
@@ -337,81 +337,13 @@ class AutomaticParkingVision(Node):
                                     [2*x*z-2*y*w, 2*y*z+2*x*w, 1-2*x**2-2*y**2]])
         return rotation_matrix
 
-    def rotateOdom(self, odom):
-        self.get_logger().info("odom {0}".format(odom.position))
-        # position = np.array([odom.position.x, odom.position.y, odom.position.z])
-        # orientation = np.array([odom.orientation.x, odom.orientation.y,
-        #                         odom.orientation.z, odom.orientation.w])
-
-        # rotation_matrix = self.quaternion_to_rotation_matrix(orientation)
-
-        # rotated_position = np.dot(rotation_matrix, position)
-
-        # rotated_orientation = orientation
-
-        # rotated_odom = Pose()
-        # rotated_odom.position.x = rotated_position[0]
-        # rotated_odom.position.y = rotated_position[1]
-        # rotated_odom.position.z = rotated_position[2]
-        # rotated_odom.orientation.x = rotated_orientation[0]
-        # rotated_odom.orientation.y = rotated_orientation[1]
-        # rotated_odom.orientation.z = rotated_orientation[2]
-        # rotated_odom.orientation.w = rotated_orientation[3]
-
-        rotation_x = math.pi / 2
-        cos_angle_x = math.cos(rotation_x)
-        sin_angle_x = math.sin(rotation_x)
-        rotation_matrix_x = [[1, 0, 0],
-                            [0, cos_angle_x, -sin_angle_x],
-                            [0, sin_angle_x, cos_angle_x]]
-
-        rotation_y = -math.pi / 2
-        cos_angle_y = math.cos(rotation_y)
-        sin_angle_y = math.sin(rotation_y)
-
-        rotation_matrix_y = [[cos_angle_y, 0, -sin_angle_y],
-                            [0, 1, 0],
-                            [sin_angle_y, 0, cos_angle_y]]
-
-        # rotation_z = math.pi / 2
-        # cos_angle_z = math.cos(rotation_z)
-        # sin_angle_z = math.sin(rotation_z)
-        # rotation_matrix_z = [[cos_angle_z, -sin_angle_z, 0],
-        #                     [sin_angle_z, cos_angle_z, 0],
-        #                     [0, 0, 1]]
-
-        pose_matrix = [[odom.position.x],
-                    [odom.position.y],
-                    [odom.position.z]]
-        rotated_odom_matrix = np.dot(rotation_matrix_y, np.dot(rotation_matrix_x, pose_matrix))
-
-        orientation = [odom.orientation.x, odom.orientation.y, odom.orientation.z, odom.orientation.w]
-        rotated_orientation = [0, 0, 0, 0]
-        rotated_orientation[0] = cos_angle_x * cos_angle_y * orientation[0] - sin_angle_x * sin_angle_y * orientation[1]
-        rotated_orientation[1] = sin_angle_x * cos_angle_y * orientation[0] + cos_angle_x * sin_angle_y * orientation[1]
-        rotated_orientation[2] = cos_angle_x * sin_angle_y * orientation[0] + sin_angle_x * cos_angle_y * orientation[2]
-        rotated_orientation[3] = cos_angle_x * cos_angle_y * orientation[3] - sin_angle_x * sin_angle_y * orientation[3]
-
-        rotated_odom = Pose()
-        rotated_odom.position.x = rotated_odom_matrix[0][0]
-        rotated_odom.position.y = rotated_odom_matrix[1][0]
-        rotated_odom.position.z = rotated_odom_matrix[2][0]
-        rotated_odom.orientation.x = rotated_orientation[0]
-        rotated_odom.orientation.y = rotated_orientation[1]
-        rotated_odom.orientation.z = rotated_orientation[2]
-        rotated_odom.orientation.w = rotated_orientation[3]
-
-        return rotated_odom
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
-        # odom = self.rotateOdom(marker_odom_msg)
-        odom = marker_odom_msg
-        # self.get_logger().info("rotation odom {0}".format(odom.position))
         quaternion = (
-            odom.orientation.x,
-            odom.orientation.y,
-            odom.orientation.z,
-            odom.orientation.w)
+            marker_odom_msg.orientation.x,
+            marker_odom_msg.orientation.y,
+            marker_odom_msg.orientation.z,
+            marker_odom_msg.orientation.w)
         theta = euler_from_quaternion(quaternion)[2]
         theta = theta + np.pi / 2.
 
@@ -420,8 +352,8 @@ class AutomaticParkingVision(Node):
         if theta > np.pi * 2:
             theta = theta - np.pi * 2
 
-        pos_x = odom.position.x
-        pos_y = odom.position.y
+        pos_x = marker_odom_msg.position.x
+        pos_y = marker_odom_msg.position.y
 
         return pos_x, pos_y, theta
 
