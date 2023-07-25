@@ -141,7 +141,7 @@ class AutomaticParkingVision(Node):
                 self.is_sequence_finished = False
 
         elif self.current_parking_sequence == self.ParkingSequence.changing_direction.value:
-            self.get_logger().info("changing_direction")
+            # self.get_logger().info("changing_direction")
             self.is_sequence_finished = self.fnSeqChangingDirection()
 
             if self.is_sequence_finished == True:
@@ -175,7 +175,7 @@ class AutomaticParkingVision(Node):
 
     def fnSeqSearchingGoal(self):
         if self.is_marker_pose_received is False:
-            self.desired_angle_turn = -0.6
+            self.desired_angle_turn = -0.2
             self.fnTurn(self.desired_angle_turn)
         else:
             self.fnStop()
