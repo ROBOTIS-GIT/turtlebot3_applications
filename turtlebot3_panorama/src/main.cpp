@@ -28,7 +28,7 @@ int main(int argc, char * argv[])
   panorama_app = std::make_shared<turtlebot3_panorama::PanoApp>(options);
 
   executor.add_node(panorama_app);
-`
+
   executor.spin();
 
   if (rclcpp::ok()) {
