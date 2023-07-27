@@ -53,12 +53,12 @@ turtlebot3_panorama::PanoApp::PanoApp(const rclcpp::NodeOptions & options)
   PanoApp::init();
 }
 
-PanoApp::~PanoApp()
+turtlebot3_panorama::PanoApp::~PanoApp()
 {
 
 }
 
-void PanoApp::init()
+void turtlebot3_panorama::PanoApp::init()
 {
   //***************************
   // public API for the app
@@ -113,7 +113,7 @@ void PanoApp::init()
   );
 }
 
-void PanoApp::run()
+void turtlebot3_panorama::PanoApp::run()
 {
   // ros::Rate loop_rate(10);
   double start_time;
@@ -199,20 +199,20 @@ void PanoApp::run()
     }
 }
 
-void PanoApp::snap()
+void turtlebot3_panorama::PanoApp::snap()
 {
   log("snap");
   store_image = true;
   rclcpp::sleep_for(std::chrono::milliseconds(1000));
 }
 
-void PanoApp::rotate()
+void turtlebot3_panorama::PanoApp::rotate()
 {
   log("rotate");
   pub_cmd_vel->publish(cmd_vel); // rotate a bit
 }
 
-bool PanoApp::hasReachedAngle()
+bool turtlebot3_panorama::PanoApp::hasReachedAngle()
 {
   if (angle > last_angle + degrees_to_radians(snap_interval))
   {
@@ -225,7 +225,7 @@ bool PanoApp::hasReachedAngle()
   }
 }
 
-void PanoApp::odomCb(const nav_msgs::msg::Odometry::ConstSharedPtr& msg)
+void turtlebot3_panorama::PanoApp::odomCb(const nav_msgs::msg::Odometry::ConstSharedPtr& msg)
 {
   static double heading_last = 0.0f;
   double heading = 0.0f;
@@ -344,7 +344,7 @@ void turtlebot3_panorama::PanoApp::cameraImageCb(const sensor_msgs::msg::Image::
 //*************
 // Logging
 //*************
-void PanoApp::log(std::string log)
+void turtlebot3_panorama::PanoApp::log(std::string log)
 {
   std_msgs::msg::String msg;
   msg.data = log;
