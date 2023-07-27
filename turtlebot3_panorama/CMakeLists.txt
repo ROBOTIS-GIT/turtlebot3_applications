@@ -21,6 +21,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(turtlebot3_applications_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
+find_package(image_transport REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
@@ -43,6 +44,7 @@ set(dependencies
   nav_msgs
   turtlebot3_applications_msgs
   cv_bridge
+  image_transport
 )
 
 ament_target_dependencies(${PROJECT_NAME} ${dependencies})
