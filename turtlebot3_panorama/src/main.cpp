@@ -1,5 +1,5 @@
-// Copyright 2022 ROBOTIS CO., LTD.
-// Authors: Darby Lim
+// Copyright 2023 ROBOTIS CO., LTD.
+// Authors: Gilbert
 
 #include <memory>
 #include <string>
@@ -16,8 +16,6 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
 
   rclcpp::executors::SingleThreadedExecutor executor;
-
-  std::shared_ptr<robotis::tote::lifecycle_manager::LifecycleManager> lifecycle_manager;
 
   std::shared_ptr<turtlebot3_panorama::PanoApp> panorama_app;
 

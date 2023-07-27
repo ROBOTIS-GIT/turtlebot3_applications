@@ -63,8 +63,6 @@ void PanoApp::init()
   //***************************
   // public API for the app
   //***************************
-  // srv_start_pano = priv_nh.advertiseService("take_pano", &PanoApp::takePanoServiceCb, this);
-
   srv_start_pano = this->create_service<turtlebot3_applications_msgs::srv::TakePanorama>(
     "take_pano",
     [this](
@@ -78,17 +76,11 @@ void PanoApp::init()
 
   pub_stitched = it_->advertise("/panorama", 1);
   sub_camera = it_->subscribe("/camera/rgb/image_raw", 1, &PanoApp::cameraImageCb, this);
-  // image_transport::ImageTransport it_priv(nh);
-  // pub_stitched = it_priv.advertise("panorama", 1, true);
-
-  // image_transport::ImageTransport it(nh);
-  // sub_camera = it.subscribe("/camera/rgb/image_raw", 1, &PanoApp::cameraImageCb, this);
 
   //***************************
   // Robot control
   //***************************
   pub_cmd_vel = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 100);
-  // sub_odom = nh.subscribe("odom", 100, &PanoApp::odomCb, this);
   sub_odom = this->create_subscription<nav_msgs::msg::Odometry>(
     "odom",
     100,
@@ -142,12 +134,10 @@ void PanoApp::run()
 
         RCLCPP_INFO(this->get_logger(), "Stiching %lu images", images_.size());
 
-        cv::Mat pano;
-        // cv::Stitcher stitcher = cv::Stitcher::createDefault(false);
+        cv::Mat pano;;
         cv::Stitcher::Mode mode = cv::Stitcher::SCANS;
         cv::Ptr<cv::Stitcher> stitcher = cv::Stitcher::create(mode);
         cv::Stitcher::Status status = stitcher->stitch(images_, pano);
-        // cv::Stitcher::Status status = stitcher.stitch(images_, pano);
         log("Finished Stiching");
 
         cv_bridge::CvImage cv_img;
@@ -171,7 +161,6 @@ void PanoApp::run()
         {
     	    log("Continuous Mode panorama");
           rotate();
-          // ros::Duration(snap_interval).sleep();
           rclcpp::sleep_for(std::chrono::milliseconds(static_cast<int>(snap_interval)));
 
           snap();

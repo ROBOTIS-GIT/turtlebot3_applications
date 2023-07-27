@@ -31,7 +31,7 @@ find_package(OpenCV REQUIRED)
 # Build
 ################################################################################
 
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME}_lib SHARED
   src/panorama.cpp
 )
 
@@ -47,18 +47,20 @@ set(dependencies
   image_transport
 )
 
-ament_target_dependencies(${PROJECT_NAME} ${dependencies})
-message(${PROJECT_NAME})
-message(${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(${PROJECT_NAME}
+ament_target_dependencies(${PROJECT_NAME}_lib ${dependencies})
+target_include_directories(${PROJECT_NAME}_lib
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME}_lib
   ${Boost_LIBRARIES}
   ${Eigen3_LIBRARIES}
   ${OpenCV_LIBRARIES})
+
+set(EXECUTABLE_NAME ${PROJECT_NAME})
+add_executable(${EXECUTABLE_NAME} src/main.cpp)
+target_link_libraries(${EXECUTABLE_NAME} ${PROJECT_NAME}_lib)
 
 ################################################################################
 # Install
@@ -68,13 +70,16 @@ install(DIRECTORY include/
 )
 
 install(
-  TARGETS ${PROJECT_NAME}
-  EXPORT export_${PROJECT_NAME}
+  TARGETS ${PROJECT_NAME}_lib
+  EXPORT ${PROJECT_NAME}_lib
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
 )
 
+install(TARGETS ${EXECUTABLE_NAME}
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 ################################################################################
 # Test
@@ -98,8 +103,6 @@ endif()
 ################################################################################
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
-ament_export_targets(export_${PROJECT_NAME})
-
 ament_export_dependencies(${dependencies})
 
 ament_package()
