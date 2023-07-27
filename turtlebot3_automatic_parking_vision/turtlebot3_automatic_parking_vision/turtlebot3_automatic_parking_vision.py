@@ -49,19 +49,18 @@ class AutomaticParkingVision(Node):
             Odometry,
             '/odom',
             self.cbGetRobotOdom,
-            qos_profile=qos_profile_sensor_data)
+            qos_profile=QoSProfile(depth=10))
 
         self.sub_info_marker = self.create_subscription(
             ArucoMarkers,
             '/aruco_markers',
             self.cbGetMarkerOdom,
-            qos_profile=qos_profile_sensor_data)
+            qos_profile=QoSProfile(depth=10))
 
         self.pub_cmd_vel = self.create_publisher(
             Twist,
             '/cmd_vel',
             qos_profile=QoSProfile(depth=10))
-
 
         self.ParkingSequence = Enum(
             'ParkingSequence',
@@ -99,7 +98,6 @@ class AutomaticParkingVision(Node):
     def cbGetRobotOdom(self, robot_odom_msg):
         if self.is_odom_received == False:
             self.is_odom_received = True
-            self.get_logger().info('Odometry received')
 
         pos_x, pos_y, theta = self.fnGet2DRobotPose(robot_odom_msg)
 
@@ -317,7 +315,11 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnGet2DRobotPose(self, robot_odom_msg):
-        quaternion = (robot_odom_msg.pose.pose.orientation.x, robot_odom_msg.pose.pose.orientation.y, robot_odom_msg.pose.pose.orientation.z, robot_odom_msg.pose.pose.orientation.w)
+        quaternion = (
+            robot_odom_msg.pose.pose.orientation.x,
+            robot_odom_msg.pose.pose.orientation.y,
+            robot_odom_msg.pose.pose.orientation.z,
+            robot_odom_msg.pose.pose.orientation.w)
         theta = euler_from_quaternion(quaternion)[2]
 
         if theta < 0.0:
