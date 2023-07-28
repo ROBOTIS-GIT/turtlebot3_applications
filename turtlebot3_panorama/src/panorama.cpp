@@ -45,20 +45,9 @@
 
 #include "turtlebot3_panorama/panorama.hpp"
 
-namespace turtlebot3_panorama
-{
+
 turtlebot3_panorama::PanoApp::PanoApp(const rclcpp::NodeOptions & options)
 : rclcpp::Node("turtlebot3_panorama", options)
-{
-  PanoApp::init();
-}
-
-turtlebot3_panorama::PanoApp::~PanoApp()
-{
-
-}
-
-void turtlebot3_panorama::PanoApp::init()
 {
   //***************************
   // public API for the app
@@ -111,6 +100,12 @@ void turtlebot3_panorama::PanoApp::init()
       run();
     }
   );
+
+}
+
+turtlebot3_panorama::PanoApp::~PanoApp()
+{
+
 }
 
 void turtlebot3_panorama::PanoApp::run()
@@ -350,4 +345,3 @@ void turtlebot3_panorama::PanoApp::log(std::string log)
   msg.data = log;
    RCLCPP_INFO(this->get_logger(), "%s", log.c_str());
 }
-} //namespace turtlebot_panorama

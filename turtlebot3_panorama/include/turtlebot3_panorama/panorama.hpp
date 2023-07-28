@@ -72,9 +72,6 @@ public:
   explicit PanoApp(const rclcpp::NodeOptions & options);
   virtual ~PanoApp();
 
-  void init();
-  void run();
-
   /**
    * Additionally sends out logging information on a ROS topic
    * @param msg logging information
@@ -143,6 +140,8 @@ private:
    * @param response the current state of the app (started, in progress, stopped)
    * @return true, if service call was successful
    */
+  void run();
+
   bool takePanoServiceCb(
     const std::shared_ptr<turtlebot3_applications_msgs::srv::TakePanorama::Request> request,
     const std::shared_ptr<turtlebot3_applications_msgs::srv::TakePanorama::Response> response);
