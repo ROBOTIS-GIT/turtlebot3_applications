@@ -26,6 +26,7 @@ int main(int argc, char * argv[])
     .start_parameter_event_publisher(false);
 
   panorama_app = std::make_shared<turtlebot3_panorama::PanoApp>(options);
+  panorama_app->setup();
 
   executor.add_node(panorama_app);
 

@@ -49,6 +49,16 @@
 turtlebot3_panorama::PanoApp::PanoApp(const rclcpp::NodeOptions & options)
 : rclcpp::Node("turtlebot3_panorama", options)
 {
+
+}
+
+turtlebot3_panorama::PanoApp::~PanoApp()
+{
+
+}
+
+void turtlebot3_panorama::PanoApp::setup()
+{
   //***************************
   // public API for the app
   //***************************
@@ -79,33 +89,27 @@ turtlebot3_panorama::PanoApp::PanoApp(const rclcpp::NodeOptions & options)
       odomCb(msg);
     });
 
-  cmd_vel.linear.x = 0.0f;
-  cmd_vel.linear.y = 0.0f;
-  cmd_vel.linear.z = 0.0f;
-  cmd_vel.angular.x = 0.0f;
-  cmd_vel.angular.y = 0.0f;
-  cmd_vel.angular.z = 0.0f;
-  zero_cmd_vel = cmd_vel;
-  is_active = false;
-  continuous = false;
-  ang_vel_cur = 0.0;
-  given_angle = 0.0;
-  angle = 0.0;
-  last_angle = 0.0;
+    cmd_vel.linear.x = 0.0f;
+    cmd_vel.linear.y = 0.0f;
+    cmd_vel.linear.z = 0.0f;
+    cmd_vel.angular.x = 0.0f;
+    cmd_vel.angular.y = 0.0f;
+    cmd_vel.angular.z = 0.0f;
+    zero_cmd_vel = cmd_vel;
+    is_active = false;
+    continuous = false;
+    ang_vel_cur = 0.0;
+    given_angle = 0.0;
+    angle = 0.0;
+    last_angle = 0.0;
 
-  timer_ = this->create_wall_timer(
+    timer_ = this->create_wall_timer(
     std::chrono::milliseconds(100),
     [this]() -> void
     {
       run();
     }
   );
-
-}
-
-turtlebot3_panorama::PanoApp::~PanoApp()
-{
-
 }
 
 void turtlebot3_panorama::PanoApp::run()
@@ -313,9 +317,6 @@ void turtlebot3_panorama::PanoApp::cameraImageCb(const sensor_msgs::msg::Image::
 {
   if (store_image)
   {
-    std::cout << "encoding: " << msg->encoding << std::endl;
-    std::cout << "is_bigendian: " << msg->is_bigendian << std::endl;
-
     cv_bridge::CvImagePtr cv_ptr;
 
     try

@@ -140,6 +140,8 @@ private:
    * @param response the current state of the app (started, in progress, stopped)
    * @return true, if service call was successful
    */
+  void setup();
+
   void run();
 
   bool takePanoServiceCb(
