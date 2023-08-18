@@ -76,7 +76,7 @@ public:
    * Additionally sends out logging information on a ROS topic
    * @param msg logging information
    */
-  void log(std::string msg);
+  void setup();
 
 private:
   rclcpp::Node::SharedPtr nh;
@@ -91,21 +91,14 @@ private:
   image_transport::Publisher pub_stitched;
   image_transport::Subscriber sub_camera;
 
-  // ros::ServiceServer srv_start_pano;
   rclcpp::Service<turtlebot3_applications_msgs::srv::TakePanorama>::SharedPtr srv_start_pano;
-
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel;
-
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom;
-  // for turning the robot
-  // ros::Publisher pub_cmd_vel;
-  // for retrieving the odometry of robot
-  // ros::Subscriber sub_odom;
-  std::unique_ptr<image_transport::ImageTransport> it_;
+  rclcpp::TimerBase::SharedPtr timer_;
 
+  std::unique_ptr<image_transport::ImageTransport> it_;
   std::vector<cv::Mat> images_;
 
-  rclcpp::TimerBase::SharedPtr timer_;
   /**
    * turns true, when the pano_ros action goal goes active
    */
@@ -140,7 +133,6 @@ private:
    * @param response the current state of the app (started, in progress, stopped)
    * @return true, if service call was successful
    */
-  void setup();
 
   void run();
 

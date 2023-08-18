@@ -74,7 +74,7 @@ void turtlebot3_panorama::PanoApp::setup()
   it_ = std::make_unique<image_transport::ImageTransport>(shared_from_this());
 
   pub_stitched = it_->advertise("/panorama", 1);
-  sub_camera = it_->subscribe("/camera/rgb/image_raw", 1, &PanoApp::cameraImageCb, this);
+  sub_camera = it_->subscribe("/image_raw", 1, &PanoApp::cameraImageCb, this);
 
   //***************************
   // Robot control
@@ -137,28 +137,28 @@ void turtlebot3_panorama::PanoApp::run()
         cv::Stitcher::Mode mode = cv::Stitcher::SCANS;
         cv::Ptr<cv::Stitcher> stitcher = cv::Stitcher::create(mode);
         cv::Stitcher::Status status = stitcher->stitch(images_, pano);
-        log("Finished Stiching");
+        RCLCPP_INFO(this->get_logger(), "Finished Stiching");
 
         cv_bridge::CvImage cv_img;
         cv_img.image = pano;
         cv_img.encoding = "bgr8";
         cv_img.header.stamp = this->now();
         pub_stitched.publish(cv_img.toImageMsg());
-        log("Publishing Completed Panorama");
+        RCLCPP_INFO(this->get_logger(), "Publishing Completed Panorama");
         RCLCPP_INFO(this->get_logger(), "Angle: %f", angle);
         RCLCPP_INFO(this->get_logger(), "Last Angle: %f", last_angle);
 
        	angle = 0.0;
         last_angle = 0.0;
 	      images_.clear();
-        // imwrite("pano.jpg", pano);
+
         is_active = false;
       }
       else
       {
         if (continuous) // then snap_interval is a duration
         {
-    	    log("Continuous Mode panorama");
+          RCLCPP_INFO(this->get_logger(), "Continuous Mode panorama");
           rotate();
           rclcpp::sleep_for(std::chrono::milliseconds(static_cast<int>(snap_interval)));
 
@@ -182,11 +182,7 @@ void turtlebot3_panorama::PanoApp::run()
             }
             else
             {
-              std::stringstream ss;
-              std::string str;
-              ss << "Waiting for robot to stop ... (speed = " << ang_vel_cur << ")";
-              str = ss.str();
-              log(str);
+              RCLCPP_INFO(this->get_logger(), "Waiting for robot to stop ... (speed = %f)", ang_vel_cur);
             }
           }
           else
@@ -200,14 +196,14 @@ void turtlebot3_panorama::PanoApp::run()
 
 void turtlebot3_panorama::PanoApp::snap()
 {
-  log("snap");
+  RCLCPP_INFO(this->get_logger(), "snap");
   store_image = true;
   rclcpp::sleep_for(std::chrono::milliseconds(1000));
 }
 
 void turtlebot3_panorama::PanoApp::rotate()
 {
-  log("rotate");
+  RCLCPP_INFO(this->get_logger(), "rotate");
   pub_cmd_vel->publish(cmd_vel); // rotate a bit
 }
 
@@ -258,19 +254,19 @@ bool turtlebot3_panorama::PanoApp::takePanoServiceCb(
 {
   if (is_active && (request->mode == request->CONTINUOUS || request->mode == request->SNAPANDROTATE))
   {
-    log("Panorama creation already in progress.");
+    RCLCPP_INFO(this->get_logger(), "Panorama creation already in progress.");
     response->status = request->IN_PROGRESS;
   }
   else if (is_active && (request->mode == request->STOP))
   {
     is_active = false;
-    log("Panorama creation stopped.");
+    RCLCPP_INFO(this->get_logger(), "Panorama creation stopped.");
     response->status = request->STOPPED;
     return true;
   }
   else if (!is_active && (request->mode == request->STOP))
   {
-    log("No panorama creation in progress.");
+    RCLCPP_INFO(this->get_logger(), "No panorama creation in progress.");
     response->status = request->STOPPED;
     return true;
   }
@@ -278,17 +274,17 @@ bool turtlebot3_panorama::PanoApp::takePanoServiceCb(
   {
     if (request->pano_angle <= 0.0)
     {
-      log("Specified panorama angle is zero or negative! Panorama creation aborted.");
+      RCLCPP_INFO(this->get_logger(), "Specified panorama angle is zero or negative! Panorama creation aborted.");
       return true;
     }
     else if (request->snap_interval <= 0.0)
     {
-      log("Specified snapshot interval is zero or negative! Panorama creation aborted.");
+      RCLCPP_INFO(this->get_logger(), "Specified snapshot interval is zero or negative! Panorama creation aborted.");
       return true;
     }
     else if (request->rot_vel == 0.0)
     {
-      log("Specified rotating speed is zero! Panorama creation aborted.");
+      RCLCPP_INFO(this->get_logger(), "Specified rotating speed is zero! Panorama creation aborted.");
       return true;
     }
     else
@@ -305,8 +301,7 @@ bool turtlebot3_panorama::PanoApp::takePanoServiceCb(
     {
       continuous = false;
     }
-    log("Starting panorama creation.");
-    // startPanoAction();
+    RCLCPP_INFO(this->get_logger(), "Starting panorama creation.");
     is_active = true;
     response->status = request->STARTED;
   }
@@ -331,18 +326,4 @@ void turtlebot3_panorama::PanoApp::cameraImageCb(const sensor_msgs::msg::Image::
 
     images_.push_back(cv_ptr->image);
   }
-  else
-  {
-    //pub_stitched.publish(msg);
-  }
-}
-
-//*************
-// Logging
-//*************
-void turtlebot3_panorama::PanoApp::log(std::string log)
-{
-  std_msgs::msg::String msg;
-  msg.data = log;
-   RCLCPP_INFO(this->get_logger(), "%s", log.c_str());
 }
