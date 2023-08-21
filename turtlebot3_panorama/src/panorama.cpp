@@ -152,7 +152,7 @@ void turtlebot3_panorama::PanoApp::run()
           sub_img_height * grid_rows,
           sub_img_width * grid_cols,
           images_[0].type());
-        cv::Mat pano;
+
         cv::Stitcher::Mode mode = cv::Stitcher::SCANS;
         cv::Ptr<cv::Stitcher> stitcher = cv::Stitcher::create(mode);
 
@@ -160,7 +160,7 @@ void turtlebot3_panorama::PanoApp::run()
             for (int col = 0; col < grid_cols; ++col) {
                 cv::Rect sub_img_rect(col * sub_img_width, row * sub_img_height, sub_img_width, sub_img_height);
                 cv::Mat sub_img = images_[row * grid_cols + col](sub_img_rect);
-
+                cv::Mat pano;
                 cv::Stitcher::Status status = stitcher->stitch(sub_img, pano);
                 if (status == cv::Stitcher::OK) {
                     sub_img.copyTo(final_pano(sub_img_rect));
