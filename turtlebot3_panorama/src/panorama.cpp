@@ -74,7 +74,16 @@ void turtlebot3_panorama::PanoApp::setup()
   it_ = std::make_unique<image_transport::ImageTransport>(shared_from_this());
 
   pub_stitched = it_->advertise("/panorama", 1);
-  sub_camera = it_->subscribe("/image_raw", 1, &PanoApp::cameraImageCb, this);
+  // sub_camera = it_->subscribe("/image_raw/compressed", 1, &PanoApp::cameraImageCb, this);
+
+  sub_camera = this->create_subscription<sensor_msgs::msg::CompressedImage>(
+    "/image_raw/compressed",
+    1,
+    [this](
+      const sensor_msgs::msg::CompressedImage::ConstSharedPtr msg) -> void
+    {
+      cameraImageCb(msg);
+    });
 
   //***************************
   // Robot control
@@ -308,7 +317,7 @@ bool turtlebot3_panorama::PanoApp::takePanoServiceCb(
   return true;
 }
 
-void turtlebot3_panorama::PanoApp::cameraImageCb(const sensor_msgs::msg::Image::ConstSharedPtr& msg)
+void turtlebot3_panorama::PanoApp::cameraImageCb(const sensor_msgs::msg::CompressedImage::ConstSharedPtr& msg)
 {
   if (store_image)
   {

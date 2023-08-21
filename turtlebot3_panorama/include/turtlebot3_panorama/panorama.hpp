@@ -89,8 +89,10 @@ private:
   bool continuous;
 
   image_transport::Publisher pub_stitched;
-  image_transport::Subscriber sub_camera;
+  // image_transport::Subscriber sub_camera;
 
+
+  rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr sub_camera;
   rclcpp::Service<turtlebot3_applications_msgs::srv::TakePanorama>::SharedPtr srv_start_pano;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom;
@@ -148,7 +150,7 @@ private:
 
   void odomCb(const nav_msgs::msg::Odometry::ConstSharedPtr& msg);
 
-  void cameraImageCb(const sensor_msgs::msg::Image::ConstSharedPtr & msg);
+  void cameraImageCb(const sensor_msgs::msg::CompressedImage::ConstSharedPtr & msg);
 };
 }  //namespace turtlebot3_panorama
 #endif  // TURTLEBOT3_PANORAMA__PANORAMA_HPP_
