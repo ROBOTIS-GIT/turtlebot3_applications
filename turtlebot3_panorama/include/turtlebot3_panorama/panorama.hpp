@@ -89,8 +89,6 @@ private:
   bool continuous;
 
   image_transport::Publisher pub_stitched;
-  // image_transport::Subscriber sub_camera;
-
 
   rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr sub_camera;
   rclcpp::Service<turtlebot3_applications_msgs::srv::TakePanorama>::SharedPtr srv_start_pano;
