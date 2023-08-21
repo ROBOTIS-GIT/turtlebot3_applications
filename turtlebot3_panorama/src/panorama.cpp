@@ -142,14 +142,40 @@ void turtlebot3_panorama::PanoApp::run()
 
         RCLCPP_INFO(this->get_logger(), "Stiching %lu images", images_.size());
 
-        cv::Mat pano;;
+        int grid_rows = 2;
+        int grid_cols = 2;
+
+        int sub_img_width = images_[0].cols / grid_cols;
+        int sub_img_height = images_[0].rows / grid_rows;
+
+        cv::Mat final_pano = cv::Mat::zeros(
+          sub_img_height * grid_rows,
+          sub_img_width * grid_cols,
+          images_[0].type());
+        cv::Mat pano;
         cv::Stitcher::Mode mode = cv::Stitcher::SCANS;
         cv::Ptr<cv::Stitcher> stitcher = cv::Stitcher::create(mode);
-        cv::Stitcher::Status status = stitcher->stitch(images_, pano);
-        RCLCPP_INFO(this->get_logger(), "Finished Stiching");
+
+        for (int row = 0; row < grid_rows; ++row) {
+            for (int col = 0; col < grid_cols; ++col) {
+                cv::Rect sub_img_rect(col * sub_img_width, row * sub_img_height, sub_img_width, sub_img_height);
+                cv::Mat sub_img = images_[row * grid_cols + col](sub_img_rect);
+
+                cv::Stitcher::Status status = stitcher->stitch(sub_img, pano);
+                if (status == cv::Stitcher::OK) {
+                    sub_img.copyTo(final_pano(sub_img_rect));
+                }
+            }
+        }
+
+        // cv::Mat pano;
+        // cv::Stitcher::Mode mode = cv::Stitcher::SCANS;
+        // cv::Ptr<cv::Stitcher> stitcher = cv::Stitcher::create(mode);
+        // cv::Stitcher::Status status = stitcher->stitch(images_, pano);
+        RCLCPP_INFO(this->get_logger(), "Finished Stitching");
 
         cv_bridge::CvImage cv_img;
-        cv_img.image = pano;
+        cv_img.image = final_pano;
         cv_img.encoding = "bgr8";
         cv_img.header.stamp = this->now();
         pub_stitched.publish(cv_img.toImageMsg());
