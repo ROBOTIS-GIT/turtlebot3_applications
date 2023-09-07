@@ -25,13 +25,9 @@ import math
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
-from rclpy.qos import qos_profile_sensor_data
-from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Pose
 from nav_msgs.msg import Odometry
 from ros2_aruco_interfaces.msg import ArucoMarkers
-from tf2_geometry_msgs import do_transform_pose
 
 from tf_transformations import euler_from_quaternion
 import numpy as np
@@ -173,7 +169,7 @@ class AutomaticParkingVision(Node):
 
     def fnSeqSearchingGoal(self):
         if self.is_marker_pose_received is False:
-            self.desired_angle_turn = -0.2
+            self.desired_angle_turn = -0.6
             self.fnTurn(self.desired_angle_turn)
         else:
             self.fnStop()
@@ -189,7 +185,7 @@ class AutomaticParkingVision(Node):
 
         self.fnTurn(desired_angle_turn)
 
-        if abs(desired_angle_turn) < 0.1:
+        if abs(desired_angle_turn) < 0.01:
             self.fnStop()
             return True
         else:
@@ -278,7 +274,7 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTurn(self, theta):
-        Kp = 0.4
+        Kp = 0.8
         angular_z = Kp * theta
 
         twist = Twist()
@@ -301,7 +297,7 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTrackMarker(self, theta):
-        Kp = 0.6
+        Kp = 1.2
 
         angular_z = Kp * theta
 
@@ -331,14 +327,6 @@ class AutomaticParkingVision(Node):
         pos_y = robot_odom_msg.pose.pose.position.y
 
         return pos_x, pos_y, theta
-
-    def quaternion_to_rotation_matrix(self, quaternion):
-        x, y, z, w = quaternion
-        rotation_matrix = np.array([[1-2*y**2-2*z**2, 2*x*y-2*z*w, 2*x*z+2*y*w],
-                                    [2*x*y+2*z*w, 1-2*x**2-2*z**2, 2*y*z-2*x*w],
-                                    [2*x*z-2*y*w, 2*y*z+2*x*w, 1-2*x**2-2*y**2]])
-        return rotation_matrix
-
 
     def fnGet2DMarkerPose(self, marker_odom_msg):
         quaternion = (
