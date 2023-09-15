@@ -27,7 +27,7 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-from ros2_aruco_interfaces.msg import ArucoMarkers
+from visualization_msgs.msg import Marker
 
 from tf_transformations import euler_from_quaternion
 import numpy as np
@@ -48,10 +48,10 @@ class AutomaticParkingVision(Node):
             qos_profile=QoSProfile(depth=10))
 
         self.sub_info_marker = self.create_subscription(
-            ArucoMarkers,
-            '/aruco_markers',
+            Marker,
+            '/aruco_single/marker',
             self.cbGetMarkerOdom,
-            qos_profile=QoSProfile(depth=10))
+            qos_profile=QoSProfile(depth=20))
 
         self.pub_cmd_vel = self.create_publisher(
             Twist,
@@ -114,16 +114,14 @@ class AutomaticParkingVision(Node):
         self.robot_2d_theta = self.total_robot_2d_theta
 
     def cbGetMarkerOdom(self, markers_odom_msg):
-        for i in range(len(markers_odom_msg.marker_ids)):
-            if markers_odom_msg.marker_ids[i] == MARKER_ID_DETECTION:
-                if self.is_marker_pose_received == False:
-                    self.is_marker_pose_received = True
+        if self.is_marker_pose_received == False:
+            self.is_marker_pose_received = True
 
-                pos_x, pos_y, theta = self.fnGet2DMarkerPose(markers_odom_msg.poses[i])
+        pos_x, pos_y, theta = self.fnGet2DMarkerPose(markers_odom_msg.pose)
 
-                self.marker_2d_pose_x = pos_x
-                self.marker_2d_pose_y = pos_y
-                self.marker_2d_theta = theta - math.pi
+        self.marker_2d_pose_x = pos_x
+        self.marker_2d_pose_y = pos_y
+        self.marker_2d_theta = theta - math.pi
 
     def fnParking(self):
         if self.current_parking_sequence == self.ParkingSequence.searching_parking_lot.value:
@@ -135,7 +133,6 @@ class AutomaticParkingVision(Node):
                 self.is_sequence_finished = False
 
         elif self.current_parking_sequence == self.ParkingSequence.changing_direction.value:
-            # self.get_logger().info("changing_direction")
             self.is_sequence_finished = self.fnSeqChangingDirection()
 
             if self.is_sequence_finished == True:
@@ -144,7 +141,6 @@ class AutomaticParkingVision(Node):
                 self.is_sequence_finished = False
 
         elif self.current_parking_sequence == self.ParkingSequence.moving_nearby_parking_lot.value:
-            self.get_logger().info("moving_nearby_parking_lot")
             self.is_sequence_finished = self.fnSeqMovingNearbyParkingLot()
 
             if self.is_sequence_finished == True:
@@ -177,12 +173,6 @@ class AutomaticParkingVision(Node):
 
     def fnSeqChangingDirection(self):
         desired_angle_turn = -1. *  math.atan2(self.marker_2d_pose_y - 0, self.marker_2d_pose_x - 0)
-        self.get_logger().info(
-            "desired_angle_turn {} self.marker_2d_pose_x {} self.marker_2d_pose_y {}".format(
-                desired_angle_turn, self.marker_2d_pose_x, self.marker_2d_pose_y))
-        # rospy.loginfo("desired_angle_turn %f self.marker_2d_pose_x %f self.marker_2d_pose_y %f"
-        # , desired_angle_turn, self.marker_2d_pose_x, self.marker_2d_pose_y)
-
         self.fnTurn(desired_angle_turn)
 
         if abs(desired_angle_turn) < 0.01:
@@ -205,10 +195,6 @@ class AutomaticParkingVision(Node):
                 desired_angle_turn = (math.pi / 2.0) + self.initial_marker_pose_theta - (self.robot_2d_theta - self.initial_robot_pose_theta)
             elif self.initial_marker_pose_theta > 0.0:
                 desired_angle_turn = -(math.pi / 2.0) + self.initial_marker_pose_theta - (self.robot_2d_theta - self.initial_robot_pose_theta)
-
-            # rospy.loginfo("desired_angle_turn %f self.initial_marker_pose_theta %f self.robot_2d_theta %f self.initial_robot_pose_theta %f"
-            # , desired_angle_turn, self.initial_marker_pose_theta, self.robot_2d_theta, self.initial_robot_pose_theta)
-
             desired_angle_turn = -1. * desired_angle_turn
 
             self.fnTurn(desired_angle_turn)
@@ -256,7 +242,6 @@ class AutomaticParkingVision(Node):
     def fnSeqParking(self):
         desired_angle_turn = math.atan2(self.marker_2d_pose_y - 0, self.marker_2d_pose_x - 0)
         self.fnTrackMarker(-desired_angle_turn)
-
         if abs(self.marker_2d_pose_x) < 0.22:
             self.fnStop()
             return True
