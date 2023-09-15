@@ -274,7 +274,7 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTurn(self, theta):
-        Kp = 0.8
+        Kp = 0.4
         angular_z = Kp * theta
 
         twist = Twist()
@@ -297,7 +297,7 @@ class AutomaticParkingVision(Node):
         self.pub_cmd_vel.publish(twist)
 
     def fnTrackMarker(self, theta):
-        Kp = 1.2
+        Kp = 0.6
 
         angular_z = Kp * theta
 
