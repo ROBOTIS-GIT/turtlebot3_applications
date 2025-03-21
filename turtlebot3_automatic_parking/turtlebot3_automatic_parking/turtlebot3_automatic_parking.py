@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #################################################################################
-# Copyright 2023 ROBOTIS CO., LTD.
+# Copyright 2025 ROBOTIS CO., LTD.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 # limitations under the License.
 #################################################################################
 
-# Authors: Gilbert #
+# Authors: Gilbert, YeonSoo Noh
 
 from math import sin, cos, pi
 import math
@@ -63,17 +63,17 @@ class AutomaticParking(Node):
 
         self.prev_yaw = None
         self.total_yaw = 0.0 
-        
+                
         # Set publisher
         self.cmd_vel_publisher = self.create_publisher(
             Twist,
             '/cmd_vel',
-            qos_profile=QoSProfile(depth=10))
+            qos_profile=QoSProfile(depth=100))
 
         self.reset_publisher = self.create_publisher(
             Empty,
             '/reset',
-            qos_profile=QoSProfile(depth=10))
+            qos_profile=QoSProfile(depth=100))
 
         self.scan_spot_publisher = self.create_publisher(
             LaserScan,
@@ -91,9 +91,9 @@ class AutomaticParking(Node):
             Odometry,
             '/odom',
             self._odom_callback,
-            qos_profile=QoSProfile(depth=10))
+            qos_profile=QoSProfile(depth=100))
 
-        self._run_timer = self.create_timer(0.2, self._run)
+        self._run_timer = self.create_timer(0.05, self._run)
 
     def _scan_callback(self, msg):
         self.scan = msg
@@ -139,25 +139,20 @@ class AutomaticParking(Node):
         intensity_index = []
         index_count = []
         spot_angle_index = []
-        intensity_threshold = 200 #수정
+        intensity_threshold = 200 
 
         if self.scan != None:
             for i in range(len(self.scan.ranges)):
-                # spot_intensity = self.scan.intensities[i] ** 2 * self.scan.ranges[i] / 1000
                 spot_intensity = self.scan.intensities[i]
-                # print(f"intensity:{spot_intensity}")
                 if not math.isnan(spot_intensity) and spot_intensity >= intensity_threshold:
                     intensity_index.append(i)
                     index_count.append(i)
-                    print(f"index count:{index_count}")
                 else:
                     intensity_index.append(0)
-                print(f"Angle: {np.rad2deg(self.scan.angle_min + i * self.scan.angle_increment)}, Intensity: {spot_intensity}")
             for i in index_count:
                 if abs(i - index_count[int(len(index_count) / 2)]) < 20:
                     spot_angle_index.append(i)
-                    print(f"spot angle index : {spot_angle_index}")
-                    if len(spot_angle_index) > 10: #수정 
+                    if len(spot_angle_index) > 10: 
                         scan_done = True
                         self.center_index = spot_angle_index[int(len(spot_angle_index) / 2)]
                         self.start_index = spot_angle_index[2]
@@ -168,7 +163,6 @@ class AutomaticParking(Node):
     def _finding_spot_position(self):
         self.get_logger().info("scan parking spot done!")
         center_angle_distance = self._get_angle_distance(self.center_index)
-        # print(center_angle_distance)
         start_angle_distance = self._get_angle_distance(self.start_index)
         end_angle_distance = self._get_angle_distance(self.end_index)
 
@@ -249,7 +243,6 @@ class AutomaticParking(Node):
             yaw = self._get_yaw()
             if self.init_yaw is None:
                     self.init_yaw = yaw
-                    print(f"init yaw : {self.init_yaw}")
             cmd_vel = Twist()
             ranges = []
 
@@ -270,9 +263,6 @@ class AutomaticParking(Node):
 
             elif self.parking_sequence == 2:
                 relative_yaw = yaw - self.init_yaw
-                print(f"yaw:{yaw}")
-                print(f"relative_yaw:{relative_yaw}")
-                print(f"theta:{self.theta}")
                 if self.theta > 0:
                     if self.theta - relative_yaw > 0.1:
                         cmd_vel.linear.x = 0.0
@@ -297,7 +287,6 @@ class AutomaticParking(Node):
                     self.init_x = self.odom.pose.pose.position.x
                 current_x = self.odom.pose.pose.position.x
                 moved_distance = abs(current_x - self.init_x)
-                print(f"new_center_x:{self.new_center[0]}")
                 if abs(self.new_center[0]) - moved_distance > 0:
                     if self.new_center[0] < 0.02:
                         cmd_vel.linear.x = -0.05
@@ -315,8 +304,6 @@ class AutomaticParking(Node):
                 if self.new_center[1] > 0: 
                     if self.target_yaw is None:
                         self.target_yaw = yaw - (pi / 2)
-                    print(f"target_yaw:{self.target_yaw}")
-                    print(f"yaw:{yaw}")
                     if yaw - self.target_yaw > 0.1:
                         cmd_vel.linear.x = 0.0
                         cmd_vel.angular.z = -0.2
@@ -329,8 +316,6 @@ class AutomaticParking(Node):
                 else:  
                     if self.target_yaw is None:
                         self.target_yaw = yaw + (pi / 2)
-                    print(f"target_yaw:{self.target_yaw}")
-                    print(f"yaw:{yaw}")
                     if self.target_yaw - yaw > 0.1:
                         cmd_vel.linear.x = 0.0
                         cmd_vel.angular.z = 0.2
@@ -348,9 +333,9 @@ class AutomaticParking(Node):
                 for i in range(min_scan_index, max_scan_index):
                     if self.scan.ranges[i] != 0:
                         ranges.append(self.scan.ranges[i])
-                print(f"ranges:{ranges}")
-                if ranges:  
-                    min_distance = min(ranges)
+                valid_ranges = [r for r in ranges if not math.isnan(r)]
+                if valid_ranges:  
+                    min_distance = min(valid_ranges)
                 else:
                     min_distance = 0  
 

@@ -1,6 +1,11 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package turtlebot3_automatic_parking
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.0.0 (2025-03-21)
+------------------
+* modified algorithm to support the updated LDS-02 LiDAR sensor
+* updated coordinate transformation logic to match new sensor frame 
+* Contributors: Gilbert, YeonSoo Noh, Pyo
 
 1.1.0 (2019-01-23)
 ------------------

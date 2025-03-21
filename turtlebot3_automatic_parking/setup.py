@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-# Copyright 2023 ROBOTIS CO., LTD.
-# Authors: Gilbert
-
 import glob
 import os
 
@@ -22,8 +18,8 @@ setup(
     ],
     install_requires=['setuptools', 'launch'],
     zip_safe=True,
-    author=['Gilbert'],
-    author_email=['kkjong@robotis.com'],
+    author=['Gilbert, YeonSoo Noh'],
+    author_email=['kkjong@robotis.com, nys8277@gmail.com'],
     maintainer='Will Son',
     maintainer_email='willson@robotis.com',
     keywords=['ROS', 'ROS2', 'examples', 'rclpy'],
