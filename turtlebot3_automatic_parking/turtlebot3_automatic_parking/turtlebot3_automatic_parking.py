@@ -19,7 +19,6 @@
 
 from math import sin, cos, pi
 import math
-import os
 import sys
 import time
 
@@ -62,8 +61,8 @@ class AutomaticParking(Node):
         self.target_yaw = None
 
         self.prev_yaw = None
-        self.total_yaw = 0.0 
-                
+        self.total_yaw = 0.0
+
         # Set publisher
         self.cmd_vel_publisher = self.create_publisher(
             Twist,
@@ -107,7 +106,11 @@ class AutomaticParking(Node):
         scan_spot.range_min = msg.range_min
         scan_spot.range_max = msg.range_max
         scan_spot.ranges = msg.ranges
-        if self.start_index != None and self.center_index != None and self.end_index != None:
+        if (
+            self.start_index is not None and
+            self.center_index is not None and
+            self.end_index is not None
+        ):
             for i in range(len(msg.intensities)):
                 if i == self.start_index or i == self.center_index or i == self.end_index:
                     scan_spot.intensities.append(msg.intensities[i] + 10000)
@@ -124,7 +127,7 @@ class AutomaticParking(Node):
         angle = angle_distance[0]
         distance = angle_distance[1]
 
-        x = distance * cos(angle) 
+        x = distance * cos(angle)
         y = distance * sin(angle)
 
         return [x, y]
@@ -139,9 +142,9 @@ class AutomaticParking(Node):
         intensity_index = []
         index_count = []
         spot_angle_index = []
-        intensity_threshold = 200 
+        intensity_threshold = 200
 
-        if self.scan != None:
+        if self.scan is not None:
             for i in range(len(self.scan.ranges)):
                 spot_intensity = self.scan.intensities[i]
                 if not math.isnan(spot_intensity) and spot_intensity >= intensity_threshold:
@@ -152,7 +155,7 @@ class AutomaticParking(Node):
             for i in index_count:
                 if abs(i - index_count[int(len(index_count) / 2)]) < 20:
                     spot_angle_index.append(i)
-                    if len(spot_angle_index) > 10: 
+                    if len(spot_angle_index) > 10:
                         scan_done = True
                         self.center_index = spot_angle_index[int(len(spot_angle_index) / 2)]
                         self.start_index = spot_angle_index[2]
@@ -166,7 +169,11 @@ class AutomaticParking(Node):
         start_angle_distance = self._get_angle_distance(self.start_index)
         end_angle_distance = self._get_angle_distance(self.end_index)
 
-        if start_angle_distance[1] != 0 and center_angle_distance[1] != 0 and end_angle_distance[1] != 0:
+        if (
+            start_angle_distance[1] != 0 and
+            center_angle_distance[1] != 0 and
+            end_angle_distance[1] != 0
+        ):
             self.get_logger().info("calibration......")
             self.center_point = self._get_point(center_angle_distance)
             self.start_point = self._get_point(start_angle_distance)
@@ -178,7 +185,7 @@ class AutomaticParking(Node):
             theta2 = np.arctan2(
                 self.end_point[1] - self.start_point[1],
                 self.end_point[0] - self.start_point[0])
-            
+
             self.theta = theta1 if abs(theta1) < abs(theta2) else theta2
             return True
         else:
@@ -188,18 +195,28 @@ class AutomaticParking(Node):
     def _print_parking_log(self):
         self.get_logger().info("=================================")
         self.get_logger().info("|        |     x     |     y     |")
-        self.get_logger().info('| start  | {0:>10.3f}| {1:>10.3f}|'.format(self.start_point[0], self.start_point[1]))
-        self.get_logger().info('| center | {0:>10.3f}| {1:>10.3f}|'.format(self.center_point[0], self.center_point[1]))
-        self.get_logger().info('| end    | {0:>10.3f}| {1:>10.3f}|'.format(self.end_point[0], self.end_point[1]))
+        self.get_logger().info(
+            '| start  | {0:>10.3f}| {1:>10.3f}|'.format(self.start_point[0], self.start_point[1])
+            )
+        self.get_logger().info(
+            '| center | {0:>10.3f}| {1:>10.3f}|'.format(self.center_point[0], self.center_point[1])
+            )
+        self.get_logger().info(
+            '| end    | {0:>10.3f}| {1:>10.3f}|'.format(self.end_point[0], self.end_point[1])
+            )
         self.get_logger().info("=================================")
         self.get_logger().info('| theta  | {0:.2f} deg'.format(np.rad2deg(self.theta)))
         self.get_logger().info('| yaw    | {0:.2f} deg'.format(np.rad2deg(self.euler[2])))
         self.get_logger().info("=================================")
         self.get_logger().info("===== Go to parking spot!!! =====")
 
-    def _rotate_origin_only(self, radians): 
-        self.new_center[0] = self.center_point[0] * cos(radians) + self.center_point[1] * sin(radians)
-        self.new_center[1] = -self.center_point[0] * sin(radians) + self.center_point[1] * cos(radians)
+    def _rotate_origin_only(self, radians):
+        self.new_center[0] = (
+            self.center_point[0] * cos(radians) + self.center_point[1] * sin(radians)
+        )
+        self.new_center[1] = (
+            -self.center_point[0] * sin(radians) + self.center_point[1] * cos(radians)
+        )
 
     def _stop_and_reset(self):
         cmd_vel = Twist()
@@ -212,7 +229,7 @@ class AutomaticParking(Node):
         time.sleep(3)
 
     def _get_yaw(self):
-        orientation = self.odom.pose.pose.orientation 
+        orientation = self.odom.pose.pose.orientation
         quaternion = (
             orientation.w,
             orientation.x,
@@ -230,19 +247,18 @@ class AutomaticParking(Node):
         if delta_yaw > math.pi:
             self.total_yaw -= 2 * math.pi
         elif delta_yaw < -math.pi:
-            self.total_yaw += 2 * math.pi 
+            self.total_yaw += 2 * math.pi
 
-        self.total_yaw += delta_yaw 
-        self.prev_yaw = yaw 
+        self.total_yaw += delta_yaw
+        self.prev_yaw = yaw
 
         return self.total_yaw
-    
 
     def _run(self):
         if self.is_scan_received and self.is_odom_received:
             yaw = self._get_yaw()
             if self.init_yaw is None:
-                    self.init_yaw = yaw
+                self.init_yaw = yaw
             cmd_vel = Twist()
             ranges = []
 
@@ -301,7 +317,7 @@ class AutomaticParking(Node):
                     self.get_logger().info("Rotation Done.")
 
             elif self.parking_sequence == 4:
-                if self.new_center[1] > 0: 
+                if self.new_center[1] > 0:
                     if self.target_yaw is None:
                         self.target_yaw = yaw - (pi / 2)
                     if yaw - self.target_yaw > 0.1:
@@ -312,8 +328,8 @@ class AutomaticParking(Node):
                         cmd_vel.angular.z = 0.0
                         self.parking_sequence += 1
                         self.get_logger().info("Approach spot.")
-                    
-                else:  
+
+                else:
                     if self.target_yaw is None:
                         self.target_yaw = yaw + (pi / 2)
                     if self.target_yaw - yaw > 0.1:
@@ -325,19 +341,22 @@ class AutomaticParking(Node):
                         self.parking_sequence += 1
                         self.get_logger().info("Approach spot.")
 
-
             elif self.parking_sequence == 5:
                 ranges = []
-                min_scan_index = int((math.radians(150) - self.scan.angle_min) / self.scan.angle_increment)
-                max_scan_index = int((math.radians(210) - self.scan.angle_min) / self.scan.angle_increment)
+                min_scan_index = int(
+                    (math.radians(150) - self.scan.angle_min) / self.scan.angle_increment
+                    )
+                max_scan_index = int(
+                    (math.radians(210) - self.scan.angle_min) / self.scan.angle_increment
+                    )
                 for i in range(min_scan_index, max_scan_index):
                     if self.scan.ranges[i] != 0:
                         ranges.append(self.scan.ranges[i])
                 valid_ranges = [r for r in ranges if not math.isnan(r)]
-                if valid_ranges:  
+                if valid_ranges:
                     min_distance = min(valid_ranges)
                 else:
-                    min_distance = 0  
+                    min_distance = 0
 
                 if min_distance > 0.13:
                     cmd_vel.linear.x = -0.04

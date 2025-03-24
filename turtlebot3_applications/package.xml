@@ -6,6 +6,8 @@
   <description>
     ROS packages for the turtlebot3 applications (meta package)
   </description>
+  <maintainer email="pyo@robotis.com">Pyo</maintainer>
+  <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
   <license>Apache 2.0</license>
   <license>BSD</license>
   <author email="kkjong@robotis.com">Gilbert</author>
@@ -14,12 +16,6 @@
   <author>Christopher Tatsch</author>
   <author>Ashe Kim</author>
   <author>Leon Jung</author>
-  <maintainer email="pyo@robotis.com">Pyo</maintainer>
-  <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
-  <url type="website">http://wiki.ros.org/turtlebot3_applications</url>
-  <url type="emanual">http://turtlebot3.robotis.com</url>
-  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
-  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
@@ -27,6 +23,10 @@
   <depend>geometry_msgs</depend>
   <exec_depend>turtlebot3_automatic_parking</exec_depend>
   <export>
+    <url type="website">http://wiki.ros.org/turtlebot3_applications</url>
+    <url type="emanual">http://turtlebot3.robotis.com</url>
+    <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
+    <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
     <build_type>ament_cmake</build_type>
   </export>
 </package>
