@@ -7,8 +7,11 @@
 	  Package for turtlebot3 automatic_parking. You need a reflective tape and real robots. You can see parking spot using this pacakge on rviz.
   </description>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
-  <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
   <license>Apache 2.0</license>
+  <url type="website">http://wiki.ros.org/turtlebot3_automatic_parking</url>
+  <url type="website">http://turtlebot3.robotis.com</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <author email="kkjong@robotis.com">Gilbert</author>
   <author email="nys8277@gmail.com">YeonSoo Noh</author>
   <depend>rclpy</depend>
@@ -17,10 +20,6 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>nav_msgs</build_depend>
   <export>
-    <url type="website">http://wiki.ros.org/turtlebot3_automatic_parking</url>
-    <url type="emanual">http://turtlebot3.robotis.com</url>
-    <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
-    <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
     <build_type>ament_python</build_type>
   </export>
 
