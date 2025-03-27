@@ -105,7 +105,7 @@ class AutomaticParking(Node):
             self._odom_callback,
             qos_profile=QoSProfile(depth=100))
 
-        self._run_timer = self.create_timer(TIMER_PERIOD, self._run)
+        self._run_timer = self.create_timer(self.TIMER_PERIOD, self._run)
 
     def _scan_callback(self, msg):
         self.scan = msg
@@ -155,7 +155,7 @@ class AutomaticParking(Node):
         intensity_index = []
         index_count = []
         spot_angle_index = []
-        intensity_threshold = INTENSITY_THRESHOLD
+        intensity_threshold = self.INTENSITY_THRESHOLD
 
         if self.scan is not None:
             for i in range(len(self.scan.ranges)):
@@ -166,9 +166,9 @@ class AutomaticParking(Node):
                 else:
                     intensity_index.append(0)
             for i in index_count:
-                if abs(i - index_count[int(len(index_count) / 2)]) < SPOT_CENTER_MARGIN:
+                if abs(i - index_count[int(len(index_count) / 2)]) < self.SPOT_CENTER_MARGIN:
                     spot_angle_index.append(i)
-                    if len(spot_angle_index) > MIN_SPOT_CANDIDATES:
+                    if len(spot_angle_index) > self.MIN_SPOT_CANDIDATES:
                         scan_done = True
                         self.center_index = spot_angle_index[int(len(spot_angle_index) / 2)]
                         self.start_index = spot_angle_index[2]
@@ -286,25 +286,25 @@ class AutomaticParking(Node):
                         self.get_logger().info("Rotation!")
                 else:
                     self.search_count += 1
-                    if self.search_count > SEARCH_FAIL_LIMIT:
+                    if self.search_count > self.SEARCH_FAIL_LIMIT:
                         self.get_logger().error("Fail to finding parking spot.")
                         self.search_count = 0
 
             elif self.parking_sequence == 2:
                 relative_yaw = yaw - self.init_yaw
                 if self.theta > 0:
-                    if self.theta - relative_yaw > ROTATION_TOLERANCE:
+                    if self.theta - relative_yaw > self.ROTATION_TOLERANCE:
                         cmd_vel.linear.x = 0.0
-                        cmd_vel.angular.z = ROTATION_SPEED
+                        cmd_vel.angular.z = self.ROTATION_SPEED
                     else:
                         self._stop_and_reset()
                         self._rotate_origin_only(relative_yaw)
                         self.parking_sequence += 1
                         self.get_logger().info("Go to parking spot!")
                 else:
-                    if self.theta - relative_yaw < -ROTATION_TOLERANCE:
+                    if self.theta - relative_yaw < -self.ROTATION_TOLERANCE:
                         cmd_vel.linear.x = 0.0
-                        cmd_vel.angular.z = -ROTATION_SPEED
+                        cmd_vel.angular.z = -self.ROTATION_SPEED
                     else:
                         self._stop_and_reset()
                         self._rotate_origin_only(relative_yaw)
@@ -318,10 +318,10 @@ class AutomaticParking(Node):
                 moved_distance = abs(current_x - self.init_x)
                 if abs(self.new_center[0]) - moved_distance > 0:
                     if self.new_center[0] < 0:
-                        cmd_vel.linear.x = -LINEAR_SPEED
+                        cmd_vel.linear.x = -self.LINEAR_SPEED
                         cmd_vel.angular.z = 0.0
                     else:
-                        cmd_vel.linear.x = LINEAR_SPEED
+                        cmd_vel.linear.x = self.LINEAR_SPEED
                         cmd_vel.angular.z = 0.0
                 else:
                     cmd_vel.linear.x = 0.0
@@ -333,9 +333,9 @@ class AutomaticParking(Node):
                 if self.new_center[1] > 0:
                     if self.target_yaw is None:
                         self.target_yaw = yaw - (pi / 2)
-                    if yaw - self.target_yaw > ROTATION_TOLERANCE:
+                    if yaw - self.target_yaw > self.ROTATION_TOLERANCE:
                         cmd_vel.linear.x = 0.0
-                        cmd_vel.angular.z = -ROTATION_SPEED
+                        cmd_vel.angular.z = -self.ROTATION_SPEED
                     else:
                         cmd_vel.linear.x = 0.0
                         cmd_vel.angular.z = 0.0
@@ -345,9 +345,9 @@ class AutomaticParking(Node):
                 else:
                     if self.target_yaw is None:
                         self.target_yaw = yaw + (pi / 2)
-                    if self.target_yaw - yaw > ROTATION_TOLERANCE:
+                    if self.target_yaw - yaw > self.ROTATION_TOLERANCE:
                         cmd_vel.linear.x = 0.0
-                        cmd_vel.angular.z = ROTATION_SPEED
+                        cmd_vel.angular.z = self.ROTATION_SPEED
                     else:
                         cmd_vel.linear.x = 0.0
                         cmd_vel.angular.z = 0.0
@@ -357,10 +357,14 @@ class AutomaticParking(Node):
             elif self.parking_sequence == 5:
                 ranges = []
                 min_scan_index = int(
-                    (math.radians(REAR_SCAN_ANGLE_MIN) - self.scan.angle_min) / self.scan.angle_increment
+                    (
+                        math.radians(self.REAR_SCAN_ANGLE_MIN) - self.scan.angle_min
+                        ) / self.scan.angle_increment
                     )
                 max_scan_index = int(
-                    (math.radians(REAR_SCAN_ANGLE_MAX) - self.scan.angle_min) / self.scan.angle_increment
+                    (
+                        math.radians(self.REAR_SCAN_ANGLE_MAX) - self.scan.angle_min
+                        ) / self.scan.angle_increment
                     )
                 for i in range(min_scan_index, max_scan_index):
                     if self.scan.ranges[i] != 0:
@@ -371,8 +375,8 @@ class AutomaticParking(Node):
                 else:
                     min_distance = 0
 
-                if min_distance > PARKING_STOP_DISTANCE:
-                    cmd_vel.linear.x = -REVERSE_SPEED
+                if min_distance > self.PARKING_STOP_DISTANCE:
+                    cmd_vel.linear.x = -self.REVERSE_SPEED
                     cmd_vel.angular.z = 0.0
                 else:
                     self.get_logger().info("Auto parking Done.")

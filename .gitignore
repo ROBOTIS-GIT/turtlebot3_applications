@@ -27,3 +27,7 @@
 *.exe
 *.out
 *.app
+
+# Python cache files
+__pycache__/
+*.pyc
