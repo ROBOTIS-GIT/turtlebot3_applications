@@ -17,21 +17,23 @@
 
 # Authors: Gilbert, YeonSoo Noh
 
-from math import sin, cos, pi
 import math
+from math import cos
+from math import pi
+from math import sin
+import numpy as np
 import sys
 import time
 
-import rclpy
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
+import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSProfile
 from rclpy.qos import qos_profile_sensor_data
+from rclpy.qos import QoSProfile
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Empty
 
-import numpy as np
 from transforms3d.euler import quat2euler
 
 
@@ -177,7 +179,7 @@ class AutomaticParking(Node):
         return scan_done
 
     def _finding_spot_position(self):
-        self.get_logger().info("scan parking spot done!")
+        self.get_logger().info('scan parking spot done!')
         center_angle_distance = self._get_angle_distance(self.center_index)
         start_angle_distance = self._get_angle_distance(self.start_index)
         end_angle_distance = self._get_angle_distance(self.end_index)
@@ -187,7 +189,7 @@ class AutomaticParking(Node):
             center_angle_distance[1] != 0 and
             end_angle_distance[1] != 0
         ):
-            self.get_logger().info("calibration......")
+            self.get_logger().info('calibration......')
             self.center_point = self._get_point(center_angle_distance)
             self.start_point = self._get_point(start_angle_distance)
             self.end_point = self._get_point(end_angle_distance)
@@ -202,12 +204,12 @@ class AutomaticParking(Node):
             self.theta = theta1 if abs(theta1) < abs(theta2) else theta2
             return True
         else:
-            self.get_logger().warn("wrong scan!!")
+            self.get_logger().warn('wrong scan!!')
             return False
 
     def _print_parking_log(self):
-        self.get_logger().info("=================================")
-        self.get_logger().info("|        |     x     |     y     |")
+        self.get_logger().info('=================================')
+        self.get_logger().info('|        |     x     |     y     |')
         self.get_logger().info(
             '| start  | {0:>10.3f}| {1:>10.3f}|'.format(self.start_point[0], self.start_point[1])
             )
@@ -217,11 +219,11 @@ class AutomaticParking(Node):
         self.get_logger().info(
             '| end    | {0:>10.3f}| {1:>10.3f}|'.format(self.end_point[0], self.end_point[1])
             )
-        self.get_logger().info("=================================")
+        self.get_logger().info('=================================')
         self.get_logger().info('| theta  | {0:.2f} deg'.format(np.rad2deg(self.theta)))
         self.get_logger().info('| yaw    | {0:.2f} deg'.format(np.rad2deg(self.euler[2])))
-        self.get_logger().info("=================================")
-        self.get_logger().info("===== Go to parking spot!!! =====")
+        self.get_logger().info('=================================')
+        self.get_logger().info('===== Go to parking spot!!! =====')
 
     def _rotate_origin_only(self, radians):
         self.new_center[0] = (
@@ -276,18 +278,18 @@ class AutomaticParking(Node):
             ranges = []
 
             if self.parking_sequence == 0:
-                self.get_logger().info("Start auto parking!")
+                self.get_logger().info('Start auto parking!')
                 self.parking_sequence += 1
             elif self.parking_sequence == 1:
                 if self._scan_parking_spot():
                     if self._finding_spot_position():
                         self._print_parking_log()
                         self.parking_sequence += 1
-                        self.get_logger().info("Rotation!")
+                        self.get_logger().info('Rotation!')
                 else:
                     self.search_count += 1
                     if self.search_count > self.SEARCH_FAIL_LIMIT:
-                        self.get_logger().error("Fail to finding parking spot.")
+                        self.get_logger().error('Fail to finding parking spot.')
                         self.search_count = 0
 
             elif self.parking_sequence == 2:
@@ -300,7 +302,7 @@ class AutomaticParking(Node):
                         self._stop_and_reset()
                         self._rotate_origin_only(relative_yaw)
                         self.parking_sequence += 1
-                        self.get_logger().info("Go to parking spot!")
+                        self.get_logger().info('Go to parking spot!')
                 else:
                     if self.theta - relative_yaw < -self.ROTATION_TOLERANCE:
                         cmd_vel.linear.x = 0.0
@@ -309,7 +311,7 @@ class AutomaticParking(Node):
                         self._stop_and_reset()
                         self._rotate_origin_only(relative_yaw)
                         self.parking_sequence += 1
-                        self.get_logger().info("Go to parking spot!")
+                        self.get_logger().info('Go to parking spot!')
 
             elif self.parking_sequence == 3:
                 if self.init_x is None:
@@ -327,7 +329,7 @@ class AutomaticParking(Node):
                     cmd_vel.linear.x = 0.0
                     cmd_vel.angular.z = 0.0
                     self.parking_sequence += 1
-                    self.get_logger().info("Rotation Done.")
+                    self.get_logger().info('Rotation Done.')
 
             elif self.parking_sequence == 4:
                 if self.new_center[1] > 0:
@@ -340,7 +342,7 @@ class AutomaticParking(Node):
                         cmd_vel.linear.x = 0.0
                         cmd_vel.angular.z = 0.0
                         self.parking_sequence += 1
-                        self.get_logger().info("Approach spot.")
+                        self.get_logger().info('Approach spot.')
 
                 else:
                     if self.target_yaw is None:
@@ -352,7 +354,7 @@ class AutomaticParking(Node):
                         cmd_vel.linear.x = 0.0
                         cmd_vel.angular.z = 0.0
                         self.parking_sequence += 1
-                        self.get_logger().info("Approach spot.")
+                        self.get_logger().info('Approach spot.')
 
             elif self.parking_sequence == 5:
                 ranges = []
@@ -379,7 +381,7 @@ class AutomaticParking(Node):
                     cmd_vel.linear.x = -self.REVERSE_SPEED
                     cmd_vel.angular.z = 0.0
                 else:
-                    self.get_logger().info("Auto parking Done.")
+                    self.get_logger().info('Auto parking Done.')
                     self._stop_and_reset()
                     sys.exit()
 
