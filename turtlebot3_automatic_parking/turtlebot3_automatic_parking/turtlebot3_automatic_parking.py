@@ -25,9 +25,9 @@ import sys
 import time
 
 from geometry_msgs.msg import Twist
+from nav_msgs.msg import Odometry
 import numpy as np
 
-from nav_msgs.msg import Odometry
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
