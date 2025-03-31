@@ -22,7 +22,7 @@ setup(
     author_email=['kkjong@robotis.com', 'nys8277@gmail.com'],
     maintainer='Pyo',
     maintainer_email='pyo@robotis.com',
-    keywords=['ROS', 'ROS2', 'examples', 'rclpy'],
+    keywords=['ROS', 'ROS 2', 'examples', 'rclpy'],
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
