@@ -24,9 +24,9 @@ from math import sin
 import sys
 import time
 
+from geometry_msgs.msg import Twist
 import numpy as np
 
-from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 import rclpy
 from rclpy.node import Node
