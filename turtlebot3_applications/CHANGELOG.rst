@@ -2,6 +2,13 @@
 Changelog for package turtlebot3_applications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.1 (2025-04-04)
+------------------
+* Support for ROS 2 Humble version
+* Added turtlebot3_aruco_tracker pkg
+* Update turtlebot3_automatic_parking pkg to use turtlebot3_aruco_tracker
+* Contributors: ChanHyeong Lee
+
 1.1.0 (2019-01-23)
 ------------------
 * added launch file for automatic_parking node `#22 <https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues/22>`_
