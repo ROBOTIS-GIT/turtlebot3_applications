@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>turtlebot3_panorama</name>
+  <version>1.1.2</version>
+  <description>
+	  Package for turtlebot3 panorama.
+  </description>
+  <license>BSD</license>
+  <author>Younghun Ju</author>
+  <author>Jihoon Lee</author>
+  <author>Marcus Liebhardt</author>
+  <author>Christopher Tatsch</author>
+  <maintainer email="pyo@robotis.com">Pyo</maintainer>
+  <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
+  <author email="nys8277@gmail.com">YeonSoo Noh</author>
+  <url type="website">http://wiki.ros.org/turtlebot3_panorama</url>
+  <url type="emanual">http://turtlebot3.robotis.com</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>std_srvs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>turtlebot3_applications_msgs</build_depend>
+  <build_depend>image_transport</build_depend>
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+</package>
