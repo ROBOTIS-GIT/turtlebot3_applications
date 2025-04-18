@@ -4,7 +4,7 @@
 using namespace std::chrono_literals;
 
 Follower::Follower(const std::string & follower_name, const std::string & leader_name)
-: Node(follower_name+"_follower_controller"),
+: Node(follower_name+"_follower_node"),
   tf_buffer_(this->get_clock()),
   tf_listener_(tf_buffer_),
   leader_name_(leader_name),
@@ -14,32 +14,19 @@ Follower::Follower(const std::string & follower_name, const std::string & leader
   follow_distance_(0.15),
   goal_interval_(1.0)
 {
-  tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
-  leader_odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
-    leader_odom_, 10,
-    std::bind(&Follower::leader_odom_callback, this, std::placeholders::_1));
-  follower_odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
-    follower_odom_, 10,
-    std::bind(&Follower::follower_odom_callback, this, std::placeholders::_1));
+  this->get_parameter("use_sim_time", use_sim_time_);
+  tf_broadcaster_ = std::make_shared<tf2_ros::StaticTransformBroadcaster>(this);
   client_ = rclcpp_action::create_client<nav2_msgs::action::FollowPath>(this, follower_name_+"/follow_path");
   RCLCPP_INFO(this->get_logger(), "Follower node initialized with NodeOptions");
-
+  tf_publisher();
   timer_ = this->create_wall_timer(
     std::chrono::milliseconds(100),
-    std::bind(&Follower::tf_publisher, this)
+    std::bind(&Follower::coordinate_transform, this)
   );
   timer2_ = this->create_wall_timer(
     std::chrono::milliseconds(1000),
     std::bind(&Follower::send_goal, this)
   );
-}
-// 리더 오돔 콜백
-void Follower::leader_odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
-  this->leader_odom_msg_ = msg;
-}
-// 팔로워 오돔 콜백
-void Follower::follower_odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
-  this->follower_odom_msg_ = msg;
 }
 
 void Follower::send_goal() {
@@ -51,7 +38,7 @@ void Follower::send_goal() {
   pose.header.frame_id = follower_name_+"/base_link";
   pose.pose.position.x = this->prior_target_pose_.pose.position.x;
   pose.pose.position.y = this->prior_target_pose_.pose.position.y;
-  pose.pose.orientation.w = this->prior_target_pose_.pose.orientation.w;
+  pose.pose.orientation = this->prior_target_pose_.pose.orientation;
   path.poses.push_back(pose);
   // 현재 목표 위치를 경로에 추가
   geometry_msgs::msg::PoseStamped pose2;
@@ -59,10 +46,11 @@ void Follower::send_goal() {
   pose2.header.frame_id = follower_name_+"/base_link";
   pose2.pose.position.x = this->target_pose_.transform.translation.x;
   pose2.pose.position.y = this->target_pose_.transform.translation.y;
-  pose2.pose.orientation = this->target_pose_.transform.rotation;
+  pose2.pose.orientation.w = 1.0;
   //골을 쏠 때마다 이전 목표 위치를 저장
   if (pose!= pose2){
     this->prior_target_pose_= pose2;
+    this->prior_target_pose_.pose.orientation =this->target_pose_.transform.rotation;
   }
   path.poses.push_back(pose2);
 
@@ -82,25 +70,38 @@ void Follower::send_goal() {
 }
 
 void Follower::tf_publisher() {
-  auto& leader_odom_msg = this->leader_odom_msg_;
+  // auto& leader_odom_msg = this->leader_odom_msg_;
+  // auto& follower_odom_msg = this->follower_odom_msg_;
 
-  auto& follower_odom_msg = this->follower_odom_msg_;
-
-  if (!leader_odom_msg || !follower_odom_msg) return;
+  // while (){
+  //   RCLCPP_INFO(this->get_logger(), "Waiting for odometry messages...");
+  //   std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  // }
 
   geometry_msgs::msg::TransformStamped tf_msg;
   tf_msg.header.stamp = this->get_clock()->now();
   tf_msg.header.frame_id = this->leader_odom_;
   tf_msg.child_frame_id = this->follower_odom_;
-  tf_msg.transform.translation.x = 0;//follower_odom_msg->pose.pose.position.x - leader_odom_msg->pose.pose.position.x;
-  tf_msg.transform.translation.y = 0;//follower_odom_msg->pose.pose.position.y - leader_odom_msg->pose.pose.position.y;
-  tf_msg.transform.translation.z = 0;//follower_odom_msg->pose.pose.position.z - leader_odom_msg->pose.pose.position.z;
-  tf_msg.transform.rotation.x = 0.0;
-  tf_msg.transform.rotation.y = 0.0;
-  tf_msg.transform.rotation.z = 0.0;
-  tf_msg.transform.rotation.w = 1.0;
+
+  if(this->use_sim_time_ == true){
+    tf_msg.transform.translation.x = 0;
+    tf_msg.transform.translation.y = 0;
+    tf_msg.transform.translation.z = 0;
+    tf_msg.transform.rotation.y = 0.0;
+    tf_msg.transform.rotation.z = 0.0;
+    tf_msg.transform.rotation.w = 1.0;
+  } else{
+    tf_msg.transform.translation.x = -0.14;//follower_odom_msg->pose.pose.position.x - leader_odom_msg->pose.pose.position.x;
+    tf_msg.transform.translation.y = 0;//follower_odom_msg->pose.pose.position.y - leader_odom_msg->pose.pose.position.y;
+    tf_msg.transform.translation.z = 0;//follower_odom_msg->pose.pose.position.z - leader_odom_msg->pose.pose.position.z;
+    tf_msg.transform.rotation.x = 0.0;
+    tf_msg.transform.rotation.y = 0.0;
+    tf_msg.transform.rotation.z = 0.0;
+    tf_msg.transform.rotation.w = 1.0;
+  }
+  RCLCPP_INFO(this->get_logger(),"tf publish@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   this->tf_broadcaster_->sendTransform(tf_msg);
-  coordinate_transform();
+
 }
 
 void Follower::coordinate_transform()

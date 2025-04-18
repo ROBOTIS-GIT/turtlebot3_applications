@@ -6,14 +6,14 @@ from launch.substitutions import LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
-
-    number_of_follower=3
+    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    number_of_follower=2
     follower = Node(
         package='turtlebot3_follower',
         executable='follower',
         output='screen',
         arguments=[str(number_of_follower)],
-        parameters=[{'use_sim_time': True}]
+        parameters=[{'use_sim_time': use_sim_time}]
     )
     nodes=[]
     nodes.append(follower)
@@ -33,7 +33,7 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 ctrl_yaml_path,
-                {'use_sim_time': True},
+                {'use_sim_time': use_sim_time},
             ],
         )
 
@@ -45,7 +45,7 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 {'autostart': True},
-                {'use_sim_time': True},
+                {'use_sim_time': use_sim_time},
                 {'node_names': ['controller_server']}
             ]
         )
