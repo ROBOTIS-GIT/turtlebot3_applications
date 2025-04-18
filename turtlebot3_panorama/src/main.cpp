@@ -47,7 +47,6 @@ int main(int argc, char * argv[])
   panorama_app->setup();
 
   executor.add_node(panorama_app);
-
   executor.spin();
 
   if (rclcpp::ok()) {

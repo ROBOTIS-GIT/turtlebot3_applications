@@ -19,9 +19,6 @@
 //   step-by-step panorama modes, and publishes the final panorama as a ROS topic.
 //
 // Authors: Younghun Ju, Jihoon Lee, Marcus Liebhardt, Rohan Agrawal, YeonSoo Noh
-//
-// File: panorama.cpp
-// Date: 2013-08-01
 
 #include "turtlebot3_panorama/panorama.hpp"
 
@@ -31,7 +28,6 @@
 #include <tf2/utils.h>
 
 #include <cmath>
-
 #include <iostream>
 
 #include "rcpputils/filesystem_helper.hpp"
@@ -48,71 +44,71 @@ turtlebot3_panorama::PanoApp::~PanoApp()
 
 void turtlebot3_panorama::PanoApp::setup()
 {
-  srv_start_pano = this->create_service<turtlebot3_applications_msgs::srv::TakePanorama>(
+  srv_start_pano_ = this->create_service<turtlebot3_applications_msgs::srv::TakePanorama>(
     "take_pano",
     [this](
       const std::shared_ptr<turtlebot3_applications_msgs::srv::TakePanorama::Request> request,
       std::shared_ptr<turtlebot3_applications_msgs::srv::TakePanorama::Response> response) -> void
     {
-      takePanoServiceCb(request, response);
+      take_pano_service_cb(request, response);
     });
 
   it_ = std::make_unique<image_transport::ImageTransport>(shared_from_this());
 
-  pub_stitched = it_->advertise("/panorama", 1);
+  pub_stitched_ = it_->advertise("/panorama", 1);
 
-  sub_camera = this->create_subscription<sensor_msgs::msg::Image>(
+  sub_camera_ = this->create_subscription<sensor_msgs::msg::Image>(
     "/camera/image_raw",
     1,
     [this](
       const sensor_msgs::msg::Image::ConstSharedPtr msg) -> void
     {
-      cameraImageCb(msg);
+      camera_image_cb(msg);
     });
 
-  pub_cmd_vel = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 100);
-  sub_odom = this->create_subscription<nav_msgs::msg::Odometry>(
+  pub_cmd_vel_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 100);
+
+  sub_odom_ = this->create_subscription<nav_msgs::msg::Odometry>(
     "odom",
     100,
     [this](
       const nav_msgs::msg::Odometry::ConstSharedPtr msg) -> void
     {
-      odomCb(msg);
+      odom_cb(msg);
     });
 
-  cmd_vel.linear.x = 0.0f;
-  cmd_vel.linear.y = 0.0f;
-  cmd_vel.linear.z = 0.0f;
-  cmd_vel.angular.x = 0.0f;
-  cmd_vel.angular.y = 0.0f;
-  cmd_vel.angular.z = 0.0f;
-  zero_cmd_vel = cmd_vel;
-  is_active = false;
-  continuous = false;
-  ang_vel_cur = 0.0;
-  given_angle = 0.0;
-  angle = 0.0;
+  cmd_vel_.linear.x = 0.0f;
+  cmd_vel_.linear.y = 0.0f;
+  cmd_vel_.linear.z = 0.0f;
+  cmd_vel_.angular.x = 0.0f;
+  cmd_vel_.angular.y = 0.0f;
+  cmd_vel_.angular.z = 0.0f;
+  zero_cmd_vel_ = cmd_vel_;
+
+  is_active_ = false;
+  continuous_ = false;
+  ang_vel_cur_ = 0.0;
+  given_angle_ = 0.0;
+  angle_ = 0.0;
 
   timer_ = this->create_wall_timer(
     std::chrono::milliseconds(100),
-    [this]() -> void
-    {
+    [this]() -> void {
       run();
-    }
-  );
+    });
 }
 
 void turtlebot3_panorama::PanoApp::run()
 {
-  if (is_active) {
+  if (is_active_) {
     RCLCPP_INFO(
-      this->get_logger(),
-      "Degrees to go: %f",
-      radians_to_degrees(std::abs(given_angle - angle)));
-    if ((given_angle - angle) <= 0.0174) {
+      this->get_logger(), "Degrees to go: %f",
+      radians_to_degrees(std::abs(given_angle_ - angle_)));
+
+    if ((given_angle_ - angle_) <= 0.0174) {
       snap();
 
-      pub_cmd_vel->publish(zero_cmd_vel);
+      pub_cmd_vel_->publish(zero_cmd_vel_);
 
       RCLCPP_INFO(this->get_logger(), "Stitching %lu images", images_.size());
 
@@ -126,15 +122,17 @@ void turtlebot3_panorama::PanoApp::run()
       cv_img.image = pano;
       cv_img.encoding = "bgr8";
       cv_img.header.stamp = this->now();
-      pub_stitched.publish(cv_img.toImageMsg());
+      pub_stitched_.publish(cv_img.toImageMsg());
+
       RCLCPP_INFO(this->get_logger(), "Publishing Completed Panorama");
-      RCLCPP_INFO(this->get_logger(), "Angle: %f", angle);
+      RCLCPP_INFO(this->get_logger(), "Angle: %f", angle_);
 
-      angle = 0.0;
+      angle_ = 0.0;
       images_.clear();
+      is_active_ = false;
 
-      is_active = false;
       cv::imwrite("stitched_result.jpg", pano);
+
       const char * home_dir = std::getenv("HOME");
       if (!home_dir) {
         RCLCPP_ERROR(this->get_logger(), "Failed to find HOME environment variable.");
@@ -149,32 +147,30 @@ void turtlebot3_panorama::PanoApp::run()
 
       RCLCPP_INFO(this->get_logger(), "Panorama image successfully saved to: %s", filename.c_str());
     } else {
-      if (continuous) {
+      if (continuous_) {
         rotate();
 
-        if (hasReachedAngle()) {
-          pub_cmd_vel->publish(zero_cmd_vel);
+        if (has_reached_angle()) {
+          pub_cmd_vel_->publish(zero_cmd_vel_);
           rclcpp::sleep_for(std::chrono::milliseconds(500));
-
           snap();
-
           rclcpp::sleep_for(std::chrono::milliseconds(200));
           rotate();
         }
       } else {
-        if (hasReachedAngle()) {
-          pub_cmd_vel->publish(zero_cmd_vel);
+        if (has_reached_angle()) {
+          pub_cmd_vel_->publish(zero_cmd_vel_);
           rclcpp::sleep_for(std::chrono::milliseconds(2000));
-          take_snapshot = true;
+          take_snapshot_ = true;
         }
-        if (take_snapshot) {
-          if (std::abs(ang_vel_cur) <= 0.005) {
+
+        if (take_snapshot_) {
+          if (std::abs(ang_vel_cur_) <= 0.005) {
             snap();
-            take_snapshot = false;
+            take_snapshot_ = false;
           } else {
             RCLCPP_INFO(
-              this->get_logger(),
-              "Waiting for robot to stop ... (speed = %f)", ang_vel_cur);
+              this->get_logger(), "Waiting for robot to stop ... (speed = %f)", ang_vel_cur_);
           }
         } else {
           rotate();
@@ -187,7 +183,7 @@ void turtlebot3_panorama::PanoApp::run()
 void turtlebot3_panorama::PanoApp::snap()
 {
   RCLCPP_INFO(this->get_logger(), "snap");
-  store_image = true;
+  store_image_ = true;
 
   if (!images_.empty()) {
     const char * home_dir = std::getenv("HOME");
@@ -199,7 +195,7 @@ void turtlebot3_panorama::PanoApp::snap()
     std::string save_path = std::string(home_dir) + "/panorama_results/";
     rcpputils::fs::create_directories(rcpputils::fs::path(save_path));
 
-    std::string filename = save_path + "snapshot_" + std::to_string(snapshot_index++) + ".jpg";
+    std::string filename = save_path + "snapshot_" + std::to_string(snapshot_index_++) + ".jpg";
     if (cv::imwrite(filename, images_.back())) {
       RCLCPP_INFO(this->get_logger(), "Snapshot saved successfully: %s", filename.c_str());
     } else {
@@ -213,22 +209,22 @@ void turtlebot3_panorama::PanoApp::snap()
 void turtlebot3_panorama::PanoApp::rotate()
 {
   RCLCPP_INFO(this->get_logger(), "rotate");
-  pub_cmd_vel->publish(cmd_vel);
+  pub_cmd_vel_->publish(cmd_vel_);
 }
 
-bool turtlebot3_panorama::PanoApp::hasReachedAngle()
+bool turtlebot3_panorama::PanoApp::has_reached_angle()
 {
-  double next_snap_angle = degrees_to_radians(snap_interval) * (snap_count + 1);
-  if (angle >= next_snap_angle) {
-    ++snap_count;
+  double next_snap_angle = degrees_to_radians(snap_interval_) * (snap_count_ + 1);
+  if (angle_ >= next_snap_angle) {
+    ++snap_count_;
     return true;
   }
   return false;
 }
 
-void turtlebot3_panorama::PanoApp::odomCb(const nav_msgs::msg::Odometry::ConstSharedPtr & msg)
+void turtlebot3_panorama::PanoApp::odom_cb(const nav_msgs::msg::Odometry::ConstSharedPtr & msg)
 {
-  if (!is_active) {
+  if (!is_active_) {
     return;
   }
 
@@ -240,61 +236,61 @@ void turtlebot3_panorama::PanoApp::odomCb(const nav_msgs::msg::Odometry::ConstSh
 
   double heading = tf2::getYaw(q);
 
-  if (!heading_initialized) {
-    heading_start = heading;
-    heading_initialized = true;
-    previous_heading = heading;
-    angle = 0.0;
+  if (!heading_initialized_) {
+    heading_start_ = heading;
+    heading_initialized_ = true;
+    previous_heading_ = heading;
+    angle_ = 0.0;
   }
 
-  double delta = heading - previous_heading;
+  double delta = heading - previous_heading_;
 
   if (delta > M_PI) {delta -= 2.0 * M_PI;}
   if (delta < -M_PI) {delta += 2.0 * M_PI;}
 
-  angle += delta;
-  previous_heading = heading;
+  angle_ += delta;
+  previous_heading_ = heading;
 
-  ang_vel_cur = msg->twist.twist.angular.z;
+  ang_vel_cur_ = msg->twist.twist.angular.z;
 }
 
-bool turtlebot3_panorama::PanoApp::takePanoServiceCb(
+bool turtlebot3_panorama::PanoApp::take_pano_service_cb(
   const std::shared_ptr<turtlebot3_applications_msgs::srv::TakePanorama::Request> request,
   const std::shared_ptr<turtlebot3_applications_msgs::srv::TakePanorama::Response> response)
 {
-  if (is_active &&
+  if (is_active_ &&
     (request->mode == request->CONTINUOUS || request->mode == request->SNAPANDROTATE))
   {
     RCLCPP_INFO(this->get_logger(), "Panorama creation already in progress.");
     response->status = request->IN_PROGRESS;
-  } else if (is_active && (request->mode == request->STOP)) {
-    is_active = false;
-    pub_cmd_vel->publish(zero_cmd_vel);
+  } else if (is_active_ && (request->mode == request->STOP)) {
+    is_active_ = false;
+    pub_cmd_vel_->publish(zero_cmd_vel_);
     images_.clear();
-    heading_initialized = false;
+    heading_initialized_ = false;
 
     RCLCPP_INFO(this->get_logger(), "Panorama creation stopped.");
     response->status = request->STOPPED;
     return true;
-  } else if (!is_active && (request->mode == request->STOP)) {
+  } else if (!is_active_ && (request->mode == request->STOP)) {
     RCLCPP_INFO(this->get_logger(), "No panorama creation in progress.");
     response->status = request->STOPPED;
     return true;
   } else {
     switch (request->mode) {
       case turtlebot3_applications_msgs::srv::TakePanorama::Request::CONTINUOUS:
-        continuous = true;
-        given_angle = degrees_to_radians(180.0);
-        snap_interval = 15.0;
-        cmd_vel.angular.z = 0.1;
+        continuous_ = true;
+        given_angle_ = degrees_to_radians(180.0);
+        snap_interval_ = 15.0;
+        cmd_vel_.angular.z = 0.1;
         RCLCPP_INFO(this->get_logger(), "Mode: CONTINUOUS");
         break;
 
       case turtlebot3_applications_msgs::srv::TakePanorama::Request::SNAPANDROTATE:
-        continuous = false;
-        given_angle = degrees_to_radians(180.0);
-        snap_interval = 15.0;
-        cmd_vel.angular.z = 0.25;
+        continuous_ = false;
+        given_angle_ = degrees_to_radians(180.0);
+        snap_interval_ = 15.0;
+        cmd_vel_.angular.z = 0.25;
         RCLCPP_INFO(this->get_logger(), "Mode: SNAP_AND_ROTATE");
         break;
 
@@ -302,10 +298,11 @@ bool turtlebot3_panorama::PanoApp::takePanoServiceCb(
         RCLCPP_WARN(this->get_logger(), "Unknown mode received: %d", request->mode);
         return false;
     }
-    heading_initialized = false;
-    snap_count = 0;
 
-    is_active = true;
+    heading_initialized_ = false;
+    snap_count_ = 0;
+    snapshot_index_ = 1;
+    is_active_ = true;
     response->status = request->STARTED;
 
     RCLCPP_INFO(this->get_logger(), "Panorama creation started.");
@@ -313,10 +310,10 @@ bool turtlebot3_panorama::PanoApp::takePanoServiceCb(
   return true;
 }
 
-void turtlebot3_panorama::PanoApp::cameraImageCb(
+void turtlebot3_panorama::PanoApp::camera_image_cb(
   const sensor_msgs::msg::Image::ConstSharedPtr & msg)
 {
-  if (store_image) {
+  if (store_image_) {
     cv_bridge::CvImagePtr cv_ptr;
 
     try {
@@ -327,6 +324,6 @@ void turtlebot3_panorama::PanoApp::cameraImageCb(
     }
 
     images_.push_back(cv_ptr->image);
-    store_image = false;
+    store_image_ = false;
   }
 }
