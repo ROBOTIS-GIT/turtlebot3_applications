@@ -6,18 +6,18 @@
   <description>
 	  Package for turtlebot3 panorama.
   </description>
-  <license>BSD</license>
+  <maintainer email="pyo@robotis.com">Pyo</maintainer>
+  <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
+  <license>Apache 2.0</license>
+  <url type="website">http://wiki.ros.org/turtlebot3_panorama</url>
+  <url type="website">http://turtlebot3.robotis.com</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <author>Younghun Ju</author>
   <author>Jihoon Lee</author>
   <author>Marcus Liebhardt</author>
   <author>Christopher Tatsch</author>
-  <maintainer email="pyo@robotis.com">Pyo</maintainer>
-  <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
   <author email="nys8277@gmail.com">YeonSoo Noh</author>
-  <url type="website">http://wiki.ros.org/turtlebot3_panorama</url>
-  <url type="emanual">http://turtlebot3.robotis.com</url>
-  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
-  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>rclcpp</depend>
   <build_depend>std_msgs</build_depend>
