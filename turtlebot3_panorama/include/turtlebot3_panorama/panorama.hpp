@@ -94,7 +94,16 @@ private:
   bool go_active;
   int default_mode;
 
-  bool store_image;
+  bool is_active_ = false;
+  bool go_active_ = false;
+  bool heading_initialized_ = false;
+  bool continuous_ = false;
+  bool take_snapshot_ = false;
+  bool store_image_ = false;
+
+  int snap_count_ = 0;
+  int snapshot_index_ = 1;
+  int default_mode_;
 
   void run();
 
