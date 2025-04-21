@@ -94,8 +94,6 @@ private:
   int snapshot_index_ = 1;
   int default_mode_;
 
-  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_camera_;
-
   void run();
 
   bool take_pano_service_cb(

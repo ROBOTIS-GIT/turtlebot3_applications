@@ -115,7 +115,7 @@ void turtlebot3_panorama::PanoApp::run()
       cv::Mat pano;
       cv::Stitcher::Mode mode = cv::Stitcher::SCANS;
       cv::Ptr<cv::Stitcher> stitcher = cv::Stitcher::create(mode);
-      cv::Stitcher::Status status = stitcher->stitch(images_, pano);
+      (void)stitcher->stitch(images_, pano);
       RCLCPP_INFO(this->get_logger(), "Finished Stitching");
 
       cv_bridge::CvImage cv_img;
