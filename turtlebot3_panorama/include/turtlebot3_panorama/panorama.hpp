@@ -42,9 +42,9 @@
 #include <eigen3/Eigen/Geometry>
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -66,6 +66,7 @@
 
 namespace turtlebot3_panorama
 {
+
 class PanoApp : public rclcpp::Node
 {
 public:
@@ -75,35 +76,26 @@ public:
   void setup();
 
 private:
-  rclcpp::Node::SharedPtr nh;
-  std::map<std::string, std::string> params;
-
-  geometry_msgs::msg::Twist cmd_vel, zero_cmd_vel;
-  double snap_interval;
-  double angle, given_angle, ang_vel_cur;
-  double heading_start = 0.0;
-  double previous_heading = 0.0;
-  bool heading_initialized = false;
-
-  int snap_count = 0;
-  int snapshot_index = 1;
-  bool take_snapshot = false;
-  bool continuous;
-
-  image_transport::Publisher pub_stitched;
-
-  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_camera;
-  rclcpp::Service<turtlebot3_applications_msgs::srv::TakePanorama>::SharedPtr srv_start_pano;
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel;
-  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom;
+  rclcpp::Node::SharedPtr nh_;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom_;
+  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_camera_;
+  rclcpp::Service<turtlebot3_applications_msgs::srv::TakePanorama>::SharedPtr srv_start_pano_;
   rclcpp::TimerBase::SharedPtr timer_;
-
+  image_transport::Publisher pub_stitched_;
   std::unique_ptr<image_transport::ImageTransport> it_;
+
+  std::map<std::string, std::string> params_;
   std::vector<cv::Mat> images_;
 
-  bool is_active;
-  bool go_active;
-  int default_mode;
+  geometry_msgs::msg::Twist cmd_vel_;
+  geometry_msgs::msg::Twist zero_cmd_vel_;
+  double angle_;
+  double given_angle_;
+  double ang_vel_cur_;
+  double heading_start_ = 0.0;
+  double previous_heading_ = 0.0;
+  double snap_interval_ = 0.0;
 
   bool is_active_ = false;
   bool go_active_ = false;
@@ -118,7 +110,7 @@ private:
 
   void run();
 
-  bool takePanoServiceCb(
+  bool take_pano_service_cb(
     const std::shared_ptr<turtlebot3_applications_msgs::srv::TakePanorama::Request> request,
     const std::shared_ptr<turtlebot3_applications_msgs::srv::TakePanorama::Response> response);
 
@@ -126,11 +118,13 @@ private:
 
   void rotate();
 
-  bool hasReachedAngle();
+  bool has_reached_angle();
 
-  void odomCb(const nav_msgs::msg::Odometry::ConstSharedPtr & msg);
+  void odom_cb(const nav_msgs::msg::Odometry::ConstSharedPtr & msg);
 
-  void cameraImageCb(const sensor_msgs::msg::Image::ConstSharedPtr & msg);
+  void camera_image_cb(const sensor_msgs::msg::Image::ConstSharedPtr & msg);
 };
+
 }  // namespace turtlebot3_panorama
+
 #endif  // TURTLEBOT3_PANORAMA__PANORAMA_HPP_
