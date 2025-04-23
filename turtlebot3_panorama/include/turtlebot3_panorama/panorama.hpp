@@ -83,7 +83,7 @@ private:
   rclcpp::Service<turtlebot3_applications_msgs::srv::TakePanorama>::SharedPtr srv_start_pano_;
   rclcpp::TimerBase::SharedPtr timer_;
   image_transport::Publisher pub_stitched_;
-  std::unique_ptr<image_transport::ImageTransport> it_;
+  std::unique_ptr<image_transport::ImageTransport> image_transport_;
 
   std::map<std::string, std::string> params_;
   std::vector<cv::Mat> images_;
