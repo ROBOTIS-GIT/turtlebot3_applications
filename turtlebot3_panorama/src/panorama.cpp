@@ -1,27 +1,39 @@
-// Copyright 2013 Yujin Robot, Rohan Agrawal.
+// Copyright 2016 Yujin Robot, Rohan Agrawal.
+// Licensed under the BSD 3-Clause License
+// All rights reserved.
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//   * Redistributions of source code must retain the above copyright
+//     notice, this list of conditions and the following disclaimer.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+//   * Redistributions in binary form must reproduce the above copyright
+//     notice, this list of conditions and the following disclaimer in the
+//     documentation and/or other materials provided with the distribution.
 //
-// Description:
-//   This source file implements the PanoApp class for the TurtleBot3 panorama
-//   application. It sets up the ROS 2 node and handles image capture, robot rotation,
-//   and panoramic image stitching using OpenCV. The class supports continuous and
-//   step-by-step panorama modes, and publishes the final panorama as a ROS topic.
+//   * Neither the name of the Yujin Robot nor the names of its
+//     contributors may be used to endorse or promote products derived from
+//     this software without specific prior written permission.
 //
-// Authors: Younghun Ju, Jihoon Lee, Marcus Liebhardt, Rohan Agrawal, YeonSoo Noh
-//
-// File: panorama.cpp
-// Date: 2013-08-01
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+/**
+ * @file panorama.cpp
+ * @brief Panorama app class and ROS node implementation.
+ * @date 2013-08-01
+ * @author Younghun Ju, Jihoon Lee, Marcus Liebhardt, Rohan Agrawal, YeonSoo Noh
+ */
 
 #include "turtlebot3_panorama/panorama.hpp"
 
@@ -57,9 +69,9 @@ void turtlebot3_panorama::PanoApp::setup()
       takePanoServiceCb(request, response);
     });
 
-  it_ = std::make_unique<image_transport::ImageTransport>(shared_from_this());
+  image_transport_ = std::make_unique<image_transport::ImageTransport>(shared_from_this());
 
-  pub_stitched = it_->advertise("/panorama", 1);
+  pub_stitched_ = image_transport_->advertise("/panorama", 1);
 
   sub_camera = this->create_subscription<sensor_msgs::msg::Image>(
     "/camera/image_raw",
@@ -232,13 +244,13 @@ void turtlebot3_panorama::PanoApp::odomCb(const nav_msgs::msg::Odometry::ConstSh
     return;
   }
 
-  tf2::Quaternion q(
+  tf2::Quaternion orientation_q(
     msg->pose.pose.orientation.x,
     msg->pose.pose.orientation.y,
     msg->pose.pose.orientation.z,
     msg->pose.pose.orientation.w);
 
-  double heading = tf2::getYaw(q);
+  double heading = tf2::getYaw(orientation_q);
 
   if (!heading_initialized) {
     heading_start = heading;
@@ -321,8 +333,8 @@ void turtlebot3_panorama::PanoApp::cameraImageCb(
 
     try {
       cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
-    } catch (cv_bridge::Exception & e) {
-      RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
+    } catch (cv_bridge::Exception & ex) {
+      RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", ex.what());
       return;
     }
 
