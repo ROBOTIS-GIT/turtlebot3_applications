@@ -26,7 +26,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-    number_of_follower = 2
+    number_of_follower = 3
     follower = Node(
         package='turtlebot3_follower',
         executable='follower',

@@ -35,7 +35,7 @@
         decel_lim_x: -2.0
         decel_lim_y: 0.0
         decel_lim_theta: -3.2
-        vx_samples: 20
+        vx_samples: 40
         vy_samples: 5
         vtheta_samples: 20
         sim_time: 1.7
@@ -47,17 +47,22 @@
         short_circuit_trajectory_evaluation: True
         limit_vel_cmd_in_traj: False
         stateful: True
-        critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-        BaseObstacle.scale: 0.02
-        PathAlign.scale: 32.0
-        GoalAlign.scale: 24.0
+        critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist", ObstacleFootprintCritic]
+        BaseObstacle.scale: 0.05
+        PathAlign.scale: 10.0
+        GoalAlign.scale: 10.0
         PathAlign.forward_point_distance: 0.1
         GoalAlign.forward_point_distance: 0.1
-        PathDist.scale: 32.0
-        GoalDist.scale: 24.0
-        RotateToGoal.scale: 32.0
+        PathDist.scale: 10.0
+        GoalDist.scale: 10.0
+        RotateToGoal.scale: 10.0
         RotateToGoal.slowing_factor: 5.0
         RotateToGoal.lookahead_time: -1.0
+        ObstacleFootprintCritic.scale: 20.0
+        ObstacleFootprintCritic.threshold: 0.1
+        ObstacleFootprintCritic.include_dynamic_obstacles: true
+        ObstacleFootprintCritic.collision_penalty: 100.0
+        ObstacleFootprintCritic.footprint_cost_mode: 0
 /**:
   local_costmap:
     local_costmap:
@@ -94,7 +99,7 @@
       velocity_timeout: 1.0
       max_accel: [1.5, 0.0, 3.2]
       max_decel: [-1.5, 0.0, -3.2]
-      odom_topic: "/TB3_4odom"
+      odom_topic: "/TB3_4/odom"
       odom_duration: 0.1
       use_realtime_priority: false
       enable_stamped_cmd_vel: false
