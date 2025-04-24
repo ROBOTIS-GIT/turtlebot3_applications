@@ -2,6 +2,12 @@
 Changelog for package turtlebot3_applications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.2(2025-04-17)
+------------------
+* Support Panorama for ROS 2 Humble version
+* Switched camera message type and topic to match new camera configuration
+* Contributors: YeonSoo Noh
+
 1.1.1 (2025-04-04)
 ------------------
 * Support for ROS 2 Humble version

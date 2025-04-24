@@ -1,16 +1,12 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package turtlebot3_automatic_parking_vision
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package turtlebot3_panorama
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1.1.2(2025-04-17)
 ------------------
-* None
-
-1.1.1 (2025-04-04)
-------------------
-* Support for ROS 2 Humble version
-* Using turtlebot3_aruco_tracker pkg
-* Contributors: ChanHyeong Lee
+* Switched camera message type and topic to match new camera configuration
+* Uses odom topic to estimate yaw rotation and compute angles between snapshots
+* Contributor: YeonSoo Noh
 
 1.1.0 (2019-01-23)
 ------------------
