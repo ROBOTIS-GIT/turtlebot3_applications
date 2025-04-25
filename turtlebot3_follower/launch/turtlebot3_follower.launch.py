@@ -55,7 +55,7 @@ def generate_launch_description():
                 ctrl_yaml_path,
                 {'use_sim_time': use_sim_time}],
             remappings=[
-                (f'/{namespace}/cmd_vel', f'/{namespace}/cmd_vel_not_smoothed'),]
+                (f'/{namespace}/cmd_vel', f'/{namespace}/cmd_vel_not_smoothed')]
         )
 
         lifecycle_node = Node(
@@ -67,10 +67,10 @@ def generate_launch_description():
             parameters=[
                 {'autostart': True},
                 {'use_sim_time': use_sim_time},
-                {'node_names': ['controller_server','velocity_smoother']}],
+                {'node_names': ['controller_server', 'velocity_smoother']}],
         )
 
-        velocity_smoother_node=Node(
+        velocity_smoother_node = Node(
             package='nav2_velocity_smoother',
             executable='velocity_smoother',
             namespace=namespace,
