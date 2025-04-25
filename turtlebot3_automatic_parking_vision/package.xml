@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>turtlebot3_automatic_parking_vision</name>
-  <version>1.1.2</version>
+  <version>1.1.1</version>
   <description>
 	  Automatic Parking Vision for TurtleBot3 Examples.
   </description>
@@ -13,8 +13,8 @@
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <author email="kkjong@robotis.com">Gilbert</author>
-  <author email="dddoggi1207@gmail.com">ChanHyeong Lee</author>
   <author>Leon Jung</author>
+  <author email="dddoggi1207@gmail.com">ChanHyeong Lee</author>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>rclpy</depend>

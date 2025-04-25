@@ -2,11 +2,7 @@
 Changelog for package turtlebot3_automatic_parking_vision
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.2(2025-04-17)
-------------------
-* None
-
-1.1.1 (2025-04-04)
+1.1.1 (2025-04-25)
 ------------------
 * Support for ROS 2 Humble version
 * Using turtlebot3_aruco_tracker pkg

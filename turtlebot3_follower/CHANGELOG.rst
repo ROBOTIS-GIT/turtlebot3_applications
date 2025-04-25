@@ -1,12 +1,11 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package turtlebot3_panorama
+Changelog for package turtlebot3_follower
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1.1.1(2025-04-25)
 ------------------
-* Switched camera message type and topic to match new camera configuration
-* Uses odom topic to estimate yaw rotation and compute angles between snapshots
-* Contributor: YeonSoo Noh
+* Developed follower pkg by applying a new algorithm using Nav2
+* Contributors: Hyungyu Kim
 
 1.1.0 (2019-01-23)
 ------------------
