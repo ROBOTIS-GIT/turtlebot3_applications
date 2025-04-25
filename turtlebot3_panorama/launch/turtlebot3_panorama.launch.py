@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright 2023 ROBOTIS CO., LTD.
-# Licensed under the BSD 3-Clause License
+# Licensed under the BSD License
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
