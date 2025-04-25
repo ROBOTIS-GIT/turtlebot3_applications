@@ -338,7 +338,7 @@ void turtlebot3_panorama::PanoApp::camera_image_cb(
       }
       images_.push_back(image);
       store_image_ = false;
-    }catch (const cv::Exception & ex) {
+    } catch (const cv::Exception & ex) {
       RCLCPP_ERROR(this->get_logger(), "cv::imdecode error: %s", ex.what());
     }
   }
