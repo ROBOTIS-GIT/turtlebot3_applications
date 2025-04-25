@@ -72,11 +72,11 @@ void turtlebot3_panorama::PanoApp::setup()
 
   pub_stitched_ = image_transport_->advertise("/panorama", 1);
 
-  sub_camera_ = this->create_subscription<sensor_msgs::msg::Image>(
-    "/camera/image_raw",
+  sub_camera_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
+    "/camera/image_raw/compressed",
     1,
     [this](
-      const sensor_msgs::msg::Image::ConstSharedPtr msg) -> void
+      const sensor_msgs::msg::CompressedImage::ConstSharedPtr msg) -> void
     {
       camera_image_cb(msg);
     });
@@ -326,19 +326,20 @@ bool turtlebot3_panorama::PanoApp::take_pano_service_cb(
 }
 
 void turtlebot3_panorama::PanoApp::camera_image_cb(
-  const sensor_msgs::msg::Image::ConstSharedPtr & msg)
+  const sensor_msgs::msg::CompressedImage::ConstSharedPtr & msg)
 {
   if (store_image_) {
-    cv_bridge::CvImagePtr cv_ptr;
-
     try {
-      cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
-    } catch (cv_bridge::Exception & ex) {
-      RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", ex.what());
-      return;
-    }
+      cv::Mat image = cv::imdecode(cv::Mat(msg->data), cv::IMREAD_COLOR);
 
-    images_.push_back(cv_ptr->image);
-    store_image_ = false;
+      if (image.empty()) {
+        RCLCPP_WARN(this->get_logger(), "Decoded image is empty.");
+        return;
+      }
+      images_.push_back(image);
+      store_image_ = false;
+    }catch (const cv::Exception & ex) {
+      RCLCPP_ERROR(this->get_logger(), "cv::imdecode error: %s", ex.what());
+    }
   }
 }

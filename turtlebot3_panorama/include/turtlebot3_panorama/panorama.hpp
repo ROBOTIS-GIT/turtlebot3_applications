@@ -54,7 +54,7 @@
 #include "std_msgs/msg/empty.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "std_srvs/srv/empty.hpp"
-#include "sensor_msgs/msg/image.hpp"
+#include "sensor_msgs/msg/compressed_image.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "image_transport/image_transport.hpp"
@@ -79,7 +79,7 @@ private:
   rclcpp::Node::SharedPtr nh_;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom_;
-  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_camera_;
+  rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr sub_camera_;
   rclcpp::Service<turtlebot3_applications_msgs::srv::TakePanorama>::SharedPtr srv_start_pano_;
   rclcpp::TimerBase::SharedPtr timer_;
   image_transport::Publisher pub_stitched_;
@@ -122,7 +122,7 @@ private:
 
   void odom_cb(const nav_msgs::msg::Odometry::ConstSharedPtr & msg);
 
-  void camera_image_cb(const sensor_msgs::msg::Image::ConstSharedPtr & msg);
+  void camera_image_cb(const sensor_msgs::msg::CompressedImage::ConstSharedPtr & msg);
 };
 
 }  // namespace turtlebot3_panorama
