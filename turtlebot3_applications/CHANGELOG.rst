@@ -2,18 +2,14 @@
 Changelog for package turtlebot3_applications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.2(2025-04-17)
-------------------
-* Support Panorama for ROS 2 Humble version
-* Switched camera message type and topic to match new camera configuration
-* Contributors: YeonSoo Noh
-
-1.1.1 (2025-04-04)
+1.1.1(2025-04-25)
 ------------------
 * Support for ROS 2 Humble version
 * Added turtlebot3_aruco_tracker pkg
 * Update turtlebot3_automatic_parking pkg to use turtlebot3_aruco_tracker
-* Contributors: ChanHyeong Lee
+* Switched camera message type and topic to match new camera configuration in Parorama package
+* Developed follower pkg by applying a new algorithm using Nav2
+* Contributors: ChanHyeong Lee, YeonSoo Noh
 
 1.1.0 (2019-01-23)
 ------------------

@@ -2,7 +2,7 @@
 Changelog for package turtlebot3_panorama
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.2(2025-04-17)
+1.1.1(2025-04-25)
 ------------------
 * Switched camera message type and topic to match new camera configuration
 * Uses odom topic to estimate yaw rotation and compute angles between snapshots
