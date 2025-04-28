@@ -7,7 +7,6 @@ Changelog for package turtlebot3_applications
 * Support for ROS 2 Humble version
 * Added turtlebot3_aruco_tracker pkg
 * Update turtlebot3_automatic_parking pkg to use turtlebot3_aruco_tracker
-* Switched camera message type and topic to match new camera configuration in Parorama package
 * Developed follower pkg by applying a new algorithm using Nav2
 * Contributors: ChanHyeong Lee, YeonSoo Noh
 
