@@ -8,6 +8,7 @@
   </description>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
   <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
+  <license>Apache 2.0</license>
   <license>BSD</license>
   <url type="website">http://turtlebot3.robotis.com</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
@@ -23,7 +24,7 @@
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>turtlebot3_applications_msgs</depend>
-  <depend>image_transport</depend>
+  <depend>image_transport_plugins</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>
