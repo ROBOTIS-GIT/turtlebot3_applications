@@ -16,19 +16,12 @@ find_package(image_transport REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(std_srvs REQUIRED)
 find_package(turtlebot3_applications_msgs REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system)
-find_package(Eigen3 REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
-
-add_library(${PROJECT_NAME}_lib SHARED
-  src/panorama.cpp
-)
 
 set(dependencies
   cv_bridge
@@ -37,26 +30,25 @@ set(dependencies
   nav_msgs
   rclcpp
   sensor_msgs
-  std_msgs
-  std_srvs
+  tf2
   tf2_geometry_msgs
   turtlebot3_applications_msgs
 )
 
-ament_target_dependencies(${PROJECT_NAME}_lib ${dependencies})
-target_include_directories(${PROJECT_NAME}_lib
+add_executable(${PROJECT_NAME} src/panorama.cpp)
+
+ament_target_dependencies(${PROJECT_NAME} ${dependencies})
+
+target_include_directories(${PROJECT_NAME}
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>)
+    $<INSTALL_INTERFACE:include>
+)
 
-target_link_libraries(${PROJECT_NAME}_lib
+target_link_libraries(${PROJECT_NAME}
   ${Boost_LIBRARIES}
-  ${Eigen3_LIBRARIES}
-  ${OpenCV_LIBRARIES})
-
-set(EXECUTABLE_NAME ${PROJECT_NAME})
-add_executable(${EXECUTABLE_NAME} src/main.cpp)
-target_link_libraries(${EXECUTABLE_NAME} ${PROJECT_NAME}_lib)
+  ${OpenCV_LIBRARIES}
+)
 
 install(DIRECTORY include/
   DESTINATION include
@@ -66,15 +58,7 @@ install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
 )
 
-install(
-  TARGETS ${PROJECT_NAME}_lib
-  EXPORT ${PROJECT_NAME}_lib
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-)
-
-install(TARGETS ${EXECUTABLE_NAME}
+install(TARGETS ${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -93,7 +77,6 @@ if(BUILD_TESTING)
 endif()
 
 ament_export_include_directories(include)
-ament_export_libraries(${PROJECT_NAME})
 ament_export_dependencies(${dependencies})
 
 ament_package()

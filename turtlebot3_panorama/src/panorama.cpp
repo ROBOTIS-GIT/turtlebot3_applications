@@ -37,14 +37,15 @@
 
 #include "turtlebot3_panorama/panorama.hpp"
 
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Geometry>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/utils.h>
 
+#include <memory>
+#include <string>
 #include <cmath>
 #include <iostream>
 
+#include "rclcpp/rclcpp.hpp"
 #include "rcpputils/filesystem_helper.hpp"
 
 
@@ -342,4 +343,31 @@ void turtlebot3_panorama::PanoApp::camera_image_cb(
       RCLCPP_ERROR(this->get_logger(), "cv::imdecode error: %s", ex.what());
     }
   }
+}
+
+int main(int argc, char * argv[])
+{
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
+  rclcpp::init(argc, argv);
+
+  rclcpp::executors::SingleThreadedExecutor executor;
+
+  rcl_allocator_t allocator = rcl_get_default_allocator();
+  auto options =
+    rclcpp::NodeOptions(allocator)
+    .start_parameter_services(false)
+    .start_parameter_event_publisher(false);
+
+  auto panorama_app = std::make_shared<turtlebot3_panorama::PanoApp>(options);
+  panorama_app->setup();
+
+  executor.add_node(panorama_app);
+  executor.spin();
+
+  if (rclcpp::ok()) {
+    rclcpp::shutdown();
+  }
+
+  return 0;
 }

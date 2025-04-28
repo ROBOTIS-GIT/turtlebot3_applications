@@ -38,9 +38,6 @@
 #ifndef TURTLEBOT3_PANORAMA__PANORAMA_HPP_
 #define TURTLEBOT3_PANORAMA__PANORAMA_HPP_
 
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Geometry>
-
 #include <map>
 #include <memory>
 #include <string>
@@ -51,9 +48,6 @@
 #include <opencv2/stitching.hpp>
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/empty.hpp"
-#include "std_msgs/msg/string.hpp"
-#include "std_srvs/srv/empty.hpp"
 #include "sensor_msgs/msg/compressed_image.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "nav_msgs/msg/odometry.hpp"
