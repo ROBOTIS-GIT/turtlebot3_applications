@@ -43,7 +43,6 @@
 #include <memory>
 #include <string>
 #include <cmath>
-#include <iostream>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rcpputils/filesystem_helper.hpp"

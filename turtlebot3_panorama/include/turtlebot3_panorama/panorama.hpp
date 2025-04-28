@@ -100,7 +100,6 @@ private:
 
   int snap_count_ = 0;
   int snapshot_index_ = 1;
-  int default_mode_;
 
   void run();
 
