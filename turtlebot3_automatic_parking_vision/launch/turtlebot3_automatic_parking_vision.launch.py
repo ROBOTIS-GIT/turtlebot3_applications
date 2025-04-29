@@ -16,7 +16,7 @@
 # limitations under the License.
 ################################################################################
 
-# Authors: Gilbert, ChanHyeong Lee
+# Authors: Gilbert
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
