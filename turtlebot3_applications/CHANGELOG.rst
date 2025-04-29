@@ -8,7 +8,7 @@ Changelog for package turtlebot3_applications
 * Added turtlebot3_aruco_tracker pkg
 * Update turtlebot3_automatic_parking pkg to use turtlebot3_aruco_tracker
 * Developed follower pkg by applying a new algorithm using Nav2
-* Contributors: ChanHyeong Lee, YeonSoo Noh
+* Contributors: ChanHyeong Lee, Hyungyu Kim, YeonSoo Noh
 
 1.1.0 (2019-01-23)
 ------------------
