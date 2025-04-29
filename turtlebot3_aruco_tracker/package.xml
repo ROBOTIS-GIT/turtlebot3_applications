@@ -12,12 +12,12 @@
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <author email="dddoggi1207@gmail.com">ChanHyeong Lee</author>
-  <depend>cv2</depend>
+  <depend>python3-opencv</depend>
   <depend>cv_bridge</depend>
   <depend>geometry_msgs</depend>
-  <depend>numpy</depend>
+  <depend>python3-numpy</depend>
   <depend>rclpy</depend>
-  <depend>scipy</depend>
+  <depend>python3-scipy</depend>
   <depend>sensor_msgs</depend>
   <depend>tf2_ros</depend>
   <export>
