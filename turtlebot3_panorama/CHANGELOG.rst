@@ -2,7 +2,7 @@
 Changelog for package turtlebot3_panorama
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.1(2025-04-25)
+1.2.0(2025-04-25)
 ------------------
 * Uses odom topic to estimate yaw rotation and compute angles between snapshots
 * Contributor: YeonSoo Noh

@@ -2,7 +2,7 @@
 Changelog for package turtlebot3_follower
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.1(2025-04-25)
+1.2.0(2025-04-25)
 ------------------
 * Developed follower pkg by applying a new algorithm using Nav2
 * Contributors: Hyungyu Kim

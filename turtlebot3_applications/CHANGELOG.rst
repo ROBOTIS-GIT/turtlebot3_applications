@@ -2,7 +2,7 @@
 Changelog for package turtlebot3_applications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.1(2025-04-25)
+1.2.0(2025-04-25)
 ------------------
 * Support for ROS 2 Humble version
 * Added turtlebot3_aruco_tracker pkg

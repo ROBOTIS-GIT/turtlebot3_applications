@@ -2,14 +2,13 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>turtlebot3_panorama</name>
-  <version>1.1.1</version>
+  <version>1.2.0</version>
   <description>
 	  Package for turtlebot3 panorama.
   </description>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
   <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
-  <license>Apache 2.0</license>
-  <license>BSD</license>
+  <license>BSD-3-Clause</license>
   <url type="website">http://turtlebot3.robotis.com</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
