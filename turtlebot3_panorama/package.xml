@@ -7,7 +7,6 @@
 	  Package for turtlebot3 panorama.
   </description>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
-  <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
   <license>BSD-3-Clause</license>
   <url type="website">http://turtlebot3.robotis.com</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
