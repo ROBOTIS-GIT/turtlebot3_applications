@@ -54,7 +54,7 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "image_transport/image_transport.hpp"
-#include "cv_bridge/cv_bridge.h"
+#include "cv_bridge/cv_bridge.hpp"
 
 #include "turtlebot3_applications_msgs/srv/take_panorama.hpp"
 #include "turtlebot3_panorama/geometry.hpp"
