@@ -23,7 +23,7 @@
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>turtlebot3_applications_msgs</depend>
-  <depend>image_transport_plugins</depend>
+  <depend>image_transport</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

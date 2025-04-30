@@ -49,12 +49,17 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/stitching.hpp>
 
-#include "rclcpp/rclcpp.hpp"
-#include "sensor_msgs/msg/compressed_image.hpp"
-#include "geometry_msgs/msg/twist.hpp"
-#include "nav_msgs/msg/odometry.hpp"
-#include "image_transport/image_transport.hpp"
-#include "cv_bridge/cv_bridge.hpp"
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/compressed_image.hpp>
+#include <geometry_msgs/msg/twist.hpp>
+#include <nav_msgs/msg/odometry.hpp>
+#include <image_transport/image_transport.hpp>
+#ifdef ROS2_HUMBLE
+  #include <cv_bridge/cv_bridge.h>
+#elif defined(ROS2_JAZZY_OR_ROLLING)
+  #include <cv_bridge/cv_bridge.hpp>
+#endif
+
 
 #include "turtlebot3_applications_msgs/srv/take_panorama.hpp"
 #include "turtlebot3_panorama/geometry.hpp"

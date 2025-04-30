@@ -9,6 +9,16 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wno-ignored-qualifiers -Wno-reorder -Wall -Wextra)
 endif()
 
+if(DEFINED ENV{ROS_DISTRO})
+  set(ROS_DISTRO $ENV{ROS_DISTRO})
+endif()
+
+if(ROS_DISTRO STREQUAL "humble")
+  add_definitions(-DROS2_HUMBLE)
+elseif(ROS_DISTRO STREQUAL "jazzy" OR ROS_DISTRO STREQUAL "rolling")
+  add_definitions(-DROS2_JAZZY_OR_ROLLING)
+endif()
+
 find_package(ament_cmake REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(geometry_msgs REQUIRED)
