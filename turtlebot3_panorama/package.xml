@@ -18,12 +18,12 @@
   <author email="nys8277@gmail.com">YeonSoo Noh</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>cv_bridge</depend>
+  <depend>geometry_msgs</depend>
+  <depend>image_transport</depend>
+  <depend>nav_msgs</depend>
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
-  <depend>geometry_msgs</depend>
-  <depend>nav_msgs</depend>
   <depend>turtlebot3_applications_msgs</depend>
-  <depend>image_transport</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

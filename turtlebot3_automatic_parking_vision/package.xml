@@ -16,8 +16,8 @@
   <author email="dddoggi1207@gmail.com">ChanHyeong Lee</author>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
-  <depend>rclpy</depend>
   <depend>python3-scipy</depend>
+  <depend>rclpy</depend>
   <depend>std_msgs</depend>
   <depend>tf2_ros</depend>
   <export>
