@@ -6,8 +6,9 @@ Changelog for package turtlebot3_applications
 ------------------
 * Support for ROS 2 Humble version
 * Added turtlebot3_aruco_tracker pkg
-* Update turtlebot3_automatic_parking pkg to use turtlebot3_aruco_tracker
+* Update turtlebot3_automatic_parking_vision pkg to use turtlebot3_aruco_tracker
 * Developed follower pkg by applying a new algorithm using Nav2
+* Uses odom topic to estimate yaw rotation and compute angles between snapshots
 * Contributors: ChanHyeong Lee, Hyungyu Kim, YeonSoo Noh
 
 1.1.0 (2019-01-23)
