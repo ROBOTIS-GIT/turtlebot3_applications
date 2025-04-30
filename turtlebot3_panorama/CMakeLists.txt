@@ -20,18 +20,17 @@ elseif(ROS_DISTRO STREQUAL "jazzy" OR ROS_DISTRO STREQUAL "rolling")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system)
 find_package(cv_bridge REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(turtlebot3_applications_msgs REQUIRED)
-
-find_package(Boost REQUIRED COMPONENTS system)
-find_package(OpenCV REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(turtlebot3_applications_msgs REQUIRED)
 
 set(dependencies
   cv_bridge
