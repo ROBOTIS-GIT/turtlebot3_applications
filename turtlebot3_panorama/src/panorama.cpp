@@ -148,8 +148,6 @@ void turtlebot3_panorama::PanoApp::run()
       images_.clear();
       is_active_ = false;
 
-      cv::imwrite("stitched_result.jpg", pano);
-
       const char * home_dir = std::getenv("HOME");
       if (!home_dir) {
         RCLCPP_ERROR(this->get_logger(), "Failed to find HOME environment variable.");
