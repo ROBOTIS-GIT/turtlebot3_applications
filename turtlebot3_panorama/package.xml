@@ -17,7 +17,7 @@
   <author>Younghun Ju</author>
   <author email="nys8277@gmail.com">YeonSoo Noh</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <depend>cv-bridge</depend>
+  <depend>vision_opencv</depend>
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
