@@ -19,7 +19,13 @@
   <author>Leon Jung</author>
   <author email="dddoggi1207@gmail.com">ChanHyeong Lee</author>
   <author email="nys8277@gmail.com">YeonSoo Noh</author>
+  <author email="kimhg@robotis.com">Hyungyu Kim</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>turtlebot3_aruco_tracker</exec_depend>
+  <exec_depend>turtlebot3_automatic_parking</exec_depend>
+  <exec_depend>turtlebot3_automatic_parking_vision</exec_depend>
+  <exec_depend>turtlebot3_follower</exec_depend>
+  <exec_depend>turtlebot3_panorama</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>
