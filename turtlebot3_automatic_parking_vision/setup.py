@@ -1,9 +1,4 @@
-#!/usr/bin/env python3
-# Copyright 2023 ROBOTIS CO., LTD.
-# Authors: Gilbert
-
-import glob
-import os
+from glob import glob
 
 from setuptools import find_packages
 from setuptools import setup
@@ -13,19 +8,19 @@ share_dir = 'share/' + package_name
 
 setup(
     name=package_name,
-    version='2.0.0',
+    version='1.2.0',
     packages=find_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         (share_dir, ['package.xml']),
-        (share_dir + '/launch', glob.glob(os.path.join('launch', '*.launch.py'))),
+        (share_dir + '/launch', glob('launch/*.py')),
     ],
-    install_requires=['setuptools', 'launch'],
+    install_requires=['setuptools'],
     zip_safe=True,
-    author=['Gilbert'],
-    author_email=['kkjong@robotis.com'],
-    maintainer='Will Son',
-    maintainer_email='willson@robotis.com',
+    author=['Gilbert', 'ChanHyeong Lee'],
+    author_email=['kkjong@robotis.com', 'dddoggi1207@gmail.com'],
+    maintainer='Pyo',
+    maintainer_email='pyo@robotis.com',
     keywords=['ROS', 'ROS2', 'examples', 'rclpy'],
     classifiers=[
         'Intended Audience :: Developers',
@@ -34,9 +29,10 @@ setup(
         'Topic :: Software Development',
     ],
     description=(
-        'Examples of Different TurtleBot3 Usage.'
+        'Automatic Parking Vision for TurtleBot3 Examples.'
     ),
     license='Apache License, Version 2.0',
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'turtlebot3_automatic_parking_vision = \

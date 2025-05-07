@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright 2023 ROBOTIS CO., LTD.
+# Copyright 2025 ROBOTIS CO., LTD.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,17 +14,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Authors: Gilbert
+# Author: ChanHyeong Lee
 
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+
+    marker_size_arg = DeclareLaunchArgument(
+        'marker_size',
+        default_value='0.04',
+        description='ArUco marker size in meters'
+    )
+    marker_size = LaunchConfiguration('marker_size')
+
+    aruco_tracker_node = Node(
+        package='turtlebot3_aruco_tracker',
+        executable='turtlebot3_aruco_tracker',
+        name='turtlebot3_aruco_tracker',
+        output='screen',
+        parameters=[{'marker_size': marker_size}]
+    )
+
     return LaunchDescription([
-        Node(
-            package='turtlebot3_automatic_parking',
-            executable='turtlebot3_automatic_parking',
-            name='turtlebot3_automatic_parking',
-            output='screen'),
+        marker_size_arg,
+        aruco_tracker_node,
     ])

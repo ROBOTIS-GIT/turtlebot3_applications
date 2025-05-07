@@ -2,6 +2,10 @@
 Changelog for package turtlebot3_automatic_parking
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2025-04-25)
+------------------
+* None
+
 1.1.0 (2019-01-23)
 ------------------
 * added launch file for automatic_parking node `#22 <https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues/22>`_

@@ -1,0 +1,9 @@
+repositories:
+  turtlebot3_applications_msgs:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3_applications_msgs.git
+    version: main
+  navigation2:
+    type: git
+    url: https://github.com/ros-navigation/navigation2.git
+    version: main

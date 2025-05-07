@@ -1,6 +1,11 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package turtlebot3_automatic_parking
+Changelog for package turtlebot3_panorama
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+1.2.0(2025-04-25)
+------------------
+* Uses odom topic to estimate yaw rotation and compute angles between snapshots
+* Contributor: YeonSoo Noh
 
 1.1.0 (2019-01-23)
 ------------------
