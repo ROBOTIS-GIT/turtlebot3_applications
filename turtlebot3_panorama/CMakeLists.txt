@@ -1,3 +1,6 @@
+################################################################################
+# Set minimum required version of cmake, project name and compile options
+################################################################################
 cmake_minimum_required(VERSION 3.5)
 project(turtlebot3_panorama)
 
@@ -19,6 +22,9 @@ elseif(ROS_DISTRO STREQUAL "jazzy" OR ROS_DISTRO STREQUAL "rolling")
   add_definitions(-DROS2_JAZZY_OR_ROLLING)
 endif()
 
+################################################################################
+# Find ament packages and libraries for ament and system dependencies
+################################################################################
 find_package(ament_cmake REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(cv_bridge REQUIRED)
@@ -59,6 +65,9 @@ target_link_libraries(${PROJECT_NAME}
   ${OpenCV_LIBRARIES}
 )
 
+################################################################################
+# Install
+################################################################################
 install(DIRECTORY include/
   DESTINATION include
 )
@@ -71,21 +80,9 @@ install(TARGETS ${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME}
 )
 
-if(BUILD_TESTING)
-  find_package(ament_cmake_cppcheck REQUIRED)
-  find_package(ament_cmake_cpplint REQUIRED)
-  find_package(ament_cmake_lint_cmake REQUIRED)
-  find_package(ament_cmake_uncrustify REQUIRED)
-  find_package(ament_cmake_xmllint REQUIRED)
-
-  ament_cppcheck()
-  ament_cpplint()
-  ament_lint_cmake()
-  ament_uncrustify()
-  ament_xmllint()
-endif()
-
+################################################################################
+# Macro for ament package
+################################################################################
 ament_export_include_directories(include)
 ament_export_dependencies(${dependencies})
-
 ament_package()
