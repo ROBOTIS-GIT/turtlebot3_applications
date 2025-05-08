@@ -2,34 +2,29 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>turtlebot3_panorama</name>
-  <version>2.1.0</version>
+  <version>1.2.0</version>
   <description>
 	  Package for turtlebot3 panorama.
   </description>
-  <license>BSD</license>
-  <author>Younghun Ju</author>
-  <author>Jihoon Lee</author>
-  <author>Marcus Liebhardt</author>
-  <author>Christopher Tatsch</author>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
-  <maintainer email="kkjong@robotis.com">Gilbert</maintainer>
-  <url type="website">http://wiki.ros.org/turtlebot3_panorama</url>
-  <url type="emanual">http://turtlebot3.robotis.com</url>
+  <license>BSD-3-Clause</license>
+  <url type="website">http://turtlebot3.robotis.com</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
+  <author>Christopher Tatsch</author>
+  <author>Jihoon Lee</author>
+  <author>Marcus Liebhardt</author>
+  <author>Younghun Ju</author>
+  <author email="nys8277@gmail.com">YeonSoo Noh</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>cv_bridge</depend>
+  <depend>geometry_msgs</depend>
+  <depend>image_transport</depend>
+  <depend>nav_msgs</depend>
   <depend>rclcpp</depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>std_srvs</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>geometry_msgs</build_depend>
-  <build_depend>nav_msgs</build_depend>
-  <build_depend>turtlebot3_applications_msgs</build_depend>
-  <build_depend>image_transport</build_depend>
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
+  <depend>sensor_msgs</depend>
+  <depend>turtlebot3_applications_msgs</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>
-
 </package>
