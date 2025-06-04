@@ -33,7 +33,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'turtlebot3_yolo_object_detection = turtlebot3_yolo_object_detection.turtlebot3_yolo_object_detection:main'
+            'turtlebot3_yolo_object_detection =  \
+                turtlebot3_yolo_object_detection.turtlebot3_yolo_object_detection:main'
         ],
     },
 )
