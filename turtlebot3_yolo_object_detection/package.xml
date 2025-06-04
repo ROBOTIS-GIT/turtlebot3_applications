@@ -1,25 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>turtlebot3_automatic_parking_vision</name>
+  <name>turtlebot3_yolo_object_detection</name>
   <version>1.2.1</version>
   <description>
-	  Automatic Parking Vision for TurtleBot3 Examples.
+    YOLO-based object detection for TurtleBot3
   </description>
   <maintainer email="pyo@robotis.com">Pyo</maintainer>
   <license>Apache 2.0</license>
   <url type="website">http://turtlebot3.robotis.com</url>
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
-  <author email="kkjong@robotis.com">Gilbert</author>
-  <author>Leon Jung</author>
-  <author email="dddoggi1207@gmail.com">ChanHyeong Lee</author>
-  <depend>geometry_msgs</depend>
-  <depend>nav_msgs</depend>
-  <depend>python3-scipy</depend>
+  <author email="nys8277@gmail.com">YeonSoo Noh</author>
+  <buildtool_depend>ament_python</buildtool_depend>
   <depend>rclpy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>cv_bridge</depend>
   <depend>std_msgs</depend>
-  <depend>tf2_ros</depend>
+  <depend>image_transport</depend>
+  <depend>compressed_image_transport</depend>
+  <depend>python3-opencv</depend>
   <export>
     <build_type>ament_python</build_type>
   </export>
