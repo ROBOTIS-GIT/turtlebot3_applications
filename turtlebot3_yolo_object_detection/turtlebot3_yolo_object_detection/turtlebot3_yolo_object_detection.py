@@ -26,6 +26,7 @@ from ultralytics import YOLO
 
 
 class ObjectDetectionNode(Node):
+
     def __init__(self):
         super().__init__('turtlebot3_object_detection_node')
 
