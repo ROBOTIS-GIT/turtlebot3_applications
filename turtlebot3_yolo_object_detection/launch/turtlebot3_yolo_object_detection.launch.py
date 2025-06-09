@@ -24,7 +24,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='turtlebot3_yolo_object_detection',
-            executable='yolo_node',
+            executable='turtlebot3_yolo_object_detection',
             name='turtlebot3_object_detection_node',
             output='screen'
         )

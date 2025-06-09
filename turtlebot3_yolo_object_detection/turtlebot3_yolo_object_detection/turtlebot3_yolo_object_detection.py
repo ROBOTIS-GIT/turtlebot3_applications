@@ -30,7 +30,7 @@ class ObjectDetectionNode(Node):
     def __init__(self):
         super().__init__('turtlebot3_object_detection_node')
 
-        self.model = YOLO('/home/ubuntu/best.pt')  # Update with your actual model path
+        self.model = YOLO('/home/username/Downloads/best.pt')  # Update with your actual model path
         self.bridge = CvBridge()
         self.image_sub = self.create_subscription(
             Image, '/camera/image_raw', self.image_callback, 10)
