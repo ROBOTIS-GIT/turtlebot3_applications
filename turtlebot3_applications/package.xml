@@ -26,6 +26,7 @@
   <exec_depend>turtlebot3_automatic_parking_vision</exec_depend>
   <exec_depend>turtlebot3_follower</exec_depend>
   <exec_depend>turtlebot3_panorama</exec_depend>
+  <exec_depend>turtlebot3_yolo_object_detection</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>
