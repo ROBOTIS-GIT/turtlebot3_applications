@@ -12,14 +12,12 @@
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_applications</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_applications/issues</url>
   <author email="nys8277@gmail.com">YeonSoo Noh</author>
-  <buildtool_depend>ament_python</buildtool_depend>
-  <depend>rclpy</depend>
-  <depend>sensor_msgs</depend>
-  <depend>cv_bridge</depend>
-  <depend>std_msgs</depend>
-  <depend>image_transport</depend>
-  <depend>compressed_image_transport</depend>
-  <depend>python3-opencv</depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>compressed_image_transport</exec_depend>
   <export>
     <build_type>ament_python</build_type>
   </export>

@@ -16,8 +16,10 @@
 #
 # Author: YeonSoo Noh
 
+import os
+
 import cv2
-from cv_bridge import CvBridge
+from cv_bridge import CvBridge, CvBridgeError
 import numpy as np
 import rclpy
 from rclpy.node import Node
@@ -30,7 +32,10 @@ class ObjectDetectionNode(Node):
     def __init__(self):
         super().__init__('turtlebot3_object_detection_node')
 
-        self.model = YOLO('/home/username/Downloads/best.pt')  # Update with your actual model path
+        self.declare_parameter('model_path', '~/Downloads/best.pt')
+        model_path = os.path.expanduser(
+            self.get_parameter('model_path').get_parameter_value().string_value)
+        self.model = YOLO(model_path)
         self.bridge = CvBridge()
         self.image_sub = self.create_subscription(
             Image, '/camera/image_raw', self.image_callback, 10)
@@ -38,17 +43,22 @@ class ObjectDetectionNode(Node):
             CompressedImage, '/camera/detections/compressed', 10)
 
     def image_callback(self, msg):
-        frame = self.bridge.imgmsg_to_cv2(msg, 'rgb8')
-        results = self.model(frame)
-        annotated_frame = np.array(results[0].plot())
-        annotated_frame = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
-        success, encoded_image = cv2.imencode('.jpg', annotated_frame)
-        if success:
-            compressed_image = CompressedImage()
-            compressed_image.header = msg.header
-            compressed_image.format = 'jpeg'
-            compressed_image.data = encoded_image.tobytes()
-            self.image_pub.publish(compressed_image)
+        try:
+            frame = self.bridge.imgmsg_to_cv2(msg, 'rgb8')
+            results = self.model(frame)
+            annotated_frame = np.array(results[0].plot())
+            annotated_frame = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
+            success, encoded_image = cv2.imencode('.jpg', annotated_frame)
+            if success:
+                compressed_image = CompressedImage()
+                compressed_image.header = msg.header
+                compressed_image.format = 'jpeg'
+                compressed_image.data = encoded_image.tobytes()
+                self.image_pub.publish(compressed_image)
+        except CvBridgeError as e:
+            self.get_logger().error(f'CV Bridge error: {e}')
+        except Exception as e:
+            self.get_logger().error(f'Error processing image: {e}')
 
 
 def main(args=None):
