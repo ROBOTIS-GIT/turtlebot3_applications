@@ -13,7 +13,7 @@ share_dir = 'share/' + package_name
 
 setup(
     name=package_name,
-    version='1.2.1',
+    version='1.3.0',
     packages=find_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
