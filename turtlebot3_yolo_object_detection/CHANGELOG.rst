@@ -6,4 +6,4 @@ Changelog for package turtlebot3_yolo_object_detection
 ------------------
 * Added turtlebot3_yolo_object_detection pkg
 * Added a Python script that runs the YOLO model on live camera images and publishes detection results with bounding boxes
-* Contributor: YeonSoo Noh
+* Contributors: YeonSoo Noh
