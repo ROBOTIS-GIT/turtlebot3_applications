@@ -60,3 +60,4 @@ jobs:
             turtlebot3_automatic_parking_vision
             turtlebot3_follower
             turtlebot3_panorama
+            turtlebot3_yolo_object_detection
