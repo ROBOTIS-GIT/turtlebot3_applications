@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>turtlebot3_applications</name>
-  <version>1.2.0</version>
+  <version>1.3.0</version>
   <description>
     ROS packages for the turtlebot3 applications (meta package)
   </description>
@@ -26,6 +26,7 @@
   <exec_depend>turtlebot3_automatic_parking_vision</exec_depend>
   <exec_depend>turtlebot3_follower</exec_depend>
   <exec_depend>turtlebot3_panorama</exec_depend>
+  <exec_depend>turtlebot3_yolo_object_detection</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

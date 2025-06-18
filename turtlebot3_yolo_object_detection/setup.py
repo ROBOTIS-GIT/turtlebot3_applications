@@ -3,7 +3,7 @@ from glob import glob
 from setuptools import find_packages
 from setuptools import setup
 
-package_name = 'turtlebot3_automatic_parking_vision'
+package_name = 'turtlebot3_yolo_object_detection'
 share_dir = 'share/' + package_name
 
 setup(
@@ -16,9 +16,8 @@ setup(
         (share_dir + '/launch', glob('launch/*.py')),
     ],
     install_requires=['setuptools'],
-    zip_safe=True,
-    author=['Gilbert', 'ChanHyeong Lee'],
-    author_email=['kkjong@robotis.com', 'dddoggi1207@gmail.com'],
+    author='YeonSoo Noh',
+    author_email='nys8277@gmail.com',
     maintainer='Pyo',
     maintainer_email='pyo@robotis.com',
     keywords=['ROS', 'ROS2', 'examples', 'rclpy'],
@@ -29,14 +28,13 @@ setup(
         'Topic :: Software Development',
     ],
     description=(
-        'Automatic Parking Vision for TurtleBot3 Examples.'
+        'YOLO Object Detection for TurtleBot3 Examples.'
     ),
-    license='Apache License, Version 2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'turtlebot3_automatic_parking_vision = \
-                turtlebot3_automatic_parking_vision.turtlebot3_automatic_parking_vision:main',
+            'turtlebot3_yolo_object_detection =  \
+                turtlebot3_yolo_object_detection.turtlebot3_yolo_object_detection:main'
         ],
     },
 )

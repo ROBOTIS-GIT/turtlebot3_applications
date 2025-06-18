@@ -2,6 +2,10 @@
 Changelog for package turtlebot3_follower
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.0 (2025-06-04)
+------------------
+* None
+
 1.2.0(2025-04-25)
 ------------------
 * Developed follower pkg by applying a new algorithm using Nav2
