@@ -20,6 +20,7 @@
   <depend>cv_bridge</depend>
   <depend>geometry_msgs</depend>
   <depend>image_transport</depend>
+  <depend>libboost-system-dev</depend>
   <depend>nav_msgs</depend>
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
