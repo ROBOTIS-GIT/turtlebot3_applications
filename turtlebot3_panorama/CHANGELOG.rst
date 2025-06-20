@@ -2,6 +2,11 @@
 Changelog for package turtlebot3_panorama
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.1 (2025-06-20)
+------------------
+* Fix cmake error in turtlebot3_panorama
+* Contributors: Hyungyu Kim
+
 1.3.0 (2025-06-04)
 ------------------
 * None
