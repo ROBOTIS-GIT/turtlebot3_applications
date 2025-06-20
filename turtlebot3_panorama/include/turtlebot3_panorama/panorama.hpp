@@ -56,7 +56,7 @@
 #include <image_transport/image_transport.hpp>
 #ifdef ROS2_HUMBLE
   #include <cv_bridge/cv_bridge.h>
-#elif defined(ROS2_JAZZY_OR_ROLLING)
+#elif defined(ROS2_LATEST)
   #include <cv_bridge/cv_bridge.hpp>
 #endif
 
