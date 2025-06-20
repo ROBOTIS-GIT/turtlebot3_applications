@@ -2,6 +2,11 @@
 Changelog for package turtlebot3_applications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.2 (2025-06-20)
+------------------
+* Add pytest in setup.py
+* Contributors: Hyungyu Kim
+
 1.3.1 (2025-06-20)
 ------------------
 * Fix cmake error in turtlebot3_panorama
