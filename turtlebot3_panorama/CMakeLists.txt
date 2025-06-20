@@ -12,26 +12,12 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wno-ignored-qualifiers -Wno-reorder -Wall -Wextra)
 endif()
 
-if(DEFINED ENV{ROS_DISTRO})
-  set(ROS_DISTRO $ENV{ROS_DISTRO})
-endif()
-
-if(NOT DEFINED ROS_DISTRO OR ROS_DISTRO STREQUAL "")
-  execute_process(
-    COMMAND printenv ROS_DISTRO
-    OUTPUT_VARIABLE ROS_DISTRO
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-endif()
-
-if(NOT DEFINED ROS_DISTRO OR ROS_DISTRO STREQUAL "")
-  message(WARNING "ROS_DISTRO is not defined.")
-endif()
-
-if(ROS_DISTRO STREQUAL "humble")
+if(EXISTS "/opt/ros/humble")
   add_definitions(-DROS2_HUMBLE)
-elseif(ROS_DISTRO STREQUAL "jazzy" OR ROS_DISTRO STREQUAL "rolling")
-  add_definitions(-DROS2_JAZZY_OR_ROLLING)
+  message("Humble")
+else()
+  add_definitions(-DROS2_LATEST)
+  message("Latest")
 endif()
 
 ################################################################################
