@@ -60,7 +60,6 @@
   #include <cv_bridge/cv_bridge.hpp>
 #endif
 
-
 #include "turtlebot3_applications_msgs/srv/take_panorama.hpp"
 #include "turtlebot3_panorama/geometry.hpp"
 
