@@ -13,7 +13,7 @@ share_dir = 'share/' + package_name
 
 setup(
     name=package_name,
-    version='1.3.1',
+    version='1.3.2',
     packages=find_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
@@ -24,8 +24,8 @@ setup(
     zip_safe=True,
     author=['Gilbert'],
     author_email=['kkjong@robotis.com'],
-    maintainer='Will Son',
-    maintainer_email='willson@robotis.com',
+    maintainer='Pyo',
+    maintainer_email='pyo@robotis.com',
     keywords=['ROS', 'ROS2', 'examples', 'rclpy'],
     classifiers=[
         'Intended Audience :: Developers',
@@ -34,9 +34,10 @@ setup(
         'Topic :: Software Development',
     ],
     description=(
-        'Examples of Different TurtleBot3 Usage.'
+        'Package for turtlebot3 automatic_parking.'
     ),
     license='Apache License, Version 2.0',
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'turtlebot3_automatic_parking = \
