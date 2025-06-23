@@ -2,6 +2,11 @@
 Changelog for package turtlebot3_applications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.3 (2025-06-23)
+------------------
+* Fix package.xml in turtlebot3_panorama
+* Contributors: Hyungyu Kim
+
 1.3.2 (2025-06-20)
 ------------------
 * Add pytest in setup.py
