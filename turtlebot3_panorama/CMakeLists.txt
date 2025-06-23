@@ -14,10 +14,8 @@ endif()
 
 if(EXISTS "/opt/ros/humble")
   add_definitions(-DROS2_HUMBLE)
-  message("Humble")
 else()
   add_definitions(-DROS2_LATEST)
-  message("Latest")
 endif()
 
 ################################################################################
