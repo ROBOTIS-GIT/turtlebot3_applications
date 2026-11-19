@@ -54,10 +54,10 @@
 #include <geometry_msgs/msg/twist.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <image_transport/image_transport.hpp>
-#ifdef ROS2_HUMBLE
-  #include <cv_bridge/cv_bridge.h>
-#elif defined(ROS2_LATEST)
+#if __has_include(<cv_bridge/cv_bridge.hpp>)
   #include <cv_bridge/cv_bridge.hpp>
+#else
+  #include <cv_bridge/cv_bridge.h>
 #endif
 
 #include "turtlebot3_applications_msgs/srv/take_panorama.hpp"
